@@ -41,22 +41,22 @@ export default function PayCard({ eventId, price }: { eventId: string; price: nu
   };
 
   return (
-    <section className="card safelight border-accent/30 p-6 sm:p-8">
+    <section className="card border-crimson/25 p-6 sm:p-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-4">
-          <span className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+          <span className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-crimson/10 text-crimson">
             <LockIcon size={20} />
           </span>
           <div>
-            <h2 className="font-serif-display text-2xl">{t("draftTitle")}</h2>
-            <p className="mt-1.5 max-w-md text-[0.95rem] leading-relaxed text-muted">
+            <h2 className="font-display text-2xl">{t("draftTitle")}</h2>
+            <p className="mt-1.5 max-w-md text-[0.95rem] leading-relaxed text-ink-2">
               {t("draftText")}
             </p>
           </div>
         </div>
         <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
-          <span className="stat-numeral text-3xl text-accent-strong">{formatKzt(price)}</span>
-          <button type="button" onClick={pay} disabled={pending} className="btn-accent">
+          <span className="numeral text-3xl text-crimson">{formatKzt(price)}</span>
+          <button type="button" onClick={pay} disabled={pending} className="btn-primary">
             {pending ? <Mark size={18} className="animate-spin" /> : t("payActivate")}
           </button>
         </div>

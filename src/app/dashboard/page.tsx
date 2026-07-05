@@ -32,8 +32,8 @@ export default async function DashboardPage() {
     <div className="pt-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="microlabel">{t("kicker")}</p>
-          <h1 className="font-serif-display mt-2 text-4xl sm:text-5xl">{t("title")}</h1>
+          <p className="label-soft">{t("kicker")}</p>
+          <h1 className="font-display mt-2 text-4xl sm:text-5xl">{t("title")}</h1>
         </div>
         <Link href="/dashboard/new" className="btn btn-primary">
           <PlusIcon size={18} /> {t("newEvent")}
@@ -42,11 +42,11 @@ export default async function DashboardPage() {
 
       {events.length === 0 ? (
         <div className="card mt-12 flex flex-col items-center gap-5 px-8 py-20 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-line text-accent">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-line text-crimson">
             <FilmIcon size={26} />
           </span>
-          <h2 className="font-serif-display text-3xl">{t("emptyTitle")}</h2>
-          <p className="max-w-sm leading-relaxed text-muted">{t("emptyText")}</p>
+          <h2 className="font-display text-3xl">{t("emptyTitle")}</h2>
+          <p className="max-w-sm leading-relaxed text-ink-2">{t("emptyText")}</p>
           <Link href="/dashboard/new" className="btn btn-primary mt-2">
             <PlusIcon size={18} /> {t("newEvent")}
           </Link>
@@ -61,7 +61,7 @@ export default async function DashboardPage() {
               <Link
                 key={event.id}
                 href={`/dashboard/${event.id}`}
-                className="card group flex items-center gap-5 p-4 transition hover:bg-surface-2 sm:p-5"
+                className="card group flex items-center gap-5 p-4 transition hover:bg-bg sm:p-5"
               >
                 <div
                   aria-hidden
@@ -70,15 +70,15 @@ export default async function DashboardPage() {
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <h2 className="font-serif-display truncate text-xl sm:text-2xl">
+                    <h2 className="font-display truncate text-xl sm:text-2xl">
                       {event.name}
                     </h2>
                     <span
                       className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wider ${
                         event.status === "draft"
-                          ? "bg-surface-2 text-muted"
+                          ? "bg-bg text-ink-2"
                           : revealed
-                            ? "bg-accent/15 text-accent-strong"
+                            ? "bg-crimson/15 text-crimson"
                             : "bg-success/15 text-success"
                       }`}
                     >
@@ -89,10 +89,10 @@ export default async function DashboardPage() {
                           : t("statusActive")}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-muted">
+                  <p className="mt-1 text-sm text-ink-2">
                     {formatDate(event.event_date, locale)}
                   </p>
-                  <p className="mt-2 flex items-center gap-4 text-sm text-muted">
+                  <p className="mt-2 flex items-center gap-4 text-sm text-ink-2">
                     <span className="flex items-center gap-1.5">
                       <UsersIcon size={15} /> {guests}
                     </span>
@@ -103,7 +103,7 @@ export default async function DashboardPage() {
                 </div>
                 <ChevronRight
                   size={18}
-                  className="shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-ink"
+                  className="shrink-0 text-ink-2 transition group-hover:translate-x-0.5 group-hover:text-ink"
                 />
               </Link>
             );

@@ -1,23 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant, Inter } from "next/font/google";
+import { Golos_Text, Prata } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 
 // Both families cover Kazakh Cyrillic (cyrillic-ext): Қ Ә Ү Ұ Ө Ң Ғ Һ І
-const display = Cormorant({
-  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+const display = Prata({
+  weight: "400",
+  subsets: ["latin", "cyrillic-ext"],
   variable: "--font-display",
 });
-const body = Inter({
+const body = Golos_Text({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
   variable: "--font-body",
 });
 
 export const metadata: Metadata = {
-  title: "Korme — общая одноразовая камера для вашего праздника",
+  title: "Kormem — общая камера вашего тоя",
   description:
-    "Гости сканируют QR-код и снимают на плёночную камеру в браузере. Фотографии проявляются утром — весь вечер глазами каждого гостя.",
+    "Гости снимают на одноразовую камеру в браузере, а фотографии остаются скрытыми до утра. Потом весь вечер открывается в общей галерее.",
 };
 
 export const viewport: Viewport = {
@@ -25,7 +26,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#0c0a08",
+  themeColor: "#f7f2f1",
 };
 
 export default async function RootLayout({

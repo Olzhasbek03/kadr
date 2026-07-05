@@ -70,7 +70,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
     <div className="pt-10">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-ink"
+        className="inline-flex items-center gap-2 text-sm text-ink-2 transition hover:text-ink"
       >
         <ArrowLeft size={16} /> {t("backToEvents")}
       </Link>
@@ -84,15 +84,15 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
         />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-serif-display text-4xl leading-tight sm:text-5xl">
+            <h1 className="font-display text-4xl leading-tight sm:text-5xl">
               {event.name}
             </h1>
             <span
               className={`rounded-full px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-wider ${
                 event.status === "draft"
-                  ? "bg-surface-2 text-muted"
+                  ? "bg-bg text-ink-2"
                   : revealed
-                    ? "bg-accent/15 text-accent-strong"
+                    ? "bg-crimson/15 text-crimson"
                     : "bg-success/15 text-success"
               }`}
             >
@@ -103,7 +103,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
                   : t("statusActive")}
             </span>
           </div>
-          <p className="mt-2 text-muted">{formatDateTime(event.event_date, locale)}</p>
+          <p className="mt-2 text-ink-2">{formatDateTime(event.event_date, locale)}</p>
         </div>
       </div>
 
@@ -115,8 +115,8 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
           [event.shots_per_guest, t("shotsPerGuest"), <ClockIcon key="s" size={15} />],
         ].map(([num, label], i) => (
           <div key={i}>
-            <div className="stat-numeral text-4xl">{num as number}</div>
-            <div className="microlabel mt-1.5">{label as string}</div>
+            <div className="numeral text-4xl">{num as number}</div>
+            <div className="label-soft mt-1.5">{label as string}</div>
           </div>
         ))}
       </div>
@@ -130,10 +130,10 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
 
         {/* reveal */}
         <section className="card p-6 sm:p-8">
-          <p className="microlabel">{t("revealSection")}</p>
+          <p className="label-soft">{t("revealSection")}</p>
           {revealed ? (
             <p className="mt-4 flex items-center gap-2.5 text-lg">
-              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span className="h-2 w-2 rounded-full bg-crimson" />
               {t("revealedSince", { time: formatDateTime(event.reveal_at, locale) })}
             </p>
           ) : (
@@ -141,7 +141,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
               <div className="mt-7">
                 <Countdown target={event.reveal_at} refreshOnZero />
               </div>
-              <p className="mt-6 text-center text-sm text-muted">
+              <p className="mt-6 text-center text-sm text-ink-2">
                 {t("revealScheduled", { time: formatDateTime(event.reveal_at, locale) })}
               </p>
               <div className="mt-6 flex justify-center">
@@ -153,10 +153,10 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
 
         {/* gallery */}
         <section>
-          <p className="microlabel">
+          <p className="label-soft">
             {t("gallerySection")}
             {!revealed && photos.length > 0 && (
-              <span className="ml-2 normal-case tracking-normal text-muted">
+              <span className="ml-2 normal-case tracking-normal text-ink-2">
                 — {t("hostOnlyNote")}
               </span>
             )}

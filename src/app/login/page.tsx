@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { ArrowLeft, CheckIcon, GoogleIcon, MailIcon, Mark } from "@/components/icons";
+import Image from "next/image";
+import { ArrowLeft, CheckIcon, GoogleIcon, MailIcon } from "@/components/icons";
 
 function LoginForm() {
   const t = useTranslations("auth");
@@ -48,9 +49,8 @@ function LoginForm() {
   };
 
   return (
-    <main className="relative flex min-h-dvh flex-col px-6">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_55%_at_50%_0%,#251c10_0%,#120e09_45%,#0c0a08_100%)]" />
-
+    <main className="grid min-h-dvh lg:grid-cols-[1fr_0.85fr]">
+      <div className="relative flex flex-col px-6">
       <header className="relative flex items-center justify-between py-6">
         <Link href="/" className="icon-btn" aria-label={t("backHome")}>
           <ArrowLeft size={20} />
@@ -59,25 +59,22 @@ function LoginForm() {
       </header>
 
       <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center pb-24">
-        <Mark size={22} className="mx-auto text-accent" />
-        <h1 className="font-serif-display mt-6 text-center text-4xl leading-tight">
-          {t("title")}
-        </h1>
-        <p className="mt-3 text-center text-muted">{t("subtitle")}</p>
+        <h1 className="font-display text-center text-4xl leading-tight">{t("title")}</h1>
+        <p className="mt-3 text-center text-ink-2">{t("subtitle")}</p>
 
         {phase === "sent" ? (
           <div className="card rise-in mt-10 flex flex-col items-center gap-4 p-8 text-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-line text-accent">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-line text-crimson">
               <CheckIcon size={24} />
             </span>
             <p className="font-medium">{t("linkSent")}</p>
-            <p className="text-sm leading-relaxed text-muted">
+            <p className="text-sm leading-relaxed text-ink-2">
               {t("linkSentHint", { email })}
             </p>
             <button
               type="button"
               onClick={() => setPhase("idle")}
-              className="text-sm text-muted underline underline-offset-4 hover:text-ink"
+              className="text-sm text-ink-2 underline underline-offset-4 hover:text-ink"
               style={{ minHeight: 44 }}
             >
               {t("useAnotherEmail")}
@@ -86,7 +83,7 @@ function LoginForm() {
         ) : (
           <>
             <form onSubmit={sendMagicLink} className="mt-10 flex flex-col gap-3">
-              <label htmlFor="email" className="microlabel">
+              <label htmlFor="email" className="label-soft">
                 {t("emailLabel")}
               </label>
               <input
@@ -112,7 +109,7 @@ function LoginForm() {
 
             <div className="my-7 flex items-center gap-4">
               <span className="h-px flex-1 bg-line" />
-              <span className="text-sm text-muted">{t("or")}</span>
+              <span className="text-sm text-ink-2">{t("or")}</span>
               <span className="h-px flex-1 bg-line" />
             </div>
 
@@ -132,9 +129,21 @@ function LoginForm() {
           </p>
         )}
 
-        <p className="mt-10 text-center text-sm leading-relaxed text-muted">
+        <p className="mt-10 text-center text-sm leading-relaxed text-ink-2">
           {t("noPassword")}
         </p>
+      </div>
+      </div>
+
+      {/* the world this tool serves */}
+      <div className="relative hidden lg:block">
+        <Image
+          src="/photos/syrga-salu.jpg"
+          alt=""
+          fill
+          sizes="45vw"
+          className="object-cover"
+        />
       </div>
     </main>
   );

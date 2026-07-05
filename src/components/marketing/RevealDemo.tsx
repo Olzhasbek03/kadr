@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { FILTER_CSS } from "@/lib/filters";
-import { PhotoArt } from "@/components/ArtDecor";
-import { FilmIcon, LockIcon } from "@/components/icons";
 
-const TILE_FILTERS = ["warm", "noir", "original", "vintage", "cool", "cine"] as const;
+const TILES = [
+  "/photos/dance.jpg",
+  "/photos/garden.jpg",
+  "/photos/hall-bw.jpg",
+  "/photos/rings.jpg",
+  "/photos/field.jpg",
+  "/photos/run-bw.jpg",
+];
 
 /**
- * The reveal, demonstrated: a looping night → morning cycle.
- * 23:47 — six locked frames. 09:00 — the same frames develop in.
+ * The reveal, demonstrated on real photographs: a looping night → morning
+ * cycle. At 23:47 every frame sleeps under an ivory veil; at 09:00 the
+ * veil lifts and the photographs develop in, one after another.
  */
 export default function RevealDemo() {
   const t = useTranslations("landing");
@@ -21,65 +27,63 @@ export default function RevealDemo() {
       setRevealed(true);
       return;
     }
-    let alive = true;
-    const cycle = () => {
-      if (!alive) return;
-      setRevealed((r) => !r);
-    };
-    const id = setInterval(cycle, 4200);
-    const kickoff = setTimeout(cycle, 1200);
+    const first = setTimeout(() => setRevealed(true), 1600);
+    const id = setInterval(() => setRevealed((r) => !r), 5200);
     return () => {
-      alive = false;
+      clearTimeout(first);
       clearInterval(id);
-      clearTimeout(kickoff);
     };
   }, []);
 
   return (
-    <div className="mx-auto max-w-md">
-      <div className="card overflow-hidden">
-        <div className="sprockets" aria-hidden />
-        <div className="flex items-center justify-between px-5 py-4">
-          <span className="stat-numeral text-2xl" suppressHydrationWarning>
-            {revealed ? "09:00" : "23:47"}
-          </span>
-          <span
-            className={`flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider transition ${
-              revealed ? "bg-accent/15 text-accent-strong" : "bg-surface-2 text-muted"
-            }`}
+    <div className="mx-auto max-w-2xl">
+      <div className="mb-5 flex items-baseline justify-between px-1">
+        <span className="numeral text-3xl text-ivory sm:text-4xl" suppressHydrationWarning>
+          {revealed ? "09:00" : "23:47"}
+        </span>
+        <span
+          className={`text-sm transition-colors duration-500 ${
+            revealed ? "text-rose" : "text-ivory/50"
+          }`}
+          suppressHydrationWarning
+        >
+          {revealed ? t("revealDemoOpen") : t("revealDemoLocked")}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {TILES.map((src, i) => (
+          <div
+            key={src}
+            className="relative aspect-[3/4] overflow-hidden rounded-[10px] bg-ivory/10"
           >
-            {revealed ? <FilmIcon size={13} /> : <LockIcon size={13} />}
-            {revealed ? t("revealDemoOpen") : t("revealDemoLocked")}
-          </span>
-        </div>
-        <div className="grid grid-cols-3 gap-1.5 px-3 pb-3">
-          {TILE_FILTERS.map((f, i) => (
+            <Image
+              src={src}
+              alt=""
+              fill
+              sizes="(max-width: 640px) 30vw, 210px"
+              className="object-cover"
+              style={{
+                filter: revealed ? "blur(0px) saturate(1)" : "blur(16px) saturate(0.55)",
+                opacity: revealed ? 1 : 0.45,
+                transform: revealed ? "scale(1)" : "scale(1.06)",
+                transition:
+                  "filter 900ms cubic-bezier(0.23,1,0.32,1), opacity 900ms ease, transform 900ms cubic-bezier(0.23,1,0.32,1)",
+                transitionDelay: revealed ? `${i * 110}ms` : "0ms",
+              }}
+            />
+            {/* ivory veil over the sleeping frame */}
             <div
-              key={i}
-              className="relative aspect-square overflow-hidden rounded-lg bg-surface-2"
-            >
-              <PhotoArt
-                id={`reveal-tile-${i}`}
-                className="absolute inset-0 h-full w-full"
-                style={{
-                  filter: revealed
-                    ? FILTER_CSS[f]
-                    : "brightness(0.14) sepia(0.7) blur(6px)",
-                  transform: `scale(${1 + (i % 3) * 0.25}) rotate(${(i % 2) * 180}deg)`,
-                  transition: "filter 1.1s ease",
-                  transitionDelay: revealed ? `${i * 120}ms` : "0ms",
-                }}
-              />
-              {!revealed && (
-                <LockIcon
-                  size={14}
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-ink/30"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="sprockets" aria-hidden />
+              aria-hidden
+              className="veil absolute inset-0"
+              style={{
+                opacity: revealed ? 0 : 1,
+                transition: "opacity 800ms ease",
+                transitionDelay: revealed ? `${i * 110}ms` : "0ms",
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

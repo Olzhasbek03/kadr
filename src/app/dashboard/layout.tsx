@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { LogoutIcon, Mark } from "@/components/icons";
+import { LogoutIcon } from "@/components/icons";
 
 export default async function DashboardLayout({
   children,
@@ -22,13 +22,12 @@ export default async function DashboardLayout({
     <div className="min-h-dvh">
       <header className="border-b border-line">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-          <Link href="/dashboard" className="flex items-center gap-2 text-ink">
-            <Mark size={16} className="text-accent" />
-            <span className="font-serif-display text-xl">Korme</span>
+          <Link href="/dashboard" className="font-display text-xl text-ink">
+            Kormem
           </Link>
           <div className="flex items-center gap-5">
             <LanguageSwitcher />
-            <span className="hidden max-w-[180px] truncate text-sm text-muted sm:block">
+            <span className="hidden max-w-[180px] truncate text-sm text-ink-2 sm:block">
               {user.email}
             </span>
             <form action="/auth/signout" method="post">

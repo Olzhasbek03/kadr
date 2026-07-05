@@ -13,12 +13,12 @@ export default function RevealNowButton({ eventId }: { eventId: string }) {
   if (confirming) {
     return (
       <span className="flex flex-wrap items-center gap-2.5">
-        <span className="text-sm text-muted">{t("revealNowConfirm")}</span>
+        <span className="text-sm text-ink-2">{t("revealNowConfirm")}</span>
         <button
           type="button"
           disabled={pending}
           onClick={() => startTransition(async () => void (await revealNow(eventId)))}
-          className="btn-accent !min-h-[48px] !px-5 text-sm"
+          className="btn-primary !min-h-[48px] !px-5 text-sm"
         >
           {t("revealNowYes")}
         </button>

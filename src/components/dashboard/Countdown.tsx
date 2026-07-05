@@ -53,12 +53,12 @@ export default function Countdown({
       {visible.map(([num, label], i) => (
         <div key={i} className="text-center">
           <div
-            className="stat-numeral text-5xl text-accent-strong sm:text-6xl"
+            className="numeral text-5xl text-crimson sm:text-6xl"
             suppressHydrationWarning
           >
             {String(num).padStart(2, "0")}
           </div>
-          <div className="microlabel mt-2">{label}</div>
+          <div className="label-soft mt-2">{label}</div>
         </div>
       ))}
     </div>

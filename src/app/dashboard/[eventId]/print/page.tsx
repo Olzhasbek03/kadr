@@ -40,7 +40,7 @@ export default async function PrintCardPage(ctx: {
           href={`/dashboard/${event.id}`}
           className="btn inline-flex min-h-[52px] items-center gap-2 rounded-full border border-neutral-300 px-5 font-medium text-neutral-800"
         >
-          <ArrowLeft size={17} /> Korme
+          <ArrowLeft size={17} /> Kormem
         </Link>
         <PrintButton label={t("print")} />
       </div>
@@ -48,10 +48,10 @@ export default async function PrintCardPage(ctx: {
       <div className="mx-auto max-w-2xl px-8 py-10 text-center">
         <span className="inline-flex items-center gap-2 text-neutral-400">
           <Mark size={13} />
-          <span className="font-serif-display text-lg tracking-wide">Korme</span>
+          <span className="font-display text-lg tracking-wide">Kormem</span>
         </span>
-        <h1 className="font-serif-display mt-5 text-5xl leading-[1.08]">{event.name}</h1>
-        <p className="font-serif-display mt-5 text-2xl text-neutral-700">
+        <h1 className="font-display mt-5 text-5xl leading-[1.08]">{event.name}</h1>
+        <p className="font-display mt-5 text-2xl text-neutral-700">
           Сіз де осы кештің фотографысыз
         </p>
         <p className="mt-1 text-neutral-500">Вы тоже фотограф этого вечера</p>
@@ -66,7 +66,7 @@ export default async function PrintCardPage(ctx: {
         <div className="mx-auto mt-10 grid max-w-md gap-5 text-left">
           {steps.map((step, i) => (
             <div key={i} className="flex items-start gap-5">
-              <span className="font-serif-display w-6 shrink-0 text-right text-3xl italic text-neutral-300">
+              <span className="font-display w-6 shrink-0 text-right text-3xl italic text-neutral-300">
                 {i + 1}
               </span>
               <div>

@@ -194,11 +194,11 @@ export default function CameraView({
   if (shotsLeft <= 0 && pending === 0) {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-        <span className="pulse-glow flex h-20 w-20 items-center justify-center rounded-full border border-line text-accent">
+        <span className="flex h-20 w-20 items-center justify-center rounded-full border border-crimson/30 bg-crimson/5 text-crimson">
           <FilmIcon size={30} />
         </span>
-        <h1 className="font-serif-display mt-8 text-4xl leading-tight">{t("outOfFilm")}</h1>
-        <p className="mt-4 max-w-xs leading-relaxed text-muted">
+        <h1 className="font-display mt-8 text-4xl leading-tight">{t("outOfFilm")}</h1>
+        <p className="mt-4 max-w-xs leading-relaxed text-ink-2">
           {t("outOfFilmText", { shots: event.shotsPerGuest })}
         </p>
         <Link href={`/e/${event.slug}/gallery`} className="btn btn-primary mt-9">
@@ -209,9 +209,9 @@ export default function CameraView({
   }
 
   return (
-    <main className="flex h-dvh flex-col bg-black">
+    <main className="flex h-dvh flex-col bg-dark text-ivory">
       {/* viewfinder */}
-      <div className="relative m-2 flex-1 overflow-hidden rounded-[1.6rem] bg-surface">
+      <div className="relative m-2 flex-1 overflow-hidden rounded-[14px] bg-ink">
         {mode !== "fallback" && (
           <video
             ref={videoRef}
@@ -224,25 +224,22 @@ export default function CameraView({
             style={{ filter: FILTER_CSS[style] }}
           />
         )}
-        {/* live film grain over the preview */}
-        {mode === "live" && <div aria-hidden className="film-grain absolute inset-0" />}
-
         {mode === "fallback" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-            <CameraIcon size={30} className="text-muted" />
+            <CameraIcon size={30} className="text-ivory/60" />
             <p className="mt-5 font-medium">{t("permissionTitle")}</p>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{t("permissionText")}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ivory/60">{t("permissionText")}</p>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="btn-primary mt-7"
+              className="btn-dark mt-7"
             >
               <ImageIcon size={18} /> {t("useNativeCamera")}
             </button>
             <button
               type="button"
               onClick={() => void startStream(facing)}
-              className="mt-4 text-sm text-muted underline underline-offset-4"
+              className="mt-4 text-sm text-ivory/60 underline underline-offset-4"
               style={{ minHeight: 44 }}
             >
               {t("retryPermission")}
@@ -252,7 +249,7 @@ export default function CameraView({
 
         {mode === "starting" && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <FilmIcon size={26} className="animate-pulse text-muted" />
+            <FilmIcon size={26} className="animate-pulse text-ivory/50" />
           </div>
         )}
 
@@ -262,11 +259,11 @@ export default function CameraView({
         {/* developing chip */}
         {developing && (
           <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center">
-            <span className="fade-in flex items-center gap-2.5 rounded-full bg-black/70 px-4 py-2.5 text-sm text-ink backdrop-blur">
-              <FilmIcon size={15} className="animate-pulse text-accent" />
+            <span className="fade-in flex items-center gap-2.5 rounded-full bg-dark/75 px-4 py-2.5 text-sm text-ivory backdrop-blur-sm">
+              <FilmIcon size={15} className="animate-pulse text-rose" />
               {t("developing")}
-              <span className="relative h-px w-14 overflow-hidden rounded bg-line">
-                <span className="develop-progress absolute inset-y-0 left-0 bg-accent" />
+              <span className="relative h-px w-14 overflow-hidden rounded bg-ivory/25">
+                <span className="develop-progress absolute inset-y-0 left-0 bg-rose" />
               </span>
             </span>
           </div>
@@ -277,22 +274,22 @@ export default function CameraView({
           <Link
             href={`/e/${event.slug}`}
             aria-label={t("back")}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-black/55 text-ink backdrop-blur"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-dark/60 text-ivory backdrop-blur-sm"
           >
             <ArrowLeft size={18} />
           </Link>
           <div className="flex flex-col items-end gap-2">
-            <span className="flex items-center gap-2 rounded-full bg-black/55 px-4 py-2 backdrop-blur">
-              <FilmIcon size={15} className="text-accent" />
-              <span className="stat-numeral text-lg leading-none">
+            <span className="flex items-center gap-2 rounded-full bg-dark/60 px-4 py-2 backdrop-blur-sm">
+              <FilmIcon size={15} className="text-rose" />
+              <span className="numeral text-lg leading-none">
                 {shotsLeft}
-                <span className="text-muted"> / {event.shotsPerGuest}</span>
+                <span className="text-ivory/55"> / {event.shotsPerGuest}</span>
               </span>
             </span>
             {pending > 0 && (
               <span
-                className={`flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-xs backdrop-blur ${
-                  uploadError ? "text-danger" : "text-muted"
+                className={`flex items-center gap-1.5 rounded-full bg-dark/60 px-3 py-1.5 text-xs backdrop-blur-sm ${
+                  uploadError ? "text-rose" : "text-ivory/60"
                 }`}
               >
                 <UploadIcon size={12} />
@@ -316,13 +313,16 @@ export default function CameraView({
             role="radio"
             aria-checked={style === s}
             onClick={() => setStyle(s)}
-            data-selected={style === s}
-            className="option-card shrink-0 gap-2 rounded-full !px-3.5 !py-2 text-sm"
+            className={`flex shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors ${
+              style === s
+                ? "border-rose bg-rose/10 text-rose"
+                : "border-ivory/15 bg-ivory/5 text-ivory/70"
+            }`}
             style={{ minHeight: 44 }}
           >
             <span
               aria-hidden
-              className="h-5 w-5 rounded-full border border-line"
+              className="h-5 w-5 rounded-full border border-ivory/20"
               style={{ background: STYLE_COVER.original, filter: FILTER_CSS[s] }}
             />
             {t(`filterNames.${s}`)}
@@ -346,7 +346,7 @@ export default function CameraView({
           <button
             type="button"
             onClick={() => setFacing((f) => (f === "environment" ? "user" : "environment"))}
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-surface text-ink"
+            className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-ivory/10 text-ivory"
             aria-label={t("flip")}
           >
             <FlipIcon size={20} />

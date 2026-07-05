@@ -32,12 +32,13 @@ export function filterCss(style: string | null | undefined): string {
   return isFilmStyle(style) ? FILTER_CSS[style] : "none";
 }
 
-/** Cover gradients per preset — used for event covers and style swatches. */
+/** Soft cover gradients per preset — hazy, light, echoing golden-hour
+ *  photography. Used where an event has no photo of its own yet. */
 export const STYLE_COVER: Record<FilmStyle, string> = {
-  original: "radial-gradient(120% 90% at 30% 10%, #3d4a52 0%, #1c2226 55%, #0c0a08 100%)",
-  noir: "radial-gradient(120% 90% at 30% 10%, #4a4a4a 0%, #1e1e1e 55%, #0a0a0a 100%)",
-  warm: "radial-gradient(120% 90% at 30% 10%, #5c452a 0%, #2a1f14 55%, #0c0a08 100%)",
-  cool: "radial-gradient(120% 90% at 30% 10%, #32485c 0%, #17222b 55%, #0a0b0c 100%)",
-  cine: "radial-gradient(120% 90% at 30% 10%, #423c50 0%, #1d1a24 55%, #0b0a0c 100%)",
-  vintage: "radial-gradient(120% 90% at 30% 10%, #5a4a33 0%, #2b2318 55%, #0c0a08 100%)",
+  original: "linear-gradient(150deg, #e9e2dd 0%, #cfc4bd 55%, #a99b93 100%)",
+  noir: "linear-gradient(150deg, #e6e4e2 0%, #b9b5b2 55%, #7d7876 100%)",
+  warm: "linear-gradient(150deg, #f0dfc9 0%, #ddb98d 55%, #b3835a 100%)",
+  cool: "linear-gradient(150deg, #dfe6e6 0%, #b5c6c8 55%, #7f989d 100%)",
+  cine: "linear-gradient(150deg, #e3dfe6 0%, #beb3c4 55%, #857a93 100%)",
+  vintage: "linear-gradient(150deg, #eee3d2 0%, #d1bb9d 55%, #a08769 100%)",
 };

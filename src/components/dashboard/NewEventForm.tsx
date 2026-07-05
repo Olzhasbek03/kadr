@@ -102,16 +102,16 @@ export default function NewEventForm({
     <form onSubmit={submit} className="mx-auto max-w-2xl pt-10">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-ink"
+        className="inline-flex items-center gap-2 text-sm text-ink-2 transition hover:text-ink"
       >
         <ArrowLeft size={16} /> {tc("back")}
       </Link>
-      <h1 className="font-serif-display mt-4 text-4xl sm:text-5xl">{t("title")}</h1>
-      <p className="mt-3 text-muted">{t("subtitle")}</p>
+      <h1 className="font-display mt-4 text-4xl sm:text-5xl">{t("title")}</h1>
+      <p className="mt-3 text-ink-2">{t("subtitle")}</p>
 
       {/* name */}
       <section className="mt-12">
-        <label htmlFor="name" className="microlabel">
+        <label htmlFor="name" className="label-soft">
           {t("nameLabel")}
         </label>
         <input
@@ -128,7 +128,7 @@ export default function NewEventForm({
       {/* date & time */}
       <section className="mt-10 grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="start" className="microlabel">
+          <label htmlFor="start" className="label-soft">
             {t("startLabel")}
           </label>
           <input
@@ -141,7 +141,7 @@ export default function NewEventForm({
           />
         </div>
         <div>
-          <label htmlFor="end" className="microlabel">
+          <label htmlFor="end" className="label-soft">
             {t("endLabel")}
           </label>
           <input
@@ -160,8 +160,8 @@ export default function NewEventForm({
 
       {/* shots */}
       <section className="mt-10">
-        <p className="microlabel">{t("shotsLabel")}</p>
-        <p className="mt-1.5 text-sm text-muted">{t("shotsHint")}</p>
+        <p className="label-soft">{t("shotsLabel")}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("shotsHint")}</p>
         <div className="mt-4 grid grid-cols-3 gap-2.5 sm:grid-cols-6">
           {SHOT_OPTIONS.map((n) => (
             <button
@@ -179,10 +179,10 @@ export default function NewEventForm({
 
       {/* max guests */}
       <section className="mt-10">
-        <label htmlFor="maxGuests" className="microlabel">
+        <label htmlFor="maxGuests" className="label-soft">
           {t("guestsLabel")}
         </label>
-        <p className="mt-1.5 text-sm text-muted">{t("guestsHint", { count: freeGuestLimit })}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("guestsHint", { count: freeGuestLimit })}</p>
         <input
           id="maxGuests"
           type="number"
@@ -198,7 +198,7 @@ export default function NewEventForm({
 
       {/* reveal */}
       <section className="mt-10">
-        <p className="microlabel">{t("revealLabel")}</p>
+        <p className="label-soft">{t("revealLabel")}</p>
         <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
           {revealOptions.map((opt) => (
             <button
@@ -209,7 +209,7 @@ export default function NewEventForm({
               className="option-card !items-start flex-col gap-1.5 px-4 py-4 text-left"
             >
               <span className="font-medium">{opt.title}</span>
-              <span className="text-[0.82rem] font-normal leading-snug text-muted">
+              <span className="text-[0.82rem] font-normal leading-snug text-ink-2">
                 {opt.hint}
               </span>
             </button>
@@ -229,8 +229,8 @@ export default function NewEventForm({
 
       {/* film style */}
       <section className="mt-10">
-        <p className="microlabel">{t("styleLabel")}</p>
-        <p className="mt-1.5 text-sm text-muted">{t("styleHint")}</p>
+        <p className="label-soft">{t("styleLabel")}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("styleHint")}</p>
         <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
           {FILM_STYLES.map((style) => (
             <button
@@ -259,11 +259,11 @@ export default function NewEventForm({
       {/* price + submit */}
       <section className="card mt-12 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="microlabel">{t("priceLabel")}</p>
-          <p className="stat-numeral mt-1 text-3xl">
+          <p className="label-soft">{t("priceLabel")}</p>
+          <p className="numeral mt-1 text-3xl">
             {price === 0 ? t("priceFree") : formatKzt(price)}
           </p>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-ink-2">
             {price === 0 ? t("priceFreeHint") : t("pricePaidHint")}
           </p>
         </div>

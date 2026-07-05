@@ -48,7 +48,7 @@ export default function SharePanel({
       </div>
       <div className="flex min-w-0 flex-col gap-4">
         <div>
-          <p className="microlabel">{t("guestLink")}</p>
+          <p className="label-soft">{t("guestLink")}</p>
           <div className="mt-2.5 flex gap-2">
             <input
               readOnly
@@ -64,11 +64,11 @@ export default function SharePanel({
               aria-label={t("copyLink")}
               title={t("copyLink")}
             >
-              {copied ? <CheckIcon size={18} className="text-accent" /> : <CopyIcon size={18} />}
+              {copied ? <CheckIcon size={18} className="text-crimson" /> : <CopyIcon size={18} />}
             </button>
           </div>
         </div>
-        <p className="text-sm leading-relaxed text-muted">{t("shareHint")}</p>
+        <p className="text-sm leading-relaxed text-ink-2">{t("shareHint")}</p>
         <div className="mt-auto flex flex-wrap gap-2.5">
           <button type="button" onClick={downloadQr} className="btn-secondary !min-h-[52px]">
             <DownloadIcon size={17} /> {t("downloadQr")}

@@ -7,11 +7,11 @@ import type { PublicEvent } from "@/lib/types";
 import { STYLE_COVER } from "@/lib/filters";
 import { formatDateTime } from "@/lib/format";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { ArrowRight, CameraIcon, ClockIcon, Mark } from "@/components/icons";
+import { ArrowRight, CameraIcon, ClockIcon } from "@/components/icons";
 
 /**
- * The guest's first impression: an invitation card. Cover tinted by the
- * event's film preset, serif event name, shots remaining, one button.
+ * The guest's first impression: an ivory invitation. A soft cover in the
+ * event's film tone, the event name in Prata, one button to the camera.
  */
 export default function GuestLanding({
   event,
@@ -50,29 +50,36 @@ export default function GuestLanding({
   };
 
   return (
-    <main className="relative flex min-h-dvh flex-col overflow-hidden px-6">
-      {/* cover wash in the event's film tone */}
-      <div
-        aria-hidden
-        className="film-grain pointer-events-none absolute inset-0"
-        style={{ background: STYLE_COVER[event.filterPreset] }}
-      />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-bg via-bg/60 to-transparent" />
+    <main className="flex min-h-dvh flex-col">
+      {/* cover in the event's film tone, dissolving into ivory */}
+      <div className="relative h-[34dvh] min-h-[210px]">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ background: STYLE_COVER[event.filterPreset] }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg to-transparent"
+        />
+        <header className="relative flex items-center justify-between px-5 pt-5 text-ink">
+          <span className="font-display text-xl">Kormem</span>
+          <LanguageSwitcher />
+        </header>
+      </div>
 
-      <header className="relative flex items-center justify-between pt-6">
-        <span className="flex items-center gap-2">
-          <Mark size={15} className="text-accent" />
-          <span className="font-serif-display text-xl">Korme</span>
-        </span>
-        <LanguageSwitcher />
-      </header>
-
-      <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-end pb-9 text-center">
-        <span className="rounded-full border border-line bg-bg/50 px-4 py-2 text-sm text-ink/80 backdrop-blur">
-          {t("welcomeLine")}
-        </span>
-        <h1 className="font-serif-display mt-6 text-5xl leading-[1.08]">{event.name}</h1>
-        <p className="mt-5 flex items-center gap-5 text-sm text-muted">
+      <div className="mx-auto flex w-full max-w-sm flex-1 flex-col px-6 pb-10 text-center">
+        <p className="rise-in text-sm text-ink-2">{t("welcomeLine")}</p>
+        <h1
+          className="rise-in font-display mt-3 text-[2.4rem] leading-[1.12]"
+          style={{ animationDelay: "80ms" }}
+        >
+          {event.name}
+        </h1>
+        <p
+          className="rise-in mt-4 flex items-center justify-center gap-5 text-sm text-ink-2"
+          style={{ animationDelay: "150ms" }}
+        >
           <span className="flex items-center gap-1.5">
             <ClockIcon size={15} /> {formatDateTime(event.eventDate, locale)}
           </span>
@@ -81,7 +88,7 @@ export default function GuestLanding({
           </span>
         </p>
 
-        <div className="mt-9 w-full">
+        <div className="rise-in mt-auto pt-10" style={{ animationDelay: "220ms" }}>
           {!existing && (
             <>
               <label htmlFor="guest-name" className="sr-only">
@@ -96,13 +103,13 @@ export default function GuestLanding({
                 placeholder={t("namePlaceholder")}
                 className="input-base text-center"
               />
-              <p className="mt-2.5 text-sm text-muted">{t("nameHint")}</p>
+              <p className="mt-2.5 text-sm text-ink-2">{t("nameHint")}</p>
             </>
           )}
           {error && (
             <p
               role="alert"
-              className="mt-4 rounded-2xl border border-danger/40 bg-danger/10 p-3.5 text-sm text-danger"
+              className="mt-4 rounded-[10px] border border-danger/40 bg-danger/5 p-3.5 text-sm text-danger"
             >
               {tc("error")}
             </p>
@@ -113,16 +120,10 @@ export default function GuestLanding({
             disabled={pending}
             className="btn-primary mt-4 w-full"
           >
-            {pending ? (
-              <Mark size={18} className="animate-spin" />
-            ) : (
-              <>
-                {existing ? t("continueShooting") : t("startShooting")}
-                <ArrowRight size={18} />
-              </>
-            )}
+            {pending ? "…" : existing ? t("continueShooting") : t("startShooting")}
+            {!pending && <ArrowRight size={18} />}
           </button>
-          <p className="mt-4 text-xs leading-relaxed text-muted">{t("noAppNeeded")}</p>
+          <p className="mt-4 text-xs leading-relaxed text-ink-2">{t("noAppNeeded")}</p>
         </div>
       </div>
     </main>

@@ -63,8 +63,8 @@ export default function HostGallery({
   if (photos.length === 0) {
     return (
       <div className="card mt-5 flex flex-col items-center gap-4 px-6 py-16 text-center">
-        <ImageIcon size={28} className="text-muted" />
-        <p className="max-w-xs leading-relaxed text-muted">{t("noPhotosYet")}</p>
+        <ImageIcon size={28} className="text-ink-2" />
+        <p className="max-w-xs leading-relaxed text-ink-2">{t("noPhotosYet")}</p>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export default function HostGallery({
   return (
     <>
       <div className="mt-5 flex items-center justify-between gap-3">
-        <p className="text-sm text-muted">{t("photoCount", { count: photos.length })}</p>
+        <p className="text-sm text-ink-2">{t("photoCount", { count: photos.length })}</p>
         <button
           type="button"
           onClick={downloadZip}
@@ -122,9 +122,9 @@ export default function HostGallery({
           onClick={() => setLightbox(null)}
         >
           <div className="flex items-center justify-between p-4">
-            <span className="pl-2 text-sm text-muted">
+            <span className="pl-2 text-sm text-ink-2">
               {photos[lightbox].guestName ?? ""}
-              <span className="stat-numeral ml-3 text-base text-ink">
+              <span className="numeral ml-3 text-base text-ink">
                 {lightbox + 1} / {photos.length}
               </span>
             </span>

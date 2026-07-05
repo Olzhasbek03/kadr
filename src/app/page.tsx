@@ -1,332 +1,267 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { config, formatKzt } from "@/lib/config";
-import { FILTER_CSS } from "@/lib/filters";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FilmStyleDemo from "@/components/marketing/FilmStyleDemo";
 import RevealDemo from "@/components/marketing/RevealDemo";
-import { HeroGlow, PhotoArt } from "@/components/ArtDecor";
-import {
-  ArrowRight,
-  CheckIcon,
-  DownloadIcon,
-  FilmIcon,
-  LockIcon,
-  Mark,
-  QrIcon,
-  ShieldIcon,
-} from "@/components/icons";
-
-/** Static camera-UI mockup inside a phone frame — the product, immediately. */
-function PhoneMockup({
-  counterLabel,
-  filterLabels,
-}: {
-  counterLabel: string;
-  filterLabels: string[];
-}) {
-  return (
-    <div className="relative mx-auto w-[272px] shrink-0 sm:w-[295px]">
-      <div className="rounded-[3rem] border-[9px] border-[#1d1811] bg-black shadow-[0_40px_90px_rgba(0,0,0,0.7)]">
-        <div className="relative aspect-[9/19] overflow-hidden rounded-[2.4rem]">
-          <PhotoArt
-            id="hero-phone"
-            className="absolute inset-0 h-full w-full"
-            style={{ filter: FILTER_CSS.warm }}
-          />
-          <div aria-hidden className="film-grain absolute inset-0" />
-          <div className="absolute left-1/2 top-2.5 z-20 h-[20px] w-20 -translate-x-1/2 rounded-full bg-[#1d1811]" />
-
-          {/* counter chip */}
-          <span className="absolute right-3 top-9 flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 backdrop-blur">
-            <FilmIcon size={12} className="text-accent" />
-            <span className="stat-numeral text-sm leading-none text-ink">{counterLabel}</span>
-          </span>
-
-          {/* filter chips + shutter */}
-          <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 pb-5">
-            <div className="flex gap-1.5">
-              {filterLabels.map((label, i) => (
-                <span
-                  key={i}
-                  className={`rounded-full px-2.5 py-1 text-[9px] font-medium backdrop-blur ${
-                    i === 1
-                      ? "border border-accent/70 bg-black/60 text-accent-strong"
-                      : "bg-black/45 text-ink/70"
-                  }`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-            <span className="flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-ink/40">
-              <span className="h-[44px] w-[44px] rounded-full bg-ink" />
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import Reveal from "@/components/marketing/Reveal";
+import { ArrowRight } from "@/components/icons";
 
 export default async function LandingPage() {
   const t = await getTranslations("landing");
-  const tf = await getTranslations("camera.filterNames");
 
   const steps = [1, 2, 3].map((i) => ({
     title: t(`step${i}Title`),
     text: t(`step${i}Text`),
+    photo: ["/photos/ceremony.jpg", "/photos/run-bw.jpg", "/photos/garden.jpg"][i - 1],
   }));
 
-  const trust = [
-    { icon: <ShieldIcon size={20} />, title: t("trust1Title"), text: t("trust1Text") },
-    { icon: <LockIcon size={20} />, title: t("trust2Title"), text: t("trust2Text") },
-    { icon: <DownloadIcon size={20} />, title: t("trust3Title"), text: t("trust3Text") },
-    { icon: <QrIcon size={20} />, title: t("trust4Title"), text: t("trust4Text") },
-  ];
-
-  const faq = [1, 2, 3, 4, 5].map((i) => ({
-    q: t(`faq${i}q`),
-    a: t(`faq${i}a`),
-  }));
-
-  const freeFeatures = [1, 2, 3].map((i) => t(`planFreeF${i}`));
-  const paidFeatures = [1, 2, 3, 4].map((i) => t(`planPaidF${i}`));
+  const faq = [1, 2, 3, 4, 5].map((i) => ({ q: t(`faq${i}q`), a: t(`faq${i}a`) }));
 
   return (
     <main className="min-h-dvh overflow-x-clip">
-      {/* nav */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
-        <span className="flex items-center gap-2">
-          <Mark size={17} className="text-accent" />
-          <span className="font-serif-display text-2xl">Korme</span>
-        </span>
-        <div className="flex items-center gap-5">
-          <LanguageSwitcher />
-          <Link
-            href="/login"
-            className="hidden text-sm font-medium text-muted transition hover:text-ink sm:block"
-          >
-            {t("signIn")}
-          </Link>
-          <Link href="/dashboard/new" className="btn btn-primary !min-h-[48px] !px-5 text-sm">
-            {t("navCta")}
-          </Link>
-        </div>
-      </header>
-
-      {/* hero */}
-      <section className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 pb-24 pt-8 lg:grid-cols-[1.1fr_0.9fr] lg:pt-16">
-        <HeroGlow
-          id="hero-glow"
-          className="pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[560px] w-full"
+      {/* ─── hero: the photograph is the interface ─── */}
+      <section className="relative flex min-h-[100dvh] flex-col">
+        <Image
+          src="/photos/hero-golden.jpg"
+          alt={t("heroAlt")}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[50%_38%]"
         />
-        <div className="text-center lg:text-left">
-          <p className="microlabel">{t("badge")}</p>
-          <h1 className="display-huge mx-auto mt-6 max-w-2xl lg:mx-0">
-            {t("heroL1")}
-            <br />
-            {t("heroL2")}
-            <br />
-            <span className="text-accent-strong">{t("heroL3")}</span>
-          </h1>
-          <p className="mx-auto mt-7 max-w-md text-lg leading-relaxed text-muted lg:mx-0">
-            {t("heroSub")}
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-            <Link href="/dashboard/new" className="btn btn-primary">
-              {t("cta")} <ArrowRight size={18} />
-            </Link>
-            <a href="#how" className="btn btn-secondary">
-              {t("ctaHow")}
-            </a>
-          </div>
-
-          {/* honest numeric strip */}
-          <div className="mt-14 flex justify-center gap-10 lg:justify-start">
-            {[
-              ["0", t("factApps")],
-              [String(15), t("factShots")],
-              ["1", t("factGallery")],
-            ].map(([num, label], i) => (
-              <div key={i} className="text-center lg:text-left">
-                <div className="stat-numeral text-4xl text-accent-strong">{num}</div>
-                <div className="microlabel mt-1.5">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <PhoneMockup
-          counterLabel="9 / 15"
-          filterLabels={[tf("original"), tf("warm"), tf("noir")]}
+        <div aria-hidden className="photo-scrim absolute inset-0" />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-dark/50 to-transparent"
         />
-      </section>
+        {/* the veil lifts as the page loads */}
+        <div aria-hidden className="veil veil-lift absolute inset-0 z-10" />
 
-      {/* how a night becomes a film */}
-      <section id="how" className="border-t border-line py-24">
-        <div className="mx-auto max-w-3xl px-6">
-          <p className="microlabel text-center">{t("howKicker")}</p>
-          <h2 className="font-serif-display mt-3 text-center text-4xl sm:text-5xl">
-            {t("howTitle")}
-          </h2>
-          <div className="mt-14 flex flex-col">
-            {steps.map((step, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-7 border-t border-line py-9 first:border-t-0"
-              >
-                <span className="stat-numeral w-10 shrink-0 text-right text-4xl text-accent/60">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="font-serif-display text-2xl">{step.title}</h3>
-                  <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* film styles — live demo */}
-      <section className="border-t border-line py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <p className="microlabel text-center">{t("stylesKicker")}</p>
-          <h2 className="font-serif-display mt-3 text-center text-4xl sm:text-5xl">
-            {t("stylesTitle")}
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-center leading-relaxed text-muted">
-            {t("stylesSub")}
-          </p>
-          <div className="mt-12">
-            <FilmStyleDemo />
-          </div>
-        </div>
-      </section>
-
-      {/* the reveal — centerpiece */}
-      <section className="border-t border-line py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <p className="microlabel text-center">{t("revealKicker")}</p>
-          <h2 className="font-serif-display mt-3 text-center text-4xl sm:text-5xl">
-            {t("revealTitle")}
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-center leading-relaxed text-muted">
-            {t("revealSub")}
-          </p>
-          <div className="mt-12">
-            <RevealDemo />
-          </div>
-        </div>
-      </section>
-
-      {/* trust */}
-      <section className="border-t border-line py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <h2 className="font-serif-display text-center text-4xl">{t("trustTitle")}</h2>
-          <div className="mt-12 grid gap-3 sm:grid-cols-2">
-            {trust.map((item, i) => (
-              <div key={i} className="card flex items-start gap-4 p-6">
-                <span className="mt-0.5 shrink-0 text-accent">{item.icon}</span>
-                <div>
-                  <h3 className="font-medium">{item.title}</h3>
-                  <p className="mt-1 text-[0.95rem] leading-relaxed text-muted">{item.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* pricing */}
-      <section className="border-t border-line py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <p className="microlabel text-center">{t("pricingKicker")}</p>
-          <h2 className="font-serif-display mt-3 text-center text-4xl sm:text-5xl">
-            {t("pricingTitle")}
-          </h2>
-          <div className="mx-auto mt-12 grid max-w-2xl gap-4 sm:grid-cols-2">
-            <div className="card p-7">
-              <p className="microlabel">{t("planFree")}</p>
-              <p className="stat-numeral mt-3 text-4xl">0 ₸</p>
-              <p className="mt-1 text-sm text-muted">
-                {t("planFreeFor", { count: config.freeGuestLimit })}
-              </p>
-              <ul className="mt-6 flex flex-col gap-2.5">
-                {freeFeatures.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-[0.95rem] text-muted">
-                    <CheckIcon size={16} className="mt-0.5 shrink-0 text-accent" /> {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="card safelight border-accent/30 p-7">
-              <p className="microlabel text-accent-strong">{t("planPaid")}</p>
-              <p className="stat-numeral mt-3 text-4xl">{formatKzt(config.eventPriceKzt)}</p>
-              <p className="mt-1 text-sm text-muted">{t("planPaidFor")}</p>
-              <ul className="mt-6 flex flex-col gap-2.5">
-                {paidFeatures.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-[0.95rem] text-muted">
-                    <CheckIcon size={16} className="mt-0.5 shrink-0 text-accent" /> {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <p className="mt-6 text-center text-sm text-muted">{t("pricingNote")}</p>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-t border-line py-24">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="font-serif-display text-center text-4xl">{t("faqTitle")}</h2>
-          <div className="mt-12 flex flex-col">
-            {faq.map((item, i) => (
-              <details key={i} className="group border-t border-line last:border-b">
-                <summary className="flex min-h-[64px] list-none items-center justify-between gap-4 py-4 font-medium [&::-webkit-details-marker]:hidden">
-                  {item.q}
-                  <span className="text-xl font-light text-muted transition group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="pb-6 leading-relaxed text-muted">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* final CTA */}
-      <section className="border-t border-line py-28 text-center">
-        <div className="mx-auto max-w-2xl px-6">
-          <Mark size={22} className="mx-auto text-accent" />
-          <h2 className="font-serif-display mt-7 text-4xl leading-tight sm:text-5xl">
-            {t("ctaTitle")}
-          </h2>
-          <p className="mt-4 text-muted">{t("ctaSub")}</p>
-          <Link href="/dashboard/new" className="btn btn-primary mt-10">
-            {t("cta")} <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-
-      <footer className="border-t border-line py-10">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 text-sm text-muted">
-          <span className="flex items-center gap-2">
-            <Mark size={13} className="text-accent" />
-            <span className="font-serif-display text-base text-ink">Korme</span>
-            <span className="ml-1">· {t("footer")}</span>
-          </span>
-          <div className="flex items-center gap-5">
-            <Link href="/login" className="transition hover:text-ink">
+        <header className="relative z-20 flex items-center justify-between px-5 py-5 text-ivory sm:px-8">
+          <span className="font-display text-[1.55rem] leading-none">Kormem</span>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <LanguageSwitcher />
+            <Link
+              href="/login"
+              className="hidden text-sm font-medium opacity-80 transition-opacity hover:opacity-100 sm:block"
+            >
               {t("signIn")}
             </Link>
-            <a href="#how" className="transition hover:text-ink">
-              {t("ctaHow")}
-            </a>
           </div>
+        </header>
+
+        <div className="relative z-20 mt-auto px-5 pb-14 text-ivory sm:px-8 sm:pb-20">
+          <div className="mx-auto w-full max-w-6xl">
+            <h1 className="rise-in font-display max-w-[13ch] text-[clamp(2.5rem,7vw,5.2rem)] leading-[1.06]">
+              {t("heroTitle")}
+            </h1>
+            <p
+              className="rise-in mt-5 max-w-md text-[1.05rem] leading-relaxed text-ivory/85"
+              style={{ animationDelay: "120ms" }}
+            >
+              {t("heroSub")}
+            </p>
+            <div
+              className="rise-in mt-8 flex flex-wrap items-center gap-3"
+              style={{ animationDelay: "220ms" }}
+            >
+              <Link href="/dashboard/new" className="btn btn-dark">
+                {t("cta")} <ArrowRight size={18} />
+              </Link>
+              <a
+                href="#betashar"
+                className="btn inline-flex min-h-[56px] items-center rounded-full border border-ivory/45 px-6 font-medium text-ivory transition-colors hover:border-ivory"
+              >
+                {t("ctaHow")}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── беташар: the idea ─── */}
+      <section id="betashar" className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
+        <div className="grid items-center gap-10 md:grid-cols-[1fr_1.05fr] md:gap-16">
+          <Reveal>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[14px] md:aspect-[3/2]">
+              <Image
+                src="/photos/veil.jpg"
+                alt={t("betasharAlt")}
+                fill
+                sizes="(max-width: 768px) 92vw, 560px"
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <h2 className="font-display text-[clamp(1.9rem,4vw,3rem)] leading-[1.14]">
+              {t("betasharTitle")}
+            </h2>
+            <p className="mt-5 max-w-[52ch] leading-relaxed text-ink-2">
+              {t("betasharBody")}
+            </p>
+            <p className="font-display mt-6 text-lg text-crimson">{t("betasharPun")}</p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─── how: a real sequence, numbered honestly ─── */}
+      <section className="border-t border-line">
+        <div className="mx-auto max-w-4xl px-5 py-24 sm:px-8 sm:py-28">
+          <Reveal>
+            <h2 className="font-display text-[clamp(1.9rem,4vw,2.8rem)] leading-tight">
+              {t("howTitle")}
+            </h2>
+          </Reveal>
+          <div className="mt-12 flex flex-col">
+            {steps.map((step, i) => (
+              <Reveal key={i} delay={i * 0.06}>
+                <div className="flex items-center gap-6 border-t border-line py-8 first:border-t-0 sm:gap-10">
+                  <span className="numeral w-12 shrink-0 text-right text-5xl text-crimson/85 sm:text-6xl">
+                    {i + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-semibold sm:text-xl">{step.title}</h3>
+                    <p className="mt-1.5 max-w-[46ch] leading-relaxed text-ink-2">
+                      {step.text}
+                    </p>
+                  </div>
+                  <div className="relative hidden h-24 w-20 shrink-0 overflow-hidden rounded-[10px] sm:block sm:h-28 sm:w-24">
+                    <Image src={step.photo} alt="" fill sizes="96px" className="object-cover" />
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── six film styles, live ─── */}
+      <section className="border-t border-line">
+        <div className="mx-auto max-w-5xl px-5 py-24 text-center sm:px-8 sm:py-28">
+          <Reveal>
+            <h2 className="font-display text-[clamp(1.9rem,4vw,2.8rem)] leading-tight">
+              {t("stylesTitle")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-md leading-relaxed text-ink-2">{t("stylesSub")}</p>
+          </Reveal>
+          <Reveal delay={0.1} className="mt-12">
+            <FilmStyleDemo />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─── the reveal: deliberate dark block ─── */}
+      <section className="bg-dark text-ivory">
+        <div className="mx-auto max-w-5xl px-5 py-24 sm:px-8 sm:py-32">
+          <Reveal>
+            <h2 className="font-display text-center text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.12]">
+              {t("revealTitle")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-center leading-relaxed text-ivory/70">
+              {t("revealSub")}
+            </p>
+          </Reveal>
+          <Reveal delay={0.12} className="mt-14">
+            <RevealDemo />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─── pricing: one hairline, two truths ─── */}
+      <section className="mx-auto max-w-4xl px-5 py-24 sm:px-8 sm:py-28">
+        <Reveal>
+          <h2 className="font-display text-center text-[clamp(1.9rem,4vw,2.8rem)] leading-tight">
+            {t("pricingTitle")}
+          </h2>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
+            <div className="text-center sm:pr-12">
+              <p className="numeral text-5xl">0 ₸</p>
+              <p className="mt-2 font-semibold">{t("planFree")}</p>
+              <p className="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-ink-2">
+                {t("planFreeText", { count: config.freeGuestLimit })}
+              </p>
+            </div>
+            <div className="text-center sm:pl-12">
+              <p className="numeral text-5xl">{formatKzt(config.eventPriceKzt)}</p>
+              <p className="mt-2 font-semibold">{t("planPaid")}</p>
+              <p className="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-ink-2">
+                {t("planPaidText")}
+              </p>
+            </div>
+          </div>
+          <p className="mt-10 text-center text-sm text-ink-2">{t("pricingNote")}</p>
+        </Reveal>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section className="border-t border-line">
+        <div className="mx-auto max-w-2xl px-5 py-24 sm:px-8 sm:py-28">
+          <Reveal>
+            <h2 className="font-display text-center text-[clamp(1.9rem,4vw,2.8rem)] leading-tight">
+              {t("faqTitle")}
+            </h2>
+          </Reveal>
+          <Reveal delay={0.08} className="mt-10">
+            <div className="flex flex-col">
+              {faq.map((item, i) => (
+                <details key={i} className="group border-t border-line last:border-b">
+                  <summary className="flex min-h-[62px] list-none items-center justify-between gap-4 py-4 font-medium [&::-webkit-details-marker]:hidden">
+                    {item.q}
+                    <span className="text-xl font-light text-ink-2 transition-transform group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <p className="max-w-[60ch] pb-6 leading-relaxed text-ink-2">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─── filmstrip send-off ─── */}
+      <section className="mx-auto max-w-4xl px-5 py-24 text-center sm:px-8 sm:py-32">
+        <Reveal>
+          <div className="mx-auto flex max-w-lg items-end justify-center gap-3">
+            {["/photos/rings.jpg", "/photos/steppe.jpg", "/photos/hall-bw.jpg"].map(
+              (src, i) => (
+                <div
+                  key={src}
+                  className={`relative overflow-hidden rounded-[10px] ${
+                    i === 1 ? "h-44 w-32 sm:h-52 sm:w-40" : "h-36 w-26 sm:h-44 sm:w-32"
+                  }`}
+                  style={{ rotate: `${(i - 1) * 3}deg` }}
+                >
+                  <Image src={src} alt="" fill sizes="160px" className="object-cover" />
+                </div>
+              )
+            )}
+          </div>
+          <h2 className="font-display mx-auto mt-12 max-w-[16ch] text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.12]">
+            {t("ctaTitle")}
+          </h2>
+          <Link href="/dashboard/new" className="btn btn-primary mt-9">
+            {t("cta")} <ArrowRight size={18} />
+          </Link>
+        </Reveal>
+      </section>
+
+      {/* ─── footer ─── */}
+      <footer className="bg-dark text-ivory/70">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-9 sm:px-8">
+          <span className="font-display text-xl text-ivory">Kormem</span>
+          <div className="flex items-center gap-6 text-sm">
+            <LanguageSwitcher />
+            <Link href="/login" className="transition-opacity hover:text-ivory">
+              {t("signIn")}
+            </Link>
+          </div>
+          <span className="text-sm">{t("footer")}</span>
         </div>
       </footer>
     </main>

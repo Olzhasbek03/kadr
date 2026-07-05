@@ -180,7 +180,7 @@ export const ImageIcon = (p: IconProps) => (
   </svg>
 );
 
-/** Korme brand mark: a four-point spark, echoing a camera flash. */
+/** Kormem brand mark: a four-point spark, echoing a camera flash. */
 export const Mark = ({ size = 20, ...props }: IconProps) => (
   <svg
     width={size}
