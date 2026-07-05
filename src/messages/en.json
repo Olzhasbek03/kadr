@@ -82,7 +82,8 @@
     "useCase_everyday": "Just everyday",
     "tryKicker": "Try Kormem",
     "tryTitle": "Your camera is already waiting.",
-    "tryText": "Scan with your phone: the camera opens in the browser and you can take a shot right away. No download needed."
+    "tryText": "Scan with your phone: the camera opens in the browser and you can take a shot right away. No download needed.",
+    "tryDismiss": "Dismiss"
   },
   "auth": {
     "title": "Sign in to Kormem",

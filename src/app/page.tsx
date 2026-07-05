@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { config } from "@/lib/config";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FilmStyleDemo from "@/components/marketing/FilmStyleDemo";
 import RevealDemo from "@/components/marketing/RevealDemo";
@@ -9,7 +8,7 @@ import Reveal from "@/components/marketing/Reveal";
 import AnimatedCamera from "@/components/marketing/AnimatedCamera";
 import PhoneDemo from "@/components/marketing/PhoneDemo";
 import OccasionShowcase from "@/components/marketing/OccasionShowcase";
-import QrCode from "@/components/QrCode";
+import FloatingTryQr from "@/components/marketing/FloatingTryQr";
 import { ArrowRight, CameraIcon, MicIcon, VideoIcon } from "@/components/icons";
 
 export default async function LandingPage() {
@@ -26,6 +25,7 @@ export default async function LandingPage() {
 
   return (
     <main className="min-h-dvh overflow-x-clip">
+      <FloatingTryQr />
       {/* ─── hero: celebration photography vignetting into parchment ─── */}
       <section className="relative flex min-h-[100dvh] flex-col">
         <div className="absolute inset-0 overflow-hidden">
@@ -127,20 +127,6 @@ export default async function LandingPage() {
           </Reveal>
           <Reveal delay={0.1} className="mt-14">
             <PhoneDemo />
-          </Reveal>
-
-          {/* scan-me card: open Kormem on the phone in your hand */}
-          <Reveal delay={0.15} className="mt-16">
-            <div className="card mx-auto flex max-w-md flex-col items-center gap-4 p-8 text-center sm:max-w-xl sm:flex-row sm:gap-8 sm:text-left">
-              <div className="shrink-0 rounded-[12px] border border-line bg-surface p-2">
-                <QrCode value={`${config.appUrl}/try`} size={132} />
-              </div>
-              <div>
-                <p className="mono-badge uppercase tracking-[0.25em]">{t("tryKicker")}</p>
-                <p className="font-display mt-2 text-[1.4rem]">{t("tryTitle")}</p>
-                <p className="mt-2 text-sm leading-[1.5] text-ink-2">{t("tryText")}</p>
-              </div>
-            </div>
           </Reveal>
         </div>
       </section>
