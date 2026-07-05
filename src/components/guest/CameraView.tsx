@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { GuestAllowance, MediaType, PublicEvent } from "@/lib/types";
 import { AUDIO_MAX_SECONDS, VIDEO_MAX_SECONDS } from "@/lib/types";
-import { FILM_STYLES, FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
+import { FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
 import { captureFrame, capturePoster, processFile } from "@/lib/client/capture";
 import {
   canRecordAudio,
@@ -692,14 +692,14 @@ export default function CameraView({
         </div>
       </div>
 
-      {/* film style selector (photo + video) */}
-      {mode !== "voice" ? (
+      {/* film style selector (photo + video), limited to the host's list */}
+      {mode !== "voice" && event.allowedStyles.length > 1 ? (
         <div
           className="scrollbar-none flex gap-2 overflow-x-auto px-4 py-3"
           role="radiogroup"
           aria-label={t("styles")}
         >
-          {FILM_STYLES.map((s) => (
+          {event.allowedStyles.map((s) => (
             <button
               key={s}
               type="button"
@@ -722,12 +722,14 @@ export default function CameraView({
             </button>
           ))}
         </div>
-      ) : (
+      ) : mode === "voice" ? (
         <div className="px-4 py-3 text-center text-xs text-ivory/50">
           {allowance.audiosLeft > 0
             ? t("voiceHint")
             : t("voiceCapReached")}
         </div>
+      ) : (
+        <div className="py-1.5" />
       )}
 
       {/* mode switcher */}

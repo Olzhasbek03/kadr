@@ -1,4 +1,4 @@
-import type { FilmStyle } from "@/lib/filters";
+import { FILM_STYLES, isFilmStyle, type FilmStyle } from "@/lib/filters";
 
 export type RevealMode = "instant" | "event_end" | "custom";
 /** Every event is live from creation; hosts may end one early. */
@@ -17,6 +17,8 @@ export interface EventRow {
   reveal_mode: RevealMode;
   reveal_at: string;
   filter_preset: FilmStyle;
+  /** Styles guests may shoot with; null means all. */
+  allowed_styles: string[] | null;
   cover_image_url: string | null;
   status: EventStatus;
   created_at: string;
@@ -63,7 +65,15 @@ export interface PublicEvent {
   shotsPerGuest: number;
   revealAt: string;
   filterPreset: FilmStyle;
+  /** Effective list of styles the guest camera offers. */
+  allowedStyles: FilmStyle[];
   status: EventStatus;
+}
+
+/** Resolve the host's style restriction to a concrete, valid list. */
+export function effectiveStyles(e: Pick<EventRow, "allowed_styles">): FilmStyle[] {
+  const allowed = (e.allowed_styles ?? []).filter(isFilmStyle);
+  return allowed.length > 0 ? allowed : [...FILM_STYLES];
 }
 
 export function toPublicEvent(e: EventRow): PublicEvent {
@@ -75,6 +85,7 @@ export function toPublicEvent(e: EventRow): PublicEvent {
     shotsPerGuest: e.shots_per_guest,
     revealAt: e.reveal_at,
     filterPreset: e.filter_preset,
+    allowedStyles: effectiveStyles(e),
     status: e.status,
   };
 }

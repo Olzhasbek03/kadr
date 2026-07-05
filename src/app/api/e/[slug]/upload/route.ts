@@ -16,6 +16,7 @@ import {
   allowanceFor,
   AUDIO_CAP_PER_GUEST,
   AUDIO_MAX_SECONDS,
+  effectiveStyles,
   isShootingOpen,
   VIDEO_CAP_PER_GUEST,
   VIDEO_MAX_SECONDS,
@@ -86,8 +87,15 @@ export async function POST(
   const thumb = form.get("thumb");
   const filterRaw = form.get("filter");
   const durationRaw = Number(form.get("duration"));
+  // A style outside the host's allowed list is coerced to the event preset
+  // rather than rejected: a stale client must never cost the guest a shot.
+  const allowed = effectiveStyles(event);
   const filter =
-    mediaType !== "audio" && isFilmStyle(filterRaw) ? filterRaw : "original";
+    mediaType !== "audio" && isFilmStyle(filterRaw) && allowed.includes(filterRaw)
+      ? filterRaw
+      : mediaType === "audio"
+        ? "original"
+        : event.filter_preset;
 
   if (!(file instanceof File) || file.size === 0 || file.size > rules.maxBytes)
     return NextResponse.json({ error: "invalid_file" }, { status: 400 });

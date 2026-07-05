@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { computeRevealAt, newSlug } from "@/lib/events";
-import { isFilmStyle } from "@/lib/filters";
+import { FILM_STYLES, isFilmStyle } from "@/lib/filters";
 import type { RevealMode } from "@/lib/types";
 
 const REVEAL_MODES: RevealMode[] = ["instant", "event_end", "custom"];
@@ -15,6 +15,8 @@ interface CreateEventBody {
   revealMode?: string;
   revealAt?: string | null;
   filterPreset?: string;
+  /** Styles guests may use; omitted or full list means all. */
+  allowedStyles?: string[];
 }
 
 /** POST /api/events — create an event (signed-in host). */
@@ -61,6 +63,18 @@ export async function POST(req: NextRequest) {
   if (!isFilmStyle(filterPreset))
     return NextResponse.json({ error: "invalid_filter" }, { status: 400 });
 
+  // Style restriction: every entry must be a real style, the preset must be
+  // usable, and restricting to the full list is stored as "no restriction".
+  let allowedStyles: string[] | null = null;
+  if (Array.isArray(body.allowedStyles)) {
+    const unique = [...new Set(body.allowedStyles)];
+    if (unique.length === 0 || !unique.every(isFilmStyle))
+      return NextResponse.json({ error: "invalid_allowed_styles" }, { status: 400 });
+    if (!unique.includes(filterPreset))
+      return NextResponse.json({ error: "preset_not_allowed" }, { status: 400 });
+    allowedStyles = unique.length === FILM_STYLES.length ? null : unique;
+  }
+
   const revealAt = computeRevealAt(revealMode, endTime, customReveal);
 
   const { data, error } = await supabase
@@ -76,6 +90,7 @@ export async function POST(req: NextRequest) {
       reveal_mode: revealMode,
       reveal_at: revealAt.toISOString(),
       filter_preset: filterPreset,
+      allowed_styles: allowedStyles,
       status: "active",
     })
     .select("id, slug, status")

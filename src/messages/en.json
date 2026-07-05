@@ -120,7 +120,10 @@
       "cine": "Cine",
       "vintage": "Vintage"
     },
-    "submit": "Create event"
+    "submit": "Create event",
+    "allowedLabel": "Styles guests can use",
+    "allowedHint": "Turn styles off to keep the gallery consistent. The default style is always available.",
+    "allowedDefault": "default"
   },
   "event": {
     "backToEvents": "Back to events",

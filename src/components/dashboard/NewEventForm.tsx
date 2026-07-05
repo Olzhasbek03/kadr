@@ -39,8 +39,28 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
   const [revealMode, setRevealMode] = useState<RevealMode>("event_end");
   const [revealAt, setRevealAt] = useState("");
   const [filterPreset, setFilterPreset] = useState<FilmStyle>("warm");
+  const [allowed, setAllowed] = useState<Set<FilmStyle>>(new Set(FILM_STYLES));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const toggleAllowed = (style: FilmStyle) => {
+    setAllowed((prev) => {
+      const next = new Set(prev);
+      if (next.has(style)) {
+        // The default style always stays available to guests.
+        if (style === filterPreset || next.size === 1) return prev;
+        next.delete(style);
+      } else {
+        next.add(style);
+      }
+      return next;
+    });
+  };
+
+  const pickPreset = (style: FilmStyle) => {
+    setFilterPreset(style);
+    setAllowed((prev) => (prev.has(style) ? prev : new Set(prev).add(style)));
+  };
 
   const guestsNum = maxGuests.trim() === "" ? null : Math.round(Number(maxGuests));
 
@@ -70,6 +90,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
           revealMode,
           revealAt: revealMode === "custom" ? new Date(revealAt).toISOString() : null,
           filterPreset,
+          allowedStyles: [...allowed],
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -225,7 +246,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
             <button
               key={style}
               type="button"
-              onClick={() => setFilterPreset(style)}
+              onClick={() => pickPreset(style)}
               data-selected={filterPreset === style}
               className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
             >
@@ -242,6 +263,41 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               </span>
             </button>
           ))}
+        </div>
+      </section>
+
+      {/* allowed styles */}
+      <section className="mt-10">
+        <p className="label-soft">{t("allowedLabel")}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("allowedHint")}</p>
+        <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={t("allowedLabel")}>
+          {FILM_STYLES.map((style) => {
+            const on = allowed.has(style);
+            const locked = style === filterPreset;
+            return (
+              <button
+                key={style}
+                type="button"
+                aria-pressed={on}
+                disabled={locked}
+                onClick={() => toggleAllowed(style)}
+                className={`flex items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors disabled:cursor-default ${
+                  on
+                    ? "border-accent bg-accent/10 text-ink"
+                    : "border-line bg-transparent text-ink-2"
+                }`}
+                style={{ minHeight: 44 }}
+              >
+                <span
+                  aria-hidden
+                  className="h-4 w-4 rounded-full"
+                  style={{ background: STYLE_COVER.original, filter: FILTER_CSS[style] }}
+                />
+                {t(`styles.${style}`)}
+                {locked && <span className="text-xs text-ink-2">{t("allowedDefault")}</span>}
+              </button>
+            );
+          })}
         </div>
       </section>
 
