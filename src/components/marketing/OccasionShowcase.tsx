@@ -18,28 +18,28 @@ type OccasionKey = "wedding" | "birthday" | "trip" | "party" | "everyday";
 const OCCASION_PHOTOS: Record<OccasionKey, { src: string; pos?: string }[]> = {
   wedding: [
     { src: "/photos/ceremony-lights.jpg", pos: "50% 45%" },
-    { src: "/photos/rings-gold.jpg", pos: "50% 55%" },
-    { src: "/photos/chapel.jpg", pos: "50% 60%" },
+    { src: "/photos/rings-gold.jpg" },
+    { src: "/photos/wedding-golden-lift.jpg" },
   ],
   birthday: [
-    { src: "/photos/kyz-dance.jpg", pos: "50% 30%" },
-    { src: "/photos/confetti.jpg" },
-    { src: "/photos/everyday.jpg" },
+    { src: "/photos/birthday.jpg" },
+    { src: "/photos/birthday-decor-neon.jpg" },
+    { src: "/photos/birthday-cake-closeup.jpg" },
   ],
   trip: [
-    { src: "/photos/trip.jpg" },
-    { src: "/photos/everyday.jpg" },
-    { src: "/photos/confetti.jpg" },
+    { src: "/photos/trip-passports.jpg" },
+    { src: "/photos/trip-mountain-friends.jpg" },
+    { src: "/photos/yacht-jetski.jpg" },
   ],
   party: [
     { src: "/photos/confetti.jpg" },
-    { src: "/photos/kyz-dance.jpg", pos: "50% 30%" },
-    { src: "/photos/trip.jpg" },
+    { src: "/photos/friends-sunset-walk.jpg", pos: "50% 25%" },
+    { src: "/photos/friends-night-grass.jpg" },
   ],
   everyday: [
-    { src: "/photos/everyday.jpg" },
-    { src: "/photos/trip.jpg" },
-    { src: "/photos/rings-gold.jpg", pos: "50% 55%" },
+    { src: "/photos/friends-dinner.jpg" },
+    { src: "/photos/trip-mountain-friends.jpg" },
+    { src: "/photos/yacht-jetski.jpg" },
   ],
 };
 

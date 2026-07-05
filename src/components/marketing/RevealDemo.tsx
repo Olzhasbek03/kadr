@@ -10,7 +10,7 @@ const TILES = [
   "/photos/rings-gold.jpg",
   "/photos/confetti.jpg",
   "/photos/chapel.jpg",
-  "/photos/ceremony-lights.jpg",
+  "/photos/wedding-golden-lift.jpg",
 ];
 
 /**

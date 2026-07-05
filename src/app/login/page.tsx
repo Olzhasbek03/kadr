@@ -27,15 +27,22 @@ function LoginForm() {
     if (!email.includes("@") || phase === "sending") return;
     setError(null);
     setPhase("sending");
-    const { error: err } = await supabaseBrowser().auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: callbackUrl() },
-    });
-    if (err) {
+    try {
+      const { error: err } = await supabaseBrowser().auth.signInWithOtp({
+        email: email.trim(),
+        options: { emailRedirectTo: callbackUrl() },
+      });
+      if (err) {
+        console.error("signInWithOtp failed:", err);
+        setError(err.message || t("errorGeneric"));
+        setPhase("idle");
+      } else {
+        setPhase("sent");
+      }
+    } catch (err) {
+      console.error("signInWithOtp threw:", err);
       setError(t("errorGeneric"));
       setPhase("idle");
-    } else {
-      setPhase("sent");
     }
   };
 
