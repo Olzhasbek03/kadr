@@ -355,6 +355,14 @@ summary {
 .shutter:disabled {
   opacity: 0.4;
 }
+/* recording state: the border becomes a conic progress ring (set inline),
+   the inner dot shrinks to a stop-square */
+.shutter-rec {
+  border-color: transparent;
+}
+.shutter-rec > span {
+  transition: transform 200ms var(--ease-out), border-radius 200ms ease;
+}
 
 .scrollbar-none {
   scrollbar-width: none;

@@ -171,8 +171,28 @@
       "warm": "Warm",
       "cool": "Cool",
       "cine": "Cine",
-      "vintage": "Vintage"
-    }
+      "vintage": "Vintage",
+      "polaroid": "Polaroid"
+    },
+    "modes": "Capture modes",
+    "modePhoto": "Photo",
+    "modeVideo": "Video",
+    "modeVoice": "Voice",
+    "startRecording": "Start recording",
+    "stopRecording": "Stop recording",
+    "micPermissionTitle": "No microphone access",
+    "micPermissionText": "Allow microphone access in your browser settings to leave a voice wish.",
+    "voicePrompt": "Leave a voice wish for the hosts of “{event}”",
+    "voiceUpTo": "Up to {seconds} seconds",
+    "voiceHint": "One voice wish per guest — make it count.",
+    "voiceListenBack": "Listen back before sending",
+    "voicePlay": "Play",
+    "voicePause": "Pause",
+    "voiceRedo": "Re-record",
+    "voiceSend": "Send",
+    "voiceCapReached": "Your voice wish is already on the roll.",
+    "videoCapReached": "All video clips used — photos still work!",
+    "videoTooLarge": "That clip is too long — keep it under 10 seconds."
   },
   "gallery": {
     "lockedTitle": "The photos are still veiled",

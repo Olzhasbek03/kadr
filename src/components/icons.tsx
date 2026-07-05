@@ -250,6 +250,43 @@ export const ShieldIcon = (p: IconProps) => (
   </svg>
 );
 
+export const MicIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="9" y="3" width="6" height="11" rx="3" />
+    <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+  </svg>
+);
+
+export const PlayIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M7 5.5v13l11-6.5-11-6.5Z" />
+  </svg>
+);
+
+export const PauseIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M8 5v14M16 5v14" />
+  </svg>
+);
+
+export const StopIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="6.5" y="6.5" width="11" height="11" rx="1.5" />
+  </svg>
+);
+
+export const RedoIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M20 8a8.5 8.5 0 1 0 1.5 6M20 3v5h-5" />
+  </svg>
+);
+
+export const TrashIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0-.7 12.1a1.6 1.6 0 0 1-1.6 1.5H8.3a1.6 1.6 0 0 1-1.6-1.5L6 7m4 4v6m4-6v6" />
+  </svg>
+);
+
 export const InfinityIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M8 15.5c-2 0-3.5-1.6-3.5-3.5S6 8.5 8 8.5c3.5 0 4.5 7 8 7 2 0 3.5-1.6 3.5-3.5S18 8.5 16 8.5c-3.5 0-4.5 7-8 7Z" />

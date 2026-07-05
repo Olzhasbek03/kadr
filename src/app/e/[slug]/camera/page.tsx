@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getEventBySlug } from "@/lib/events";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { DEVICE_COOKIE } from "@/lib/device";
-import { toPublicEvent, type GuestRow } from "@/lib/types";
+import { allowanceFor, toPublicEvent, type GuestRow } from "@/lib/types";
 import CameraView from "@/components/guest/CameraView";
 
 export const dynamic = "force-dynamic";
@@ -25,9 +25,6 @@ export default async function CameraPage(ctx: { params: Promise<{ slug: string }
   if (!guest) redirect(`/e/${slug}`);
 
   return (
-    <CameraView
-      event={toPublicEvent(event)}
-      initialShotsLeft={Math.max(0, event.shots_per_guest - guest.shots_used)}
-    />
+    <CameraView event={toPublicEvent(event)} initialAllowance={allowanceFor(event, guest)} />
   );
 }

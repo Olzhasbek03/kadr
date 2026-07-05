@@ -11,6 +11,7 @@ export const FILM_STYLES = [
   "cool",
   "cine",
   "vintage",
+  "polaroid",
 ] as const;
 
 export type FilmStyle = (typeof FILM_STYLES)[number];
@@ -22,6 +23,7 @@ export const FILTER_CSS: Record<FilmStyle, string> = {
   cool: "sepia(0.08) saturate(1.15) contrast(1.06) brightness(1.02) hue-rotate(8deg)",
   cine: "contrast(1.28) saturate(1.12) brightness(0.98)",
   vintage: "sepia(0.5) contrast(0.92) brightness(1.06) saturate(1.25) hue-rotate(-6deg)",
+  polaroid: "sepia(0.32) contrast(0.88) brightness(1.1) saturate(1.18) hue-rotate(-4deg)",
 };
 
 export function isFilmStyle(value: unknown): value is FilmStyle {
@@ -41,4 +43,5 @@ export const STYLE_COVER: Record<FilmStyle, string> = {
   cool: "linear-gradient(150deg, #dfe6e6 0%, #b5c6c8 55%, #7f989d 100%)",
   cine: "linear-gradient(150deg, #e3dfe6 0%, #beb3c4 55%, #857a93 100%)",
   vintage: "linear-gradient(150deg, #eee3d2 0%, #d1bb9d 55%, #a08769 100%)",
+  polaroid: "linear-gradient(150deg, #f2ece1 0%, #ddd0ba 55%, #b3a288 100%)",
 };
