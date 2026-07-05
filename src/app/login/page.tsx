@@ -48,11 +48,19 @@ function LoginForm() {
 
   const signInWithGoogle = async () => {
     setError(null);
-    const { error: err } = await supabaseBrowser().auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: callbackUrl() },
-    });
-    if (err) setError(t("errorGeneric"));
+    try {
+      const { error: err } = await supabaseBrowser().auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callbackUrl() },
+      });
+      if (err) {
+        console.error("signInWithOAuth failed:", err);
+        setError(err.message || t("errorGeneric"));
+      }
+    } catch (err) {
+      console.error("signInWithOAuth threw:", err);
+      setError(t("errorGeneric"));
+    }
   };
 
   return (
