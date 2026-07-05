@@ -91,7 +91,7 @@ export default async function LandingPage() {
             <AnimatedCamera />
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="font-display text-[clamp(2rem,4.5vw,3.2rem)]">
+            <h2 className="font-display whitespace-pre-line text-[clamp(2rem,4.5vw,3.2rem)]">
               {t("occasionsTitle")}
             </h2>
             <p className="mt-5 max-w-[52ch] leading-[1.5] text-ink-2">{t("occasionsBody")}</p>
@@ -133,7 +133,7 @@ export default async function LandingPage() {
           <Reveal delay={0.15} className="mt-16">
             <div className="card mx-auto flex max-w-md flex-col items-center gap-4 p-8 text-center sm:max-w-xl sm:flex-row sm:gap-8 sm:text-left">
               <div className="shrink-0 rounded-[12px] border border-line bg-surface p-2">
-                <QrCode value={config.appUrl} size={132} />
+                <QrCode value={`${config.appUrl}/try`} size={132} />
               </div>
               <div>
                 <p className="mono-badge uppercase tracking-[0.25em]">{t("tryKicker")}</p>
@@ -163,7 +163,7 @@ export default async function LandingPage() {
                   {mode.icon}
                 </span>
                 <h3 className="font-display mt-6 text-[1.45rem]">{mode.title}</h3>
-                <p className="mt-3 leading-[1.5] text-ink-2">{mode.text}</p>
+                {mode.text && <p className="mt-3 leading-[1.5] text-ink-2">{mode.text}</p>}
               </div>
             </Reveal>
           ))}
@@ -188,9 +188,6 @@ export default async function LandingPage() {
             <h2 className="font-display text-center text-[clamp(2rem,4.5vw,3rem)]">
               {t("revealTitle")}
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-center leading-[1.5] text-ivory/70">
-              {t("revealSub")}
-            </p>
           </Reveal>
           <Reveal delay={0.12} className="mt-14">
             <RevealDemo />

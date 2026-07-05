@@ -88,7 +88,7 @@ async function main() {
       max_guests: 50,
       reveal_mode: "custom",
       reveal_at: new Date(now + 3600e3).toISOString(), // reveal in 1h → gated
-      filter_preset: "warm",
+      filter_preset: "original",
     }),
   });
   const insertJson = await insertRes.json();
@@ -301,18 +301,18 @@ async function main() {
   await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
     method: "PATCH",
     headers: svcHeaders,
-    body: JSON.stringify({ shots_per_guest: 50, allowed_styles: ["noir", "warm"] }),
+    body: JSON.stringify({ shots_per_guest: 50, allowed_styles: ["noir", "original"], filter_preset: "original" }),
   });
   const g2 = await join(slug, "Spammer");
   const styled = await upload(slug, g2.cookie, "photo", JPEG, "image/jpeg", {
-    filter: "vintage", // not in the allowed list; event preset is warm
+    filter: "polaroid", // not in the allowed list; event preset is original
   });
   const styledRow = await fetch(
     `${SB}/rest/v1/media?guest_id=eq.${g2.body.guest.id}&select=filter&order=created_at.desc&limit=1`,
     { headers: { apikey: ANON, Authorization: `Bearer ${token}` } }
   ).then((r) => r.json());
   ok(
-    styled.status === 201 && styledRow?.[0]?.filter === "warm",
+    styled.status === 201 && styledRow?.[0]?.filter === "original",
     "Allowed styles: disallowed filter stored as the event preset, shot not lost"
   );
 

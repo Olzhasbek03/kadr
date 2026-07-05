@@ -38,7 +38,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
   const [maxGuests, setMaxGuests] = useState<string>(String(defaultMaxGuests));
   const [revealMode, setRevealMode] = useState<RevealMode>("event_end");
   const [revealAt, setRevealAt] = useState("");
-  const [filterPreset, setFilterPreset] = useState<FilmStyle>("warm");
+  const [filterPreset, setFilterPreset] = useState<FilmStyle>("original");
   const [allowed, setAllowed] = useState<Set<FilmStyle>>(new Set(FILM_STYLES));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);

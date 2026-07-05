@@ -12,7 +12,7 @@ import { FILM_STYLES, FILTER_CSS, type FilmStyle } from "@/lib/filters";
 export default function FilmStyleDemo() {
   const t = useTranslations("landing");
   const tf = useTranslations("camera.filterNames");
-  const [style, setStyle] = useState<FilmStyle>("warm");
+  const [style, setStyle] = useState<FilmStyle>("polaroid");
 
   return (
     <div className="mx-auto max-w-3xl">

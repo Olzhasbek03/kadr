@@ -78,8 +78,8 @@ export default function PhoneDemo() {
                 7 / 10
               </span>
             </div>
-            <div className="scrollbar-none flex gap-1 overflow-hidden px-2 py-1.5">
-              {["original", "noir", "warm", "polaroid"].map((s, i) => (
+            <div className="scrollbar-none flex justify-center gap-1 overflow-hidden px-2 py-1.5">
+              {["original", "noir", "polaroid"].map((s, i) => (
                 <span
                   key={s}
                   className={`shrink-0 rounded-full border px-2 py-1 text-[8px] ${
