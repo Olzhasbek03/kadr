@@ -5,12 +5,12 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 const TILES = [
-  "/photos/dance.jpg",
-  "/photos/garden.jpg",
-  "/photos/hall-bw.jpg",
-  "/photos/steppe.jpg",
-  "/photos/field.jpg",
-  "/photos/horses.jpg",
+  "/photos/kyz-dance.jpg",
+  "/photos/ceremony-lights.jpg",
+  "/photos/rings-gold.jpg",
+  "/photos/confetti.jpg",
+  "/photos/chapel.jpg",
+  "/photos/ceremony-lights.jpg",
 ];
 
 /**

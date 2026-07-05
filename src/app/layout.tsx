@@ -1,15 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
-// One variable family for body and display; the display voice is the
-// intermediate weight 480 set in CSS. Inter's cyrillic-ext subset covers
-// Kazakh Cyrillic: Қ Ә Ү Ұ Ө Ң Ғ Һ І.
+// Sans for the interface, serif at whisper weight for declarations, mono
+// for technical markers. All three cover Kazakh Cyrillic (cyrillic-ext):
+// Қ Ә Ү Ұ Ө Ң Ғ Һ І.
 const inter = Inter({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
   variable: "--font-body",
+});
+const serif = Source_Serif_4({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  variable: "--font-display",
+});
+const mono = JetBrains_Mono({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  variable: "--font-mono",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,7 +32,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#171721",
+  themeColor: "#faf8f5",
 };
 
 export default async function RootLayout({
@@ -35,10 +43,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body
-        className={`${inter.variable} antialiased`}
-        style={{ ["--font-display" as string]: "var(--font-body)" }}
-      >
+      <body className={`${inter.variable} ${serif.variable} ${mono.variable} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

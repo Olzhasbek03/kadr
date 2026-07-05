@@ -31,7 +31,7 @@ export default function AnimatedCamera({ size = 280 }: { size?: number }) {
         }`}
         style={{
           background:
-            "radial-gradient(circle, rgba(141,156,244,0.28) 30%, rgba(141,156,244,0) 70%)",
+            "radial-gradient(circle, rgba(143,192,196,0.35) 30%, rgba(143,192,196,0) 70%)",
         }}
       />
       <svg viewBox="0 0 280 280" width={size} height={size} className="relative">

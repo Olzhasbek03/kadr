@@ -138,7 +138,7 @@ function LoginForm() {
       {/* the world this tool serves */}
       <div className="relative hidden lg:block">
         <Image
-          src="/photos/dance.jpg"
+          src="/photos/ceremony-lights.jpg"
           alt=""
           fill
           sizes="45vw"

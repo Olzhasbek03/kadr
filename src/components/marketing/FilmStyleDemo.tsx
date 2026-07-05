@@ -18,7 +18,7 @@ export default function FilmStyleDemo() {
     <div className="mx-auto max-w-3xl">
       <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-[14px] sm:aspect-[4/3] sm:max-w-xl">
         <Image
-          src="/photos/field.jpg"
+          src="/photos/rings-gold.jpg"
           alt={t("stylesPhotoAlt")}
           fill
           sizes="(max-width: 640px) 90vw, 576px"
@@ -51,7 +51,7 @@ export default function FilmStyleDemo() {
           >
             <span className="relative h-5 w-5 overflow-hidden rounded-full">
               <Image
-                src="/photos/field.jpg"
+                src="/photos/rings-gold.jpg"
                 alt=""
                 fill
                 sizes="20px"

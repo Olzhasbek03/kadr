@@ -34,14 +34,14 @@ export function filterCss(style: string | null | undefined): string {
   return isFilmStyle(style) ? FILTER_CSS[style] : "none";
 }
 
-/** Deep blue-hour cover gradients per preset — dark enough for ivory text
- *  to sit on. Used where an event has no photo of its own yet. */
+/** Soft botanical cover gradients per preset — parchment-adjacent tones
+ *  deep enough for sepia text. Used where an event has no photo yet. */
 export const STYLE_COVER: Record<FilmStyle, string> = {
-  original: "linear-gradient(150deg, #2c2c3c 0%, #232331 55%, #1a1a26 100%)",
-  noir: "linear-gradient(150deg, #32323a 0%, #26262c 55%, #19191f 100%)",
-  warm: "linear-gradient(150deg, #3b3028 0%, #2e2620 55%, #1f1a17 100%)",
-  cool: "linear-gradient(150deg, #283440 0%, #202a34 55%, #171e26 100%)",
-  cine: "linear-gradient(150deg, #322c40 0%, #272232 55%, #1a1724 100%)",
-  vintage: "linear-gradient(150deg, #38312a 0%, #2c2620 55%, #1e1a16 100%)",
-  polaroid: "linear-gradient(150deg, #35332c 0%, #2a2823 55%, #1c1b17 100%)",
+  original: "linear-gradient(150deg, #ece7de 0%, #d8d1c4 55%, #b8ac99 100%)",
+  noir: "linear-gradient(150deg, #e8e6e3 0%, #c9c5c0 55%, #98938c 100%)",
+  warm: "linear-gradient(150deg, #f0e2cc 0%, #ddc39c 55%, #b3906a 100%)",
+  cool: "linear-gradient(150deg, #dfe7e5 0%, #bccfcc 55%, #8aa5a2 100%)",
+  cine: "linear-gradient(150deg, #e4dfe7 0%, #c4bacb 55%, #93859e 100%)",
+  vintage: "linear-gradient(150deg, #eee4d1 0%, #d4bd9c 55%, #a68a67 100%)",
+  polaroid: "linear-gradient(150deg, #f1ece1 0%, #ded2bc 55%, #b4a68c 100%)",
 };
