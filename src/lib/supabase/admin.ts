@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { supabaseServiceRoleKey, supabaseUrl } from "./env";
 
 let adminClient: SupabaseClient | null = null;
 
@@ -10,11 +11,9 @@ let adminClient: SupabaseClient | null = null;
  */
 export function supabaseAdmin(): SupabaseClient {
   if (!adminClient) {
-    adminClient = createClient(
-      (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co").trim(),
-      (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "placeholder-service-role-key").trim(),
-      { auth: { persistSession: false } }
-    );
+    adminClient = createClient(supabaseUrl(), supabaseServiceRoleKey(), {
+      auth: { persistSession: false },
+    });
   }
   return adminClient;
 }

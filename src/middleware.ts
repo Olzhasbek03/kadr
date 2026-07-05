@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/env";
 
 /**
  * Refreshes the Supabase session cookie and guards /dashboard.
@@ -11,8 +12,8 @@ export async function middleware(request: NextRequest) {
 
   try {
     const supabase = createServerClient(
-      (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co").trim(),
-      (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder-anon-key").trim(),
+      supabaseUrl(),
+      supabaseAnonKey(),
       {
         cookies: {
           getAll: () => request.cookies.getAll(),
