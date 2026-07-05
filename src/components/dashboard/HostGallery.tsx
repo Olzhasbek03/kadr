@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import JSZip from "jszip";
 import type { GalleryItem } from "@/lib/types";
 import { deleteMedia } from "@/app/dashboard/[eventId]/actions";
 import MediaTile from "@/components/media/MediaTile";
@@ -10,31 +9,22 @@ import MediaLightbox from "@/components/media/MediaLightbox";
 import AudioWishCard from "@/components/media/AudioWishCard";
 import { DownloadIcon, ImageIcon, Mark, TrashIcon } from "@/components/icons";
 
-const EXT_BY_MIME: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "video/mp4": "mp4",
-  "video/webm": "webm",
-  "audio/mp4": "m4a",
-  "audio/webm": "weba",
-};
-
 /** Host gallery: full grid (visible pre-reveal for the host only), voice
- *  wishes, moderation delete, and "download all as zip" of the originals. */
+ *  wishes, moderation delete, and "download all" as a server-streamed zip
+ *  (constant memory, works for events of any size). */
 export default function HostGallery({
   items: initialItems,
   eventId,
-  eventName,
+  eventSlug,
 }: {
   items: GalleryItem[];
   eventId: string;
-  eventName: string;
+  eventSlug: string;
 }) {
   const t = useTranslations("event");
   const tg = useTranslations("gallery");
   const [items, setItems] = useState(initialItems);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const [zipping, setZipping] = useState<null | { done: number; total: number }>(null);
-  const [zipError, setZipError] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const wishes = useMemo(() => items.filter((m) => m.type === "audio"), [items]);
@@ -52,43 +42,6 @@ export default function HostGallery({
     }
   };
 
-  const downloadZip = async () => {
-    const withUrls = items.filter((m) => m.url);
-    if (withUrls.length === 0 || zipping) return;
-    setZipping({ done: 0, total: withUrls.length });
-    setZipError(false);
-    try {
-      const zip = new JSZip();
-      let done = 0;
-      // Fetch in small batches to stay gentle on mobile memory.
-      const BATCH = 4;
-      for (let i = 0; i < withUrls.length; i += BATCH) {
-        await Promise.all(
-          withUrls.slice(i, i + BATCH).map(async (item, j) => {
-            const res = await fetch(item.url!);
-            if (!res.ok) throw new Error(String(res.status));
-            const ext = EXT_BY_MIME[item.mimeType] ?? "bin";
-            const name = `kormem-${String(i + j + 1).padStart(3, "0")}-${item.type}.${ext}`;
-            zip.file(name, await res.blob());
-            done += 1;
-            setZipping({ done, total: withUrls.length });
-          })
-        );
-      }
-      const blob = await zip.generateAsync({ type: "blob" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `kormem-${eventName.replace(/\s+/g, "-").toLowerCase().slice(0, 40)}.zip`;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 30_000);
-    } catch (err) {
-      console.error("zip:", err);
-      setZipError(true);
-    } finally {
-      setZipping(null);
-    }
-  };
-
   if (items.length === 0) {
     return (
       <div className="card mt-5 flex flex-col items-center gap-4 px-6 py-16 text-center">
@@ -102,29 +55,13 @@ export default function HostGallery({
     <>
       <div className="mt-5 flex items-center justify-between gap-3">
         <p className="text-sm text-ink-2">{tg("mediaCount", { count: items.length })}</p>
-        <button
-          type="button"
-          onClick={downloadZip}
-          disabled={!!zipping}
-          className="btn-secondary !min-h-[52px]"
+        <a
+          href={`/api/e/${eventSlug}/download`}
+          className="btn btn-secondary !min-h-[52px]"
         >
-          {zipping ? (
-            <>
-              <Mark size={16} className="animate-spin" />
-              {t("zipProgress", { done: zipping.done, total: zipping.total })}
-            </>
-          ) : (
-            <>
-              <DownloadIcon size={17} /> {t("downloadAll")}
-            </>
-          )}
-        </button>
+          <DownloadIcon size={17} /> {t("downloadAll")}
+        </a>
       </div>
-      {zipError && (
-        <p role="alert" className="mt-3 text-sm text-danger">
-          {t("zipError")}
-        </p>
-      )}
 
       {wishes.length > 0 && (
         <section className="mt-6">

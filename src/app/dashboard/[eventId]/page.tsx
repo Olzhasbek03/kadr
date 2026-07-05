@@ -201,7 +201,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
               </span>
             )}
           </p>
-          <HostGallery items={items} eventId={event.id} eventName={event.name} />
+          <HostGallery items={items} eventId={event.id} eventSlug={event.slug} />
         </section>
       </div>
     </div>

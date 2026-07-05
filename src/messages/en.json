@@ -226,7 +226,8 @@
     "download": "Download",
     "mediaCount": "{count, plural, one {# memory} other {# memories}}",
     "voiceWishes": "Voice wishes",
-    "deleteItem": "Delete"
+    "deleteItem": "Delete",
+    "downloadAll": "Download all (ZIP)"
   },
   "print": {
     "print": "Print"

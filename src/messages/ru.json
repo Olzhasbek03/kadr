@@ -226,7 +226,8 @@
     "download": "Скачать",
     "mediaCount": "{count, plural, one {# воспоминание} few {# воспоминания} other {# воспоминаний}}",
     "voiceWishes": "Голосовые пожелания",
-    "deleteItem": "Удалить"
+    "deleteItem": "Удалить",
+    "downloadAll": "Скачать всё (ZIP)"
   },
   "print": {
     "print": "Печать"

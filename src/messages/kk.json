@@ -226,7 +226,8 @@
     "download": "Жүктеу",
     "mediaCount": "{count, plural, one {# естелік} other {# естелік}}",
     "voiceWishes": "Дауыстай тілектер",
-    "deleteItem": "Жою"
+    "deleteItem": "Жою",
+    "downloadAll": "Барлығын жүктеу (ZIP)"
   },
   "print": {
     "print": "Басып шығару"

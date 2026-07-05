@@ -147,9 +147,21 @@ export default function GuestGallery({
       </header>
 
       <div className="mx-auto max-w-5xl px-5">
-        <p className="text-sm text-ink-2">{t("revealedKicker")}</p>
-        <h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{event.name}</h1>
-        <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm text-ink-2">{t("revealedKicker")}</p>
+            <h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{event.name}</h1>
+            <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
+          </div>
+          {media.length > 0 && (
+            <a
+              href={`/api/e/${event.slug}/download`}
+              className="btn btn-secondary !min-h-[50px]"
+            >
+              {t("downloadAll")}
+            </a>
+          )}
+        </div>
 
         {media.length === 0 ? (
           <p className="mt-14 text-center text-ink-2">{t("empty")}</p>
