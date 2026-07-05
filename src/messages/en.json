@@ -13,13 +13,9 @@
     "signIn": "Sign in",
     "cta": "Create your event",
     "ctaHow": "How it works",
-    "heroTitle": "The wedding you never saw",
-    "heroSub": "Every guest shoots on their own in-browser camera. The photos stay hidden until morning, then open in one shared gallery.",
-    "heroAlt": "A bride and groom walking through golden evening light",
-    "betasharTitle": "Like betashar, but with photographs",
-    "betasharBody": "At a Kazakh wedding, the bride's face is veiled so it can be unveiled at the most important moment. Kormem treats the photos of your night the same way: they sleep under a veil, and in the morning they open to everyone at once.",
-    "betasharPun": "In Kazakh, korme means both \"exhibition\" and \"don't look\".",
-    "betasharAlt": "Betashar ceremony: the bride hidden behind a white veil",
+    "heroTitle": "The celebration you never saw",
+    "heroSub": "Every guest becomes a photographer: photos, 10-second clips and voice wishes, straight from the browser. Hidden until the reveal. Then — the whole night through everyone's eyes.",
+    "heroAlt": "Dancers under lanterns at a night celebration",
     "howTitle": "How the night goes",
     "step1Title": "Create the event",
     "step1Text": "A date, a name and a shot count. The QR code for the tables is ready in a minute.",
@@ -27,7 +23,7 @@
     "step2Text": "The camera opens from a link, right in the browser. No apps, no accounts.",
     "step3Title": "Morning opens the gallery",
     "step3Text": "At the hour you set, every photo appears for everyone at once: the whole night through every guest's eyes.",
-    "stylesTitle": "Six film stocks to choose from",
+    "stylesTitle": "Seven film styles to choose from",
     "stylesSub": "The style shows in the viewfinder before the shot. The original is always stored clean.",
     "stylesAria": "Film styles",
     "stylesPhotoAlt": "A groom lifting his bride against the sunset",
@@ -49,7 +45,25 @@
     "faq5q": "Where are the photos stored?",
     "faq5a": "In private storage. Access opens only through your event link and only after the reveal. Download the archive and they are yours forever.",
     "ctaTitle": "Let the morning show your day",
-    "footer": "Made in Kazakhstan"
+    "footer": "Made in Kazakhstan",
+    "occasionsTitle": "One camera. Any occasion.",
+    "occasionsBody": "A wedding, a birthday, a corporate night, a reunion — wherever people gather, Kormem hands them one shared film roll. No apps, no accounts: a QR code on the table is the whole setup.",
+    "occasion1": "Weddings",
+    "occasion2": "Birthdays",
+    "occasion3": "Corporate events",
+    "occasion4": "Reunions",
+    "occasion5": "Graduations",
+    "occasion6": "Anniversaries",
+    "punLine": "In Kazakh, körme means both “exhibition” and “don't look”.",
+    "modesTitle": "Three ways to leave a memory",
+    "modesSub": "All in the browser camera, all counted on the same film roll.",
+    "modePhotoTitle": "Photos",
+    "modePhotoText": "Compressed on the phone, stored clean at full frame. Film styles preview live in the viewfinder before the shot.",
+    "modeVideoTitle": "10-second clips",
+    "modeVideoText": "Short by design — long enough for the toast, light enough to upload over venue wifi.",
+    "modeVoiceTitle": "Voice wishes",
+    "modeVoiceText": "A spoken message for the hosts. Guests hear themselves before sending — one wish per guest.",
+    "footerPrivacy": "Privacy"
   },
   "auth": {
     "title": "Sign in to Kormem",
@@ -224,5 +238,9 @@
     "photos": "Photos",
     "videos": "Videos",
     "voice": "Voice wishes"
+  },
+  "meta": {
+    "title": "Kormem — the shared camera for any celebration",
+    "description": "Guests capture photos, short clips and voice wishes right in the browser. Everything stays hidden until the reveal — then the whole night opens in one shared gallery."
   }
 }

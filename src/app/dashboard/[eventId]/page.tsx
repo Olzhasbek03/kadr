@@ -121,7 +121,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
             </h1>
             <span
               className={`rounded-full px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                revealed ? "bg-crimson/15 text-crimson" : "bg-success/15 text-success"
+                revealed ? "bg-accent/15 text-accent" : "bg-success/15 text-success"
               }`}
             >
               {revealed ? t("statusRevealed") : t("statusActive")}
@@ -173,7 +173,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
           <p className="label-soft">{t("revealSection")}</p>
           {revealed ? (
             <p className="mt-4 flex items-center gap-2.5 text-lg">
-              <span className="h-2 w-2 rounded-full bg-crimson" />
+              <span className="h-2 w-2 rounded-full bg-accent" />
               {t("revealedSince", { time: formatDateTime(event.reveal_at, locale) })}
             </p>
           ) : (

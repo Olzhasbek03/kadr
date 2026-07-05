@@ -18,7 +18,7 @@ export default function FilmStyleDemo() {
     <div className="mx-auto max-w-3xl">
       <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-[14px] sm:aspect-[4/3] sm:max-w-xl">
         <Image
-          src="/photos/lift.jpg"
+          src="/photos/field.jpg"
           alt={t("stylesPhotoAlt")}
           fill
           sizes="(max-width: 640px) 90vw, 576px"
@@ -44,14 +44,14 @@ export default function FilmStyleDemo() {
             onClick={() => setStyle(s)}
             className={`flex shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors ${
               style === s
-                ? "border-crimson bg-crimson/5 text-crimson"
+                ? "border-accent bg-accent/5 text-accent"
                 : "border-line bg-surface text-ink-2 hover:border-ink-2/40"
             }`}
             style={{ minHeight: 46 }}
           >
             <span className="relative h-5 w-5 overflow-hidden rounded-full">
               <Image
-                src="/photos/rings.jpg"
+                src="/photos/field.jpg"
                 alt=""
                 fill
                 sizes="20px"

@@ -82,7 +82,7 @@ export default async function GuestListPage(ctx: {
               <div key={guest.id} className="card flex items-center gap-4 p-4 sm:p-5">
                 <span
                   aria-hidden
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-crimson/10 font-medium text-crimson"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 font-medium text-accent"
                 >
                   {(guest.display_name ?? "•").slice(0, 1).toUpperCase()}
                 </span>

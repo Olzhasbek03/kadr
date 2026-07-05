@@ -120,7 +120,7 @@ export default function GuestGallery({
         <div className="relative">
           <h1 className="font-display text-3xl leading-tight">{t("unlockingTitle")}</h1>
           <div className="mx-auto mt-7 h-px w-44 overflow-hidden rounded bg-ink/15">
-            <div className="develop-progress h-full bg-crimson" />
+            <div className="develop-progress h-full bg-accent" />
           </div>
         </div>
       </main>

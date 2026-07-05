@@ -458,7 +458,7 @@ export default function CameraView({
   if (allowance.shotsLeft <= 0 && pending === 0 && voicePhase !== "preview") {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full border border-crimson/30 bg-crimson/5 text-crimson">
+        <span className="flex h-20 w-20 items-center justify-center rounded-full border border-accent/30 bg-accent/5 text-accent">
           <FilmIcon size={30} />
         </span>
         <h1 className="font-display mt-8 text-4xl leading-tight">{t("outOfFilm")}</h1>
@@ -527,7 +527,7 @@ export default function CameraView({
                     return (
                       <span
                         key={i}
-                        className="w-1 rounded-full bg-crimson transition-[height] duration-100"
+                        className="w-1 rounded-full bg-accent transition-[height] duration-100"
                         style={{ height: `${Math.max(6, wave * 64)}px`, opacity: recording ? 0.9 : 0.35 }}
                       />
                     );
@@ -552,7 +552,7 @@ export default function CameraView({
                   <button
                     type="button"
                     onClick={togglePreviewPlayback}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-crimson text-ivory"
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-ivory"
                     aria-label={playingPreview ? t("voicePause") : t("voicePlay")}
                   >
                     {playingPreview ? <PauseIcon size={24} /> : <PlayIcon size={24} />}
@@ -627,10 +627,10 @@ export default function CameraView({
         {developing && (
           <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center">
             <span className="fade-in flex items-center gap-2.5 rounded-full bg-dark/75 px-4 py-2.5 text-sm text-ivory backdrop-blur-sm">
-              <FilmIcon size={15} className="animate-pulse text-rose" />
+              <FilmIcon size={15} className="animate-pulse text-accent-soft" />
               {t("developing")}
               <span className="relative h-px w-14 overflow-hidden rounded bg-ivory/25">
-                <span className="develop-progress absolute inset-y-0 left-0 bg-rose" />
+                <span className="develop-progress absolute inset-y-0 left-0 bg-accent-soft" />
               </span>
             </span>
           </div>
@@ -671,7 +671,7 @@ export default function CameraView({
           </div>
           <div className="flex flex-col items-end gap-2">
             <span className="flex items-center gap-2 rounded-full bg-dark/60 px-4 py-2 backdrop-blur-sm">
-              <FilmIcon size={15} className="text-rose" />
+              <FilmIcon size={15} className="text-accent-soft" />
               <span className="numeral text-lg leading-none">
                 {allowance.shotsLeft}
                 <span className="text-ivory/55"> / {event.shotsPerGuest}</span>
@@ -680,7 +680,7 @@ export default function CameraView({
             {pending > 0 && (
               <span
                 className={`flex items-center gap-1.5 rounded-full bg-dark/60 px-3 py-1.5 text-xs backdrop-blur-sm ${
-                  uploadError ? "text-rose" : "text-ivory/60"
+                  uploadError ? "text-accent-soft" : "text-ivory/60"
                 }`}
               >
                 <UploadIcon size={12} />
@@ -707,7 +707,7 @@ export default function CameraView({
               onClick={() => setStyle(s)}
               className={`flex shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors ${
                 style === s
-                  ? "border-rose bg-rose/10 text-rose"
+                  ? "border-accent-soft bg-accent-soft/10 text-accent-soft"
                   : "border-ivory/15 bg-ivory/5 text-ivory/70"
               }`}
               style={{ minHeight: 44 }}
@@ -806,15 +806,15 @@ export default function CameraView({
             style={
               recording
                 ? {
-                    background: `conic-gradient(var(--crimson) ${progress * 360}deg, color-mix(in oklab, var(--ivory) 25%, transparent) 0deg)`,
+                    background: `conic-gradient(var(--accent) ${progress * 360}deg, color-mix(in oklab, var(--ivory) 25%, transparent) 0deg)`,
                   }
                 : undefined
             }
           >
             {recording ? (
-              <span className="!rounded-[6px] !bg-crimson !scale-50" />
+              <span className="!rounded-[6px] !bg-accent !scale-50" />
             ) : (
-              <span className="!bg-crimson flex items-center justify-center text-ivory">
+              <span className="!bg-accent flex items-center justify-center text-ivory">
                 <MicIcon size={26} />
               </span>
             )}

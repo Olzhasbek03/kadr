@@ -1,32 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Golos_Text, Prata } from "next/font/google";
+import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
-// Both families cover Kazakh Cyrillic (cyrillic-ext): Қ Ә Ү Ұ Ө Ң Ғ Һ І
-const display = Prata({
-  weight: "400",
-  subsets: ["latin", "cyrillic-ext"],
-  variable: "--font-display",
-});
-const body = Golos_Text({
+// One variable family for body and display; the display voice is the
+// intermediate weight 480 set in CSS. Inter's cyrillic-ext subset covers
+// Kazakh Cyrillic: Қ Ә Ү Ұ Ө Ң Ғ Һ І.
+const inter = Inter({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
   variable: "--font-body",
 });
 
-export const metadata: Metadata = {
-  title: "Kormem — общая камера вашего тоя",
-  description:
-    "Гости снимают на одноразовую камеру в браузере, а фотографии остаются скрытыми до утра. Потом весь вечер открывается в общей галерее.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#f7f2f1",
+  themeColor: "#171721",
 };
 
 export default async function RootLayout({
@@ -37,7 +35,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${display.variable} ${body.variable} antialiased`}>
+      <body
+        className={`${inter.variable} antialiased`}
+        style={{ ["--font-display" as string]: "var(--font-body)" }}
+      >
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

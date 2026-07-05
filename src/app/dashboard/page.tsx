@@ -42,7 +42,7 @@ export default async function DashboardPage() {
 
       {events.length === 0 ? (
         <div className="card mt-12 flex flex-col items-center gap-5 px-8 py-20 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-line text-crimson">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-line text-accent">
             <FilmIcon size={26} />
           </span>
           <h2 className="font-display text-3xl">{t("emptyTitle")}</h2>
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
                     </h2>
                     <span
                       className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                        revealed ? "bg-crimson/15 text-crimson" : "bg-success/15 text-success"
+                        revealed ? "bg-accent/15 text-accent" : "bg-success/15 text-success"
                       }`}
                     >
                       {revealed ? t("statusRevealed") : t("statusActive")}

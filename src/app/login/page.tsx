@@ -64,7 +64,7 @@ function LoginForm() {
 
         {phase === "sent" ? (
           <div className="card rise-in mt-10 flex flex-col items-center gap-4 p-8 text-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-line text-crimson">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-line text-accent">
               <CheckIcon size={24} />
             </span>
             <p className="font-medium">{t("linkSent")}</p>
@@ -138,7 +138,7 @@ function LoginForm() {
       {/* the world this tool serves */}
       <div className="relative hidden lg:block">
         <Image
-          src="/photos/syrga-salu.jpg"
+          src="/photos/dance.jpg"
           alt=""
           fill
           sizes="45vw"

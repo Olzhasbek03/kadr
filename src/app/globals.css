@@ -1,40 +1,46 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   Kormem design tokens
-   «Сырға салу at dusk: velvet crimson, ivory tulle, golden
-   window light.» Light theme locked; warmth lives in the
-   photographs, never in the chrome.
+   Kormem design tokens — "blue hour"
+   A near-black onyx canvas sets an observatory-like calm; content
+   floats on one-step-lighter graphite surfaces. The interface is
+   monochrome ivory-on-onyx with a single cobalt accent reserved
+   for the action that matters. No shadows: elevation is value
+   contrast alone. The photography does the emotional work.
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --bg: oklch(0.967 0.005 20);
-  --surface: oklch(0.992 0.003 20);
-  --ink: oklch(0.235 0.015 25);
-  --ink-2: oklch(0.44 0.02 25);
-  --line: oklch(0.885 0.01 25);
-  --crimson: oklch(0.41 0.125 8);
-  --crimson-deep: oklch(0.34 0.11 8);
-  --rose: oklch(0.78 0.08 10); /* accent on dark surfaces only */
-  --ivory: oklch(0.96 0.006 20); /* text on dark blocks */
-  --dark: oklch(0.21 0.014 25); /* deliberate dark blocks + camera tool */
-  --danger: oklch(0.5 0.16 25);
-  --success: oklch(0.48 0.09 155);
+  --bg: #171721; /* onyx canvas */
+  --surface: #1e1e2a; /* graphite card */
+  --surface-2: #272735; /* obsidian interactive fill */
+  --ink: #ededf3; /* ivory text */
+  --ink-2: #c3c3cc; /* ash text */
+  --line: #303040; /* structural divider on canvas */
+  --line-strong: #70707d; /* medium divider */
+  --accent: #5266eb; /* cobalt — the one chromatic note */
+  --accent-deep: #4355d4;
+  --accent-soft: #8d9cf4; /* cobalt lifted for small glyphs on dark */
+  --ivory: #ededf3;
+  --dark: #101018; /* camera stage, deeper than the canvas */
+  --danger: #e5484d;
+  --success: #55b467;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-line: var(--line);
-  --color-crimson: var(--crimson);
-  --color-crimson-deep: var(--crimson-deep);
-  --color-rose: var(--rose);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-soft: var(--accent-soft);
   --color-ivory: var(--ivory);
   --color-dark: var(--dark);
   --color-danger: var(--danger);
@@ -42,333 +48,379 @@
 }
 
 html {
-  font-size: 17px;
+  font-size: 16px;
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Arial, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-
-/* ───────────────────────────── typography */
-
-.font-display {
-  font-family: var(--font-display), Georgia, "Times New Roman", serif;
   font-weight: 400;
-  letter-spacing: 0.005em;
+  line-height: 1.5;
 }
 
-h1,
-h2,
-h3 {
-  text-wrap: balance;
-}
+/* ───────────────────────────── typography
+   One family, intermediate weights. Display voice = weight 480 with
+   positive tracking and tight leading: asserts without shouting. */
 
-/* Ceremony numerals: counters, countdowns, prices */
-.numeral {
-  font-family: var(--font-display), Georgia, serif;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Quiet form/section label. Deliberately NOT the uppercase-tracked
-   eyebrow: sentence case, small, secondary ink. */
-.label-soft {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--ink-2);
-}
-
-/* ───────────────────────────── controls
-   Radius rule: interactive = pill, cards/media = 14px, inputs = 10px. */
-
-button,
-a.btn,
-input,
-select {
-  min-height: 54px;
-}
-
-button,
-a.btn,
-summary {
-  cursor: pointer;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  border-radius: 999px;
-  font-weight: 550;
-  font-size: 1rem;
-  padding: 0 1.8rem;
-  min-height: 56px;
-  transition: transform 150ms var(--ease-out), background 180ms ease,
-    color 180ms ease, border-color 180ms ease;
-}
-.btn-primary {
-  background: var(--crimson);
-  color: oklch(0.985 0.004 20);
-}
-.btn-primary:hover {
-  background: var(--crimson-deep);
-}
-.btn-secondary {
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 500;
-  padding: 0 1.4rem;
-}
-.btn-secondary:hover {
-  border-color: oklch(0.76 0.02 20);
-}
-/* On photographs / dark blocks */
-.btn-dark {
-  background: var(--ivory);
-  color: var(--ink);
-}
-.btn-dark:hover {
-  background: oklch(1 0 0);
-}
-.btn-primary:active,
-.btn-secondary:active,
-.btn-dark:active,
-.icon-btn:active,
-.shutter:active {
-  transform: scale(0.97);
-}
-.btn-primary:disabled,
-.btn-secondary:disabled,
-.btn-dark:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  min-height: 50px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  transition: border-color 180ms ease, transform 150ms var(--ease-out);
-}
-.icon-btn:hover {
-  border-color: oklch(0.76 0.02 20);
-}
-
-.input-base {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  padding: 0.9rem 1.05rem;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 180ms ease;
-}
-.input-base::placeholder {
-  color: oklch(0.55 0.015 25);
-}
-.input-base:focus {
-  border-color: var(--crimson);
-}
-.input-base[aria-invalid="true"] {
-  border-color: var(--danger);
-}
-
-:focus-visible {
-  outline: 2px solid var(--crimson);
-  outline-offset: 2px;
-}
-
-.card {
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--ink-2);
-}
-
-/* Selectable option: crimson when active */
-.option-card {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 500;
-  transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
-}
-.option-card:hover {
-  border-color: oklch(0.76 0.02 20);
-}
-.option-card[data-selected="true"] {
-  border-color: var(--crimson);
-  color: var(--crimson);
-  background: oklch(0.41 0.125 8 / 0.06);
-}
-
-/* ───────────────────────────── the veil & photo treatments */
-
-/* Ink gradient scrim for text over photography (bottom-anchored) */
-.photo-scrim {
-  background: linear-gradient(
-    to top,
-    oklch(0.21 0.014 25 / 0.78) 0%,
-    oklch(0.21 0.014 25 / 0.35) 45%,
-    oklch(0.21 0.014 25 / 0) 100%
-  );
-}
-
-/* The veil: ivory haze covering a hidden photo */
-.veil {
-  background: linear-gradient(
-    160deg,
-    oklch(0.97 0.005 20 / 0.92),
-    oklch(0.95 0.008 20 / 0.72)
-  );
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-/* Hero veil lift: page loads behind a veil that clears */
-@keyframes veil-lift {
-  from {
-    opacity: 1;
+@layer components {
+  .font-display {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 480;
+    letter-spacing: 0.01em;
+    line-height: 1.12;
   }
-  to {
-    opacity: 0;
-  }
-}
-.veil-lift {
-  animation: veil-lift 1.3s var(--ease-in-out) 0.45s both;
-  pointer-events: none;
-}
 
-/* A photo developing: hazy ivory blur → sharp. */
-@keyframes develop {
-  0% {
-    opacity: 0;
-    filter: blur(14px) brightness(1.5) saturate(0.4);
-    transform: scale(1.02);
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
-  100% {
-    opacity: 1;
-    filter: blur(0) brightness(1) saturate(1);
-    transform: scale(1);
-  }
-}
-.develop-in {
-  animation: develop 1s var(--ease-out) both;
-  animation-delay: var(--dev-delay, 0s);
-}
 
-@keyframes fade-rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+  /* Calibrated numerals: counters, countdowns */
+  .numeral {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 480;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.rise-in {
-  animation: fade-rise 0.55s var(--ease-out) both;
-}
 
-@keyframes fade-only {
-  from {
-    opacity: 0;
+  /* Quiet form/section label: sentence case, small, ash. */
+  .label-soft {
+    font-size: 0.82rem;
+    font-weight: 420;
+    color: var(--ink-2);
+    letter-spacing: 0.005em;
   }
-  to {
-    opacity: 1;
-  }
-}
-.fade-in {
-  animation: fade-only 0.35s ease-out both;
-}
 
-@keyframes progress {
-  from {
-    width: 0%;
+  /* ───────────────────────────── controls
+     Radius rule: interactive = pill (non-negotiable), cards/media = 12px. */
+
+  button,
+  a.btn,
+  input,
+  select {
+    min-height: 54px;
   }
-  to {
+
+  button,
+  a.btn,
+  summary {
+    cursor: pointer;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border-radius: 999px;
+    font-weight: 420;
+    font-size: 1rem;
+    padding: 0 1.6rem;
+    min-height: 54px;
+    transition: transform 150ms var(--ease-out), background 180ms ease,
+      color 180ms ease, border-color 180ms ease, opacity 180ms ease;
+  }
+  /* The one cobalt action per screen. */
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: var(--accent-deep);
+  }
+  /* Ghost outline: ivory stroke + ivory text, never chromatic. */
+  .btn-secondary {
+    border: 1px solid color-mix(in oklab, var(--ivory) 75%, transparent);
+    background: transparent;
+    color: var(--ink);
+  }
+  .btn-secondary:hover {
+    border-color: var(--ivory);
+  }
+  /* Quiet filled control on photos and deep surfaces. */
+  .btn-dark {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  .btn-dark:hover {
+    background: #2e2e3e;
+  }
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-dark:active,
+  .icon-btn:active,
+  .shutter:active {
+    transform: scale(0.97);
+  }
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-dark:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    min-height: 50px;
+    border-radius: 999px;
+    border: none;
+    background: var(--surface-2);
+    color: var(--ink);
+    transition: background 180ms ease, transform 150ms var(--ease-out);
+  }
+  .icon-btn:hover {
+    background: #2e2e3e;
+  }
+
+  .input-base {
     width: 100%;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: var(--surface-2);
+    color: var(--ink);
+    padding: 0.85rem 1.3rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 180ms ease, background 180ms ease;
   }
-}
-.develop-progress {
-  animation: progress 1.2s linear forwards;
-}
+  .input-base::placeholder {
+    color: var(--ink-2);
+  }
+  .input-base:focus {
+    border-color: var(--accent);
+  }
+  .input-base[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
 
-/* ───────────────────────────── camera tool (dark surface) */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
-.shutter {
-  width: 84px;
-  height: 84px;
-  border-radius: 999px;
-  border: 3px solid oklch(0.96 0.006 20 / 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 120ms var(--ease-out);
-  touch-action: manipulation;
-}
-.shutter > span {
-  width: 66px;
-  height: 66px;
-  border-radius: 999px;
-  background: var(--ivory);
-  transition: transform 120ms var(--ease-out), background 120ms ease;
-}
-.shutter:active > span {
-  transform: scale(0.9);
-  background: var(--rose);
-}
-.shutter:disabled {
-  opacity: 0.4;
-}
-/* recording state: the border becomes a conic progress ring (set inline),
-   the inner dot shrinks to a stop-square */
-.shutter-rec {
-  border-color: transparent;
-}
-.shutter-rec > span {
-  transition: transform 200ms var(--ease-out), border-radius 200ms ease;
-}
+  /* Flat graphite card: elevation by value contrast, never shadow. */
+  .card {
+    border-radius: 12px;
+    border: none;
+    background: var(--surface);
+  }
 
-.scrollbar-none {
-  scrollbar-width: none;
-}
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    padding: 0.5rem 1rem;
+    font-weight: 420;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+  }
+
+  /* Selectable option: cobalt only when chosen. */
+  .option-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 420;
+    transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+  }
+  .option-card:hover {
+    border-color: var(--line-strong);
+  }
+  .option-card[data-selected="true"] {
+    border-color: var(--accent);
+    color: var(--ink);
+    background: color-mix(in oklab, var(--accent) 12%, var(--surface));
+  }
+
+  /* ───────────────────────────── the veil & photo treatments */
+
+  /* Onyx gradient scrim for text over photography (bottom-anchored) */
+  .photo-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(23, 23, 33, 0.88) 0%,
+      rgba(23, 23, 33, 0.42) 45%,
+      rgba(23, 23, 33, 0.08) 100%
+    );
+  }
+
+  /* The veil: at blue hour the photos sleep in the dark. */
+  .veil {
+    background: linear-gradient(
+      160deg,
+      rgba(23, 23, 33, 0.92),
+      rgba(30, 30, 42, 0.78)
+    );
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  /* Hero veil lift: page loads behind a veil that clears */
+  @keyframes veil-lift {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  .veil-lift {
+    animation: veil-lift 1.3s var(--ease-in-out) 0.45s both;
+    pointer-events: none;
+  }
+
+  /* A photo developing out of the dark: blur + underexposed → sharp. */
+  @keyframes develop {
+    0% {
+      opacity: 0;
+      filter: blur(14px) brightness(0.55) saturate(0.5);
+      transform: scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0) brightness(1) saturate(1);
+      transform: scale(1);
+    }
+  }
+  .develop-in {
+    animation: develop 1s var(--ease-out) both;
+    animation-delay: var(--dev-delay, 0s);
+  }
+
+  @keyframes fade-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .rise-in {
+    animation: fade-rise 0.55s var(--ease-out) both;
+  }
+
+  @keyframes fade-only {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .fade-in {
+    animation: fade-only 0.35s ease-out both;
+  }
+
+  @keyframes progress {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  .develop-progress {
+    animation: progress 1.2s linear forwards;
+  }
+
+  /* Slow lens breathing for the animated camera mark. */
+  @keyframes lens-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.06);
+      opacity: 1;
+    }
+  }
+  .lens-breathe {
+    animation: lens-breathe 4.5s var(--ease-in-out) infinite;
+    transform-origin: center;
+  }
+
+  /* Aperture blink: the animated camera "takes a shot". */
+  @keyframes aperture-blink {
+    0%,
+    88%,
+    100% {
+      transform: scale(1);
+    }
+    92% {
+      transform: scale(0.62);
+    }
+    96% {
+      transform: scale(1.05);
+    }
+  }
+  .aperture-blink {
+    animation: aperture-blink 6s var(--ease-in-out) infinite;
+    transform-origin: center;
+  }
+
+  /* ───────────────────────────── camera tool (deep surface) */
+
+  .shutter {
+    width: 84px;
+    height: 84px;
+    border-radius: 999px;
+    border: 3px solid rgba(237, 237, 243, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 120ms var(--ease-out);
+    touch-action: manipulation;
+  }
+  .shutter > span {
+    width: 66px;
+    height: 66px;
+    border-radius: 999px;
+    background: var(--ivory);
+    transition: transform 120ms var(--ease-out), background 120ms ease;
+  }
+  .shutter:active > span {
+    transform: scale(0.9);
+    background: var(--accent-soft);
+  }
+  .shutter:disabled {
+    opacity: 0.4;
+  }
+  /* recording state: the border becomes a conic progress ring (set inline),
+     the inner dot shrinks to a stop-square */
+  .shutter-rec {
+    border-color: transparent;
+  }
+  .shutter-rec > span {
+    transition: transform 200ms var(--ease-out), border-radius 200ms ease;
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -380,12 +432,16 @@ summary {
   .rise-in {
     animation: fade-only 0.25s ease-out both;
   }
+  .lens-breathe,
+  .aperture-blink {
+    animation: none;
+  }
   * {
     transition-duration: 0.01ms !important;
   }
 }
 
-/* ───────────────────────────── print (QR card) */
+/* ───────────────────────────── print (QR card stays paper-white) */
 
 @media print {
   .no-print {
@@ -393,6 +449,6 @@ summary {
   }
   body {
     background: white;
-    color: #221a18;
+    color: #1a1a22;
   }
 }

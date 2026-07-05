@@ -8,9 +8,9 @@ const TILES = [
   "/photos/dance.jpg",
   "/photos/garden.jpg",
   "/photos/hall-bw.jpg",
-  "/photos/rings.jpg",
+  "/photos/steppe.jpg",
   "/photos/field.jpg",
-  "/photos/run-bw.jpg",
+  "/photos/horses.jpg",
 ];
 
 /**
@@ -43,7 +43,7 @@ export default function RevealDemo() {
         </span>
         <span
           className={`text-sm transition-colors duration-500 ${
-            revealed ? "text-rose" : "text-ivory/50"
+            revealed ? "text-accent-soft" : "text-ivory/50"
           }`}
           suppressHydrationWarning
         >

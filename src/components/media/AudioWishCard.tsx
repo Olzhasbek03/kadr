@@ -60,24 +60,24 @@ export default function AudioWishCard({
       <button
         type="button"
         onClick={toggle}
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-crimson text-ivory transition active:scale-95"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-ivory transition active:scale-95"
         aria-label={playing ? "Pause" : "Play"}
       >
         {playing ? <PauseIcon size={20} /> : <PlayIcon size={20} />}
       </button>
       <div className="min-w-0 flex-1">
         <p className="flex items-center gap-2 truncate text-sm font-medium">
-          <MicIcon size={14} className="shrink-0 text-crimson" />
+          <MicIcon size={14} className="shrink-0 text-accent" />
           <span className="truncate">{item.guestName ?? "—"}</span>
           {accentLabel && (
-            <span className="shrink-0 rounded-full bg-crimson/10 px-2 py-0.5 text-[0.65rem] font-semibold text-crimson">
+            <span className="shrink-0 rounded-full bg-accent/10 px-2 py-0.5 text-[0.65rem] font-semibold text-accent">
               {accentLabel}
             </span>
           )}
         </p>
         <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-line">
           <div
-            className="h-full rounded-full bg-crimson transition-[width] duration-200"
+            className="h-full rounded-full bg-accent transition-[width] duration-200"
             style={{ width: `${progress * 100}%` }}
           />
         </div>

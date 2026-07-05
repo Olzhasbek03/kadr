@@ -64,7 +64,7 @@ export default function SharePanel({
               aria-label={t("copyLink")}
               title={t("copyLink")}
             >
-              {copied ? <CheckIcon size={18} className="text-crimson" /> : <CopyIcon size={18} />}
+              {copied ? <CheckIcon size={18} className="text-accent" /> : <CopyIcon size={18} />}
             </button>
           </div>
         </div>
