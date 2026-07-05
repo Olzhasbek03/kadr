@@ -99,7 +99,7 @@ export default async function LandingPage() {
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
         <span className="flex items-center gap-2">
           <Mark size={17} className="text-accent" />
-          <span className="font-serif-display text-2xl">Kadr</span>
+          <span className="font-serif-display text-2xl">Korme</span>
         </span>
         <div className="flex items-center gap-5">
           <LanguageSwitcher />
@@ -316,7 +316,7 @@ export default async function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 text-sm text-muted">
           <span className="flex items-center gap-2">
             <Mark size={13} className="text-accent" />
-            <span className="font-serif-display text-base text-ink">Kadr</span>
+            <span className="font-serif-display text-base text-ink">Korme</span>
             <span className="ml-1">· {t("footer")}</span>
           </span>
           <div className="flex items-center gap-5">

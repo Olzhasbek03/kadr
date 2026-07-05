@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     const invoice = await provider.createInvoice({
       eventId: event.id,
       amount: event.price,
-      description: `Kadr — «${event.name}»`,
+      description: `Korme — «${event.name}»`,
       returnUrl,
     });
 

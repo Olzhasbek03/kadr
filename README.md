@@ -1,8 +1,8 @@
-# Kadr — the shared disposable camera
+# Korme — the shared disposable camera
 
 One night. A hundred eyes. One roll of film.
 
-Kadr is a web-only shared disposable camera for weddings and celebrations.
+Korme is a web-only shared disposable camera for weddings and celebrations.
 The host creates an event and shares a QR code; guests open a link, get a
 limited number of shots on an in-browser film camera, and nothing is visible
 until the reveal — then the whole night opens in one shared gallery.

@@ -78,7 +78,7 @@
     "footer": "Made in Kazakhstan"
   },
   "auth": {
-    "title": "Sign in to Kadr",
+    "title": "Sign in to Korme",
     "subtitle": "The host dashboard: events, QR codes and galleries.",
     "emailLabel": "Email",
     "sendLink": "Send me a sign-in link",
@@ -226,7 +226,7 @@
     "payButton": "Pay {amount}",
     "simulateFail": "Simulate a failure",
     "success": "Paid",
-    "redirecting": "Returning to Kadr…",
+    "redirecting": "Returning to Korme…",
     "failed": "Payment declined (simulated). Try again.",
     "sandboxNote": "This is the payment provider's sandbox: no real money moves. In production this is the Kaspi Pay screen."
   },

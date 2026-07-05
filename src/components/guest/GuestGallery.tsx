@@ -90,7 +90,7 @@ export default function GuestGallery({
         <header className="relative flex items-center justify-between pt-6">
           <span className="flex items-center gap-2">
             <Mark size={15} className="text-accent" />
-            <span className="font-serif-display text-xl">Kadr</span>
+            <span className="font-serif-display text-xl">Korme</span>
           </span>
           <LanguageSwitcher />
         </header>
@@ -146,7 +146,7 @@ export default function GuestGallery({
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-6">
         <span className="flex items-center gap-2">
           <Mark size={15} className="text-accent" />
-          <span className="font-serif-display text-xl">Kadr</span>
+          <span className="font-serif-display text-xl">Korme</span>
         </span>
         <LanguageSwitcher />
       </header>

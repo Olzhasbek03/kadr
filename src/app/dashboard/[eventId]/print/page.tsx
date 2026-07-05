@@ -40,7 +40,7 @@ export default async function PrintCardPage(ctx: {
           href={`/dashboard/${event.id}`}
           className="btn inline-flex min-h-[52px] items-center gap-2 rounded-full border border-neutral-300 px-5 font-medium text-neutral-800"
         >
-          <ArrowLeft size={17} /> Kadr
+          <ArrowLeft size={17} /> Korme
         </Link>
         <PrintButton label={t("print")} />
       </div>
@@ -48,7 +48,7 @@ export default async function PrintCardPage(ctx: {
       <div className="mx-auto max-w-2xl px-8 py-10 text-center">
         <span className="inline-flex items-center gap-2 text-neutral-400">
           <Mark size={13} />
-          <span className="font-serif-display text-lg tracking-wide">Kadr</span>
+          <span className="font-serif-display text-lg tracking-wide">Korme</span>
         </span>
         <h1 className="font-serif-display mt-5 text-5xl leading-[1.08]">{event.name}</h1>
         <p className="font-serif-display mt-5 text-2xl text-neutral-700">

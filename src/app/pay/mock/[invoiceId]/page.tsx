@@ -36,7 +36,7 @@ export default async function MockPayPage(ctx: {
       externalId={payment.external_id}
       amount={payment.amount}
       alreadyPaid={payment.status === "paid"}
-      eventName={event?.name ?? "Kadr"}
+      eventName={event?.name ?? "Korme"}
       returnUrl={
         returnUrl && returnUrl.startsWith(config.appUrl)
           ? returnUrl
