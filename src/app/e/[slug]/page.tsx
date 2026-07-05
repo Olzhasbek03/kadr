@@ -13,7 +13,7 @@ export default async function GuestPage(ctx: { params: Promise<{ slug: string }>
   const { slug } = await ctx.params;
   const event = await getEventBySlug(slug);
 
-  if (!event || event.status !== "active") {
+  if (!event) {
     const tc = await getTranslations("common");
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
@@ -24,7 +24,8 @@ export default async function GuestPage(ctx: { params: Promise<{ slug: string }>
     );
   }
 
-  if (isRevealed(event.reveal_at)) {
+  // Ended or already revealed → the gallery is the destination.
+  if (event.status !== "active" || isRevealed(event.reveal_at)) {
     redirect(`/e/${slug}/gallery`);
   }
 

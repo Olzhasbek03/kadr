@@ -133,7 +133,12 @@
     "photoCount": "{count} кадр",
     "downloadAll": "Барлығын жүктеу (ZIP)",
     "zipProgress": "{done} / {total}…",
-    "downloadOriginal": "Түпнұсқаны жүктеу"
+    "downloadOriginal": "Түпнұсқаны жүктеу",
+    "videos": "бейне",
+    "voiceWishes": "дауыстай тілек",
+    "guestListLink": "Қонақтар тізімі",
+    "deleteConfirm": "Бұл естелікті жоясыз ба? Кадр қонаққа қайтарылмайды.",
+    "zipError": "Архив жиналмады. Байланысты тексеріп, қайталап көріңіз."
   },
   "countdown": {
     "days": "күн",
@@ -202,9 +207,22 @@
     "photoCount": "{count} кадр",
     "empty": "Әзірге бос.",
     "mine": "менікі",
-    "download": "Жүктеу"
+    "download": "Жүктеу",
+    "mediaCount": "{count, plural, one {# естелік} other {# естелік}}",
+    "voiceWishes": "Дауыстай тілектер",
+    "deleteItem": "Жою"
   },
   "print": {
     "print": "Басып шығару"
+  },
+  "guestList": {
+    "backToEvent": "Іс-шараға оралу",
+    "title": "Қонақтар",
+    "empty": "Әзірге ешкім қосылған жоқ. Қонақтар QR-кодты сканерлеген соң осында көрінеді.",
+    "anonymous": "Атаусыз қонақ",
+    "joined": "{time} қосылды",
+    "photos": "Фото",
+    "videos": "Бейне",
+    "voice": "Дауыстай тілектер"
   }
 }

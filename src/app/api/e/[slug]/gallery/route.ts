@@ -3,7 +3,7 @@ import { MEDIA_BUCKET, SIGNED_URL_TTL, supabaseAdmin } from "@/lib/supabase/admi
 import { getEventBySlug } from "@/lib/events";
 import { DEVICE_COOKIE } from "@/lib/device";
 import { isRevealed } from "@/lib/types";
-import type { MediaType } from "@/lib/types";
+import type { GalleryItem, MediaType } from "@/lib/types";
 
 interface MediaRecord {
   id: string;
@@ -16,21 +16,6 @@ interface MediaRecord {
   created_at: string;
   guest_id: string;
   guests: { display_name: string | null; device_token: string } | null;
-}
-
-/** The shape each gallery item is served as (guest + host galleries). */
-export interface GalleryItem {
-  id: string;
-  type: MediaType;
-  url: string | null;
-  /** photo thumbnail or video poster; null for audio */
-  thumbUrl: string | null;
-  mimeType: string;
-  durationS: number | null;
-  filter: string;
-  guestName: string | null;
-  mine: boolean;
-  createdAt: string;
 }
 
 /**
@@ -74,11 +59,22 @@ export async function GET(
   const paths = rows.flatMap((m) =>
     m.thumb_path ? [m.storage_path, m.thumb_path] : [m.storage_path]
   );
-  const { data: signed } =
+  // Two batches: display URLs, and download URLs with content-disposition
+  // (the <a download> attribute is ignored cross-origin, so the header is
+  // the only way "Save" actually saves).
+  const [{ data: signed }, { data: signedDl }] =
     paths.length > 0
-      ? await storage.createSignedUrls(paths, SIGNED_URL_TTL)
-      : { data: [] };
+      ? await Promise.all([
+          storage.createSignedUrls(paths, SIGNED_URL_TTL),
+          storage.createSignedUrls(
+            rows.map((m) => m.storage_path),
+            SIGNED_URL_TTL,
+            { download: true }
+          ),
+        ])
+      : [{ data: [] }, { data: [] }];
   const urlFor = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+  const dlFor = new Map((signedDl ?? []).map((s) => [s.path, s.signedUrl]));
 
   const deviceToken = req.cookies.get(DEVICE_COOKIE)?.value;
 
@@ -87,6 +83,7 @@ export async function GET(
     type: m.media_type,
     url: urlFor.get(m.storage_path) ?? null,
     thumbUrl: m.thumb_path ? (urlFor.get(m.thumb_path) ?? null) : null,
+    downloadUrl: dlFor.get(m.storage_path) ?? null,
     mimeType: m.mime_type,
     durationS: m.duration_s === null ? null : Number(m.duration_s),
     filter: m.filter,

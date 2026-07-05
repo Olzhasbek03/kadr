@@ -1,35 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { PublicEvent } from "@/lib/types";
-import { filterCss, STYLE_COVER } from "@/lib/filters";
+import type { GalleryItem, PublicEvent } from "@/lib/types";
+import { STYLE_COVER } from "@/lib/filters";
 import { formatDateTime } from "@/lib/format";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Countdown from "@/components/dashboard/Countdown";
-import {
-  ArrowLeft,
-  ArrowRight,
-  DownloadIcon,
-  XIcon,
-} from "@/components/icons";
-
-interface GalleryPhoto {
-  id: string;
-  url: string | null;
-  thumbUrl: string | null;
-  filter: string;
-  guestName: string | null;
-  mine: boolean;
-}
+import MediaTile from "@/components/media/MediaTile";
+import MediaLightbox from "@/components/media/MediaLightbox";
+import AudioWishCard from "@/components/media/AudioWishCard";
 
 type Phase = "locked" | "unlocking" | "revealed" | "error";
 
 /**
- * The reveal is the product's signature moment: locked (the photos sleep
+ * The reveal is the product's signature moment: locked (the media sleeps
  * under a veil) → the veil lifts → the gallery develops in. The server
  * enforces the gate; before reveal the API returns 403, so this screen
- * can't leak photos even if the device clock lies.
+ * can't leak anything even if the device clock lies.
  */
 export default function GuestGallery({
   event,
@@ -43,7 +31,7 @@ export default function GuestGallery({
   const locale = useLocale();
 
   const [phase, setPhase] = useState<Phase>(initiallyRevealed ? "unlocking" : "locked");
-  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+  const [media, setMedia] = useState<GalleryItem[]>([]);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   const load = useCallback(async () => {
@@ -55,7 +43,7 @@ export default function GuestGallery({
       }
       if (!res.ok) throw new Error(String(res.status));
       const data = await res.json();
-      setPhotos(data.photos);
+      setMedia(data.media);
       // Hold the veil a beat, then let the grid develop in.
       setTimeout(() => setPhase("revealed"), 1200);
     } catch {
@@ -79,7 +67,10 @@ export default function GuestGallery({
     return () => clearTimeout(id);
   }, [phase, event.revealAt]);
 
-  // ── locked: the photos sleep under the veil ───────────────────────
+  const wishes = useMemo(() => media.filter((m) => m.type === "audio"), [media]);
+  const visual = useMemo(() => media.filter((m) => m.type !== "audio"), [media]);
+
+  // ── locked: the media sleeps under the veil ───────────────────────
   if (phase === "locked") {
     return (
       <main className="flex min-h-dvh flex-col">
@@ -158,108 +149,52 @@ export default function GuestGallery({
       <div className="mx-auto max-w-5xl px-5">
         <p className="text-sm text-ink-2">{t("revealedKicker")}</p>
         <h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{event.name}</h1>
-        <p className="mt-2 text-sm text-ink-2">{t("photoCount", { count: photos.length })}</p>
+        <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
 
-        {photos.length === 0 ? (
+        {media.length === 0 ? (
           <p className="mt-14 text-center text-ink-2">{t("empty")}</p>
         ) : (
-          <div className="mt-8 grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
-            {photos.map((photo, i) => (
-              <button
-                key={photo.id}
-                type="button"
-                onClick={() => setLightbox(i)}
-                className="develop-in group relative aspect-square overflow-hidden rounded-[10px] bg-surface"
-                style={{ ["--dev-delay" as string]: `${Math.min(i, 14) * 70}ms`, minHeight: 0 }}
-                aria-label={photo.guestName ?? `photo ${i + 1}`}
-              >
-                {photo.thumbUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photo.thumbUrl}
-                    alt=""
-                    loading={i < 12 ? "eager" : "lazy"}
-                    className="h-full w-full object-cover transition-transform group-active:scale-95"
-                    style={{ filter: filterCss(photo.filter) }}
+          <>
+            {wishes.length > 0 && (
+              <section className="mt-8">
+                <p className="label-soft">{t("voiceWishes")}</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {wishes.map((item) => (
+                    <AudioWishCard
+                      key={item.id}
+                      item={item}
+                      accentLabel={item.mine ? t("mine") : null}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {visual.length > 0 && (
+              <div className="mt-8 grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
+                {visual.map((item, i) => (
+                  <MediaTile
+                    key={item.id}
+                    item={item}
+                    index={i}
+                    mineLabel={item.mine ? t("mine") : null}
+                    onOpen={() => setLightbox(i)}
+                    eager={i < 12}
                   />
-                )}
-                {photo.mine && (
-                  <span className="absolute left-2 top-2 rounded-full bg-dark/55 px-2.5 py-1 text-[0.68rem] font-semibold text-ivory backdrop-blur-sm">
-                    {t("mine")}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* lightbox (photo viewing stays dark) */}
-      {lightbox !== null && photos[lightbox] && (
-        <div
-          className="fixed inset-0 z-50 flex flex-col bg-dark/95 text-ivory"
-          onClick={() => setLightbox(null)}
-        >
-          <div className="flex items-center justify-between p-4">
-            <span className="pl-2 text-sm text-ivory/60">
-              {photos[lightbox].guestName ?? ""}
-              <span className="numeral ml-3 text-base text-ivory">
-                {lightbox + 1} / {photos.length}
-              </span>
-            </span>
-            <button
-              type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-ivory/10"
-              aria-label={tc("close")}
-            >
-              <XIcon size={18} />
-            </button>
-          </div>
-          <div
-            className="flex flex-1 items-center justify-center overflow-hidden px-3"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {photos[lightbox].url && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={photos[lightbox].url!}
-                alt=""
-                className="max-h-full max-w-full rounded-[10px] object-contain"
-                style={{ filter: filterCss(photos[lightbox].filter) }}
-              />
-            )}
-          </div>
-          <div
-            className="flex items-center justify-between gap-3 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              disabled={lightbox === 0}
-              onClick={() => setLightbox(lightbox - 1)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-ivory/10 disabled:opacity-40"
-              aria-label={tc("previous")}
-            >
-              <ArrowLeft size={18} />
-            </button>
-            <a
-              href={photos[lightbox].url ?? "#"}
-              download={`kormem-${photos[lightbox].id}.jpg`}
-              className="btn btn-dark !min-h-[50px]"
-            >
-              <DownloadIcon size={17} /> {t("download")}
-            </a>
-            <button
-              type="button"
-              disabled={lightbox >= photos.length - 1}
-              onClick={() => setLightbox(lightbox + 1)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-ivory/10 disabled:opacity-40"
-              aria-label={tc("next")}
-            >
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </div>
+      {lightbox !== null && visual[lightbox] && (
+        <MediaLightbox
+          items={visual}
+          index={lightbox}
+          onNavigate={setLightbox}
+          onClose={() => setLightbox(null)}
+        />
       )}
     </main>
   );

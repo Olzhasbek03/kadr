@@ -11,7 +11,9 @@ export default async function GuestGalleryPage(ctx: {
   const { slug } = await ctx.params;
   const event = await getEventBySlug(slug);
 
-  if (!event || event.status !== "active") {
+  // Ended events keep their gallery: the reveal often happens after the
+  // night is over. Only a missing event is a dead end.
+  if (!event) {
     const tc = await getTranslations("common");
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">

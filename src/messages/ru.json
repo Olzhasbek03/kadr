@@ -133,7 +133,12 @@
     "photoCount": "{count, plural, one {# кадр} few {# кадра} many {# кадров} other {# кадра}}",
     "downloadAll": "Скачать всё (ZIP)",
     "zipProgress": "{done} / {total}…",
-    "downloadOriginal": "Скачать оригинал"
+    "downloadOriginal": "Скачать оригинал",
+    "videos": "видео",
+    "voiceWishes": "голосовых",
+    "guestListLink": "Список гостей",
+    "deleteConfirm": "Удалить это воспоминание? Кадр гостю не вернётся.",
+    "zipError": "Не удалось собрать архив. Проверьте соединение и попробуйте ещё раз."
   },
   "countdown": {
     "days": "дн.",
@@ -202,9 +207,22 @@
     "photoCount": "{count, plural, one {# кадр} few {# кадра} many {# кадров} other {# кадра}}",
     "empty": "Здесь пока пусто.",
     "mine": "мой",
-    "download": "Скачать"
+    "download": "Скачать",
+    "mediaCount": "{count, plural, one {# воспоминание} few {# воспоминания} other {# воспоминаний}}",
+    "voiceWishes": "Голосовые пожелания",
+    "deleteItem": "Удалить"
   },
   "print": {
     "print": "Печать"
+  },
+  "guestList": {
+    "backToEvent": "К событию",
+    "title": "Гости",
+    "empty": "Пока никто не присоединился. Как только гости отсканируют QR-код, они появятся здесь.",
+    "anonymous": "Гость без имени",
+    "joined": "Присоединился {time}",
+    "photos": "Фото",
+    "videos": "Видео",
+    "voice": "Голосовые пожелания"
   }
 }

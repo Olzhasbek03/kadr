@@ -95,6 +95,23 @@ export function allowanceFor(event: Pick<EventRow, "shots_per_guest">, guest: Gu
   };
 }
 
+/** One gallery entry as served to clients (guest gallery + host dashboard). */
+export interface GalleryItem {
+  id: string;
+  type: MediaType;
+  url: string | null;
+  /** photo thumbnail or video poster; null for audio */
+  thumbUrl: string | null;
+  /** same object with content-disposition, for real downloads */
+  downloadUrl: string | null;
+  mimeType: string;
+  durationS: number | null;
+  filter: string;
+  guestName: string | null;
+  mine: boolean;
+  createdAt: string;
+}
+
 export function isRevealed(revealAt: string, now = new Date()): boolean {
   return now.getTime() >= new Date(revealAt).getTime();
 }

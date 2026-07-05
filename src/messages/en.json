@@ -133,7 +133,12 @@
     "photoCount": "{count, plural, one {# photo} other {# photos}}",
     "downloadAll": "Download all (ZIP)",
     "zipProgress": "{done} / {total}…",
-    "downloadOriginal": "Download original"
+    "downloadOriginal": "Download original",
+    "videos": "videos",
+    "voiceWishes": "voice wishes",
+    "guestListLink": "Guest list",
+    "deleteConfirm": "Delete this memory? The guest won't get the shot back.",
+    "zipError": "Couldn't build the archive. Check your connection and try again."
   },
   "countdown": {
     "days": "days",
@@ -202,9 +207,22 @@
     "photoCount": "{count, plural, one {# photo} other {# photos}}",
     "empty": "Nothing here yet.",
     "mine": "mine",
-    "download": "Download"
+    "download": "Download",
+    "mediaCount": "{count, plural, one {# memory} other {# memories}}",
+    "voiceWishes": "Voice wishes",
+    "deleteItem": "Delete"
   },
   "print": {
     "print": "Print"
+  },
+  "guestList": {
+    "backToEvent": "Back to event",
+    "title": "Guests",
+    "empty": "Nobody has joined yet. Once guests scan the QR code, they appear here.",
+    "anonymous": "Guest without a name",
+    "joined": "Joined {time}",
+    "photos": "Photos",
+    "videos": "Videos",
+    "voice": "Voice wishes"
   }
 }

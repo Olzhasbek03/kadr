@@ -6,19 +6,29 @@ import { MEDIA_BUCKET, SIGNED_URL_TTL, supabaseAdmin } from "@/lib/supabase/admi
 import { config } from "@/lib/config";
 import { formatDateTime } from "@/lib/format";
 import { STYLE_COVER } from "@/lib/filters";
-import { isRevealed, type EventRow } from "@/lib/types";
+import { isRevealed, type EventRow, type GalleryItem, type MediaType } from "@/lib/types";
 import SharePanel from "@/components/dashboard/SharePanel";
 import Countdown from "@/components/dashboard/Countdown";
 import RevealNowButton from "@/components/dashboard/RevealNowButton";
-import HostGallery, { type GalleryPhoto } from "@/components/dashboard/HostGallery";
-import { ArrowLeft, CameraIcon, ClockIcon, UsersIcon } from "@/components/icons";
+import HostGallery from "@/components/dashboard/HostGallery";
+import {
+  ArrowLeft,
+  CameraIcon,
+  ChevronRight,
+  MicIcon,
+  UsersIcon,
+  VideoIcon,
+} from "@/components/icons";
 
 interface MediaRecord {
   id: string;
-  media_type: "photo" | "video" | "audio";
+  media_type: MediaType;
   storage_path: string;
   thumb_path: string | null;
+  mime_type: string;
+  duration_s: number | null;
   filter: string;
+  created_at: string;
   guests: { display_name: string | null } | null;
 }
 
@@ -40,7 +50,9 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
     supabase.from("guests").select("id", { count: "exact", head: true }).eq("event_id", event.id),
     supabase
       .from("media")
-      .select("id, media_type, storage_path, thumb_path, filter, guests(display_name)")
+      .select(
+        "id, media_type, storage_path, thumb_path, mime_type, duration_s, filter, created_at, guests(display_name)"
+      )
       .eq("event_id", event.id)
       .order("created_at", { ascending: true })
       .returns<MediaRecord[]>(),
@@ -48,20 +60,40 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
 
   // Mint signed URLs with the service key (bucket is private).
   const rows = mediaRows ?? [];
-  let photos: GalleryPhoto[] = [];
+  let items: GalleryItem[] = [];
   if (rows.length > 0) {
     const storage = supabaseAdmin().storage.from(MEDIA_BUCKET);
-    const paths = rows.flatMap((p) => [p.storage_path, p.thumb_path ?? p.storage_path]);
-    const { data: signed } = await storage.createSignedUrls(paths, SIGNED_URL_TTL);
+    const paths = rows.flatMap((m) =>
+      m.thumb_path ? [m.storage_path, m.thumb_path] : [m.storage_path]
+    );
+    const [{ data: signed }, { data: signedDl }] = await Promise.all([
+      storage.createSignedUrls(paths, SIGNED_URL_TTL),
+      storage.createSignedUrls(
+        rows.map((m) => m.storage_path),
+        SIGNED_URL_TTL,
+        { download: true }
+      ),
+    ]);
     const urlFor = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
-    photos = rows.map((p) => ({
-      id: p.id,
-      url: urlFor.get(p.storage_path) ?? null,
-      thumbUrl: urlFor.get(p.thumb_path ?? p.storage_path) ?? null,
-      filter: p.filter,
-      guestName: p.guests?.display_name ?? null,
+    const dlFor = new Map((signedDl ?? []).map((s) => [s.path, s.signedUrl]));
+    items = rows.map((m) => ({
+      id: m.id,
+      type: m.media_type,
+      url: urlFor.get(m.storage_path) ?? null,
+      thumbUrl: m.thumb_path ? (urlFor.get(m.thumb_path) ?? null) : null,
+      downloadUrl: dlFor.get(m.storage_path) ?? null,
+      mimeType: m.mime_type,
+      durationS: m.duration_s === null ? null : Number(m.duration_s),
+      filter: m.filter,
+      guestName: m.guests?.display_name ?? null,
+      mine: false,
+      createdAt: m.created_at,
     }));
   }
+
+  const photoCount = rows.filter((m) => m.media_type === "photo").length;
+  const videoCount = rows.filter((m) => m.media_type === "video").length;
+  const voiceCount = rows.filter((m) => m.media_type === "audio").length;
 
   const revealed = isRevealed(event.reveal_at);
   const joinUrl = `${config.appUrl}/e/${event.slug}`;
@@ -100,14 +132,18 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
       </div>
 
       {/* stats */}
-      <div className="mt-10 flex gap-12">
+      <div className="mt-10 flex flex-wrap gap-x-12 gap-y-6">
         {[
           [guestCount ?? 0, t("guests"), <UsersIcon key="u" size={15} />],
-          [photos.length, t("photos"), <CameraIcon key="c" size={15} />],
-          [event.shots_per_guest, t("shotsPerGuest"), <ClockIcon key="s" size={15} />],
-        ].map(([num, label], i) => (
+          [photoCount, t("photos"), <CameraIcon key="c" size={15} />],
+          [videoCount, t("videos"), <VideoIcon key="v" size={15} />],
+          [voiceCount, t("voiceWishes"), <MicIcon key="m" size={15} />],
+        ].map(([num, label, icon], i) => (
           <div key={i}>
-            <div className="numeral text-4xl">{num as number}</div>
+            <div className="numeral flex items-center gap-2.5 text-4xl">
+              {num as number}
+              <span className="text-ink-2">{icon}</span>
+            </div>
             <div className="label-soft mt-1.5">{label as string}</div>
           </div>
         ))}
@@ -115,6 +151,22 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
 
       <div className="mt-10 flex flex-col gap-6">
         <SharePanel joinUrl={joinUrl} eventId={event.id} eventName={event.name} />
+
+        {/* guest list */}
+        <Link
+          href={`/dashboard/${event.id}/guests`}
+          className="card group flex items-center justify-between p-5"
+        >
+          <span className="flex items-center gap-3">
+            <UsersIcon size={18} className="text-ink-2" />
+            <span className="font-medium">{t("guestListLink")}</span>
+            <span className="numeral text-ink-2">{guestCount ?? 0}</span>
+          </span>
+          <ChevronRight
+            size={18}
+            className="text-ink-2 transition group-hover:translate-x-0.5 group-hover:text-ink"
+          />
+        </Link>
 
         {/* reveal */}
         <section className="card p-6 sm:p-8">
@@ -143,13 +195,13 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
         <section>
           <p className="label-soft">
             {t("gallerySection")}
-            {!revealed && photos.length > 0 && (
+            {!revealed && items.length > 0 && (
               <span className="ml-2 normal-case tracking-normal text-ink-2">
                 — {t("hostOnlyNote")}
               </span>
             )}
           </p>
-          <HostGallery photos={photos} eventName={event.name} />
+          <HostGallery items={items} eventId={event.id} eventName={event.name} />
         </section>
       </div>
     </div>
