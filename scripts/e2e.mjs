@@ -34,12 +34,12 @@ const svcHeaders = {
   "Content-Type": "application/json",
 };
 
-function uploadForm(mediaType, bytes, mime, { thumb = null, duration = null } = {}) {
+function uploadForm(mediaType, bytes, mime, { thumb = null, duration = null, filter = "noir" } = {}) {
   const f = new FormData();
   f.append("mediaType", mediaType);
   f.append("file", new Blob([bytes], { type: mime }), "capture.bin");
   if (thumb) f.append("thumb", new Blob([thumb], { type: "image/jpeg" }), "t.jpg");
-  f.append("filter", "noir");
+  f.append("filter", filter);
   if (duration !== null) f.append("duration", String(duration));
   return f;
 }
@@ -122,6 +122,19 @@ async function main() {
   const rejoin = await join(slug, null, g1.cookie);
   ok(rejoin.body.shotsLeft === 6, "Guest: rejoin is idempotent (same session resumes)");
 
+  // localStorage mirror: no cookie, token in the body re-adopts the session
+  const rawToken = decodeURIComponent(g1.cookie.split("=")[1]);
+  const adopt = await fetch(`${APP}/api/e/${slug}/join`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ deviceToken: rawToken }),
+  });
+  const adoptBody = await adopt.json();
+  ok(
+    adopt.status === 200 && adoptBody.guest.id === g1.body.guest.id,
+    "Guest: stored device token re-adopts the same session without a cookie"
+  );
+
   // ── 3. Shooting window closed → upload refused
   const upClosed = await upload(slug, g1.cookie, "photo", JPEG, "image/jpeg");
   ok(upClosed.status === 403, "Upload: refused after shooting window closes");
@@ -186,9 +199,38 @@ async function main() {
     `Upload: atomic budget holds under concurrency (1 created, 2 refused; got ${created}/${refused})`
   );
 
-  // ── 7. Reveal gate
+  // ── 7. Reveal gate: every read path fails closed pre-reveal
   const galLocked = await fetch(`${APP}/api/e/${slug}/gallery`);
   ok(galLocked.status === 403, "Reveal gate: gallery returns 403 before reveal time");
+
+  const zipLocked = await fetch(`${APP}/api/e/${slug}/download`);
+  ok(zipLocked.status === 403, "Reveal gate: zip download refused pre-reveal (no auth)");
+
+  // Raw clients get nothing from the database directly.
+  const anonRead = await fetch(`${SB}/rest/v1/media?event_id=eq.${eventId}&select=id`, {
+    headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
+  });
+  const anonRows = await anonRead.json().catch(() => null);
+  ok(
+    !anonRead.ok || (Array.isArray(anonRows) && anonRows.length === 0),
+    "RLS: anonymous client reads zero media rows pre-reveal"
+  );
+  const otherMediaRead = await fetch(`${SB}/rest/v1/media?event_id=eq.${eventId}&select=id`, {
+    headers: { apikey: ANON, Authorization: `Bearer ${process.env.OTHER_JWT}` },
+  });
+  const otherMediaRows = await otherMediaRead.json().catch(() => null);
+  ok(
+    Array.isArray(otherMediaRows) && otherMediaRows.length === 0,
+    "RLS: another authed user reads zero media rows pre-reveal"
+  );
+  const hostMediaRead = await fetch(`${SB}/rest/v1/media?event_id=eq.${eventId}&select=id`, {
+    headers: { apikey: ANON, Authorization: `Bearer ${token}` },
+  });
+  const hostMediaRows = await hostMediaRead.json().catch(() => null);
+  ok(
+    Array.isArray(hostMediaRows) && hostMediaRows.length > 0,
+    "RLS: the host (and only the host) reads media pre-reveal for moderation"
+  );
 
   await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
     method: "PATCH",
@@ -214,6 +256,17 @@ async function main() {
     "Gallery: signed display + download URLs on every item, durations on clips"
   );
   ok(media.every((m) => m.mine === true), "Gallery: guest's own media flagged 'mine'");
+
+  // Post-reveal the zip streams for anyone with the link.
+  const zipRes = await fetch(`${APP}/api/e/${slug}/download`);
+  const zipHead = Buffer.from(await zipRes.arrayBuffer()).subarray(0, 4);
+  ok(
+    zipRes.status === 200 &&
+      (zipRes.headers.get("content-type") || "").includes("application/zip") &&
+      zipHead[0] === 0x50 &&
+      zipHead[1] === 0x4b,
+    "Download: streamed zip served post-reveal (PK signature)"
+  );
 
   // ── 8. Moderation: host deletes one item via RLS; stranger cannot
   const victim = byType("photo")[0];
@@ -244,13 +297,26 @@ async function main() {
     "RLS: host deletes a capture from their own event"
   );
 
-  // ── 9. Rate limit: a fresh guest hammering the endpoint hits 429
+  // ── 9. Allowed styles: a disallowed filter is coerced to the preset
   await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
     method: "PATCH",
     headers: svcHeaders,
-    body: JSON.stringify({ shots_per_guest: 50 }),
+    body: JSON.stringify({ shots_per_guest: 50, allowed_styles: ["noir", "warm"] }),
   });
   const g2 = await join(slug, "Spammer");
+  const styled = await upload(slug, g2.cookie, "photo", JPEG, "image/jpeg", {
+    filter: "vintage", // not in the allowed list; event preset is warm
+  });
+  const styledRow = await fetch(
+    `${SB}/rest/v1/media?guest_id=eq.${g2.body.guest.id}&select=filter&order=created_at.desc&limit=1`,
+    { headers: { apikey: ANON, Authorization: `Bearer ${token}` } }
+  ).then((r) => r.json());
+  ok(
+    styled.status === 201 && styledRow?.[0]?.filter === "warm",
+    "Allowed styles: disallowed filter stored as the event preset, shot not lost"
+  );
+
+  // ── 10. Rate limit: a fresh guest hammering the endpoint hits 429
   let sawTooMany = false;
   for (let i = 0; i < 10; i++) {
     const r = await upload(slug, g2.cookie, "photo", JPEG, "image/jpeg");
