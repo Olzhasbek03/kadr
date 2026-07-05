@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { PublicEvent } from "@/lib/types";
@@ -124,6 +125,11 @@ export default function GuestLanding({
             {!pending && <ArrowRight size={18} />}
           </button>
           <p className="mt-4 text-xs leading-relaxed text-ink-2">{t("noAppNeeded")}</p>
+          <p className="mt-2 text-xs text-ink-2">
+            <Link href="/privacy" className="underline underline-offset-4 transition-colors hover:text-ink">
+              {t("privacyLink")}
+            </Link>
+          </p>
         </div>
       </div>
     </main>
