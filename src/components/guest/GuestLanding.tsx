@@ -37,12 +37,30 @@ export default function GuestLanding({
     setPending(true);
     setError(false);
     try {
+      // localStorage mirror lets the session survive a cleared cookie.
+      let storedToken: string | null = null;
+      try {
+        storedToken = localStorage.getItem("kormem-device");
+      } catch {
+        /* private mode without storage: cookie-only is fine */
+      }
       const res = await fetch(`/api/e/${event.slug}/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim() || undefined }),
+        body: JSON.stringify({
+          name: name.trim() || undefined,
+          deviceToken: storedToken || undefined,
+        }),
       });
       if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json().catch(() => ({}));
+      if (typeof data.deviceToken === "string") {
+        try {
+          localStorage.setItem("kormem-device", data.deviceToken);
+        } catch {
+          /* best effort */
+        }
+      }
       router.push(`/e/${event.slug}/camera`);
     } catch {
       setError(true);

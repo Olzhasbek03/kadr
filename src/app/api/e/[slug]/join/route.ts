@@ -20,16 +20,23 @@ export async function POST(
   }
 
   let displayName: string | null = null;
+  let bodyToken: string | null = null;
   try {
     const body = await req.json();
     if (typeof body.name === "string") {
       displayName = body.name.trim().slice(0, 80) || null;
     }
+    // localStorage mirror of the device token: lets a guest whose cookie
+    // was cleared resume their session. Format-checked, never trusted raw.
+    if (typeof body.deviceToken === "string" && /^[0-9a-f-]{16,64}$/i.test(body.deviceToken)) {
+      bodyToken = body.deviceToken;
+    }
   } catch {
     // empty body is fine
   }
 
-  const deviceToken = req.cookies.get(DEVICE_COOKIE)?.value ?? randomUUID();
+  const deviceToken =
+    req.cookies.get(DEVICE_COOKIE)?.value ?? bodyToken ?? randomUUID();
   const db = supabaseAdmin();
 
   // Existing guest for this device?
@@ -89,6 +96,8 @@ export async function POST(
       displayName: guest.display_name,
       shotsUsed: guest.shots_used,
     },
+    // echoed so the client can mirror it in localStorage
+    deviceToken,
     ...allowanceFor(event, guest),
   });
   res.cookies.set(DEVICE_COOKIE, deviceToken, {
