@@ -5,13 +5,17 @@ import type { MediaType } from "@/lib/types";
  * Supabase free tier (1 GB storage / 5 GB egress) — see the init migration
  * for the per-item math. The client compresses well below these; the caps
  * only exist so a hostile client can't bypass compression.
+ *
+ * All caps must stay under Vercel's ~4.5 MB serverless request-body limit,
+ * or the platform rejects the upload before this route ever runs. A 10s
+ * 720p clip at 2.5 Mbps is ~3.4 MB, so 4 MB leaves honest headroom.
  */
 export const MEDIA_RULES: Record<
   MediaType,
   { maxBytes: number; mimes: readonly string[] }
 > = {
-  photo: { maxBytes: 4 * 1024 * 1024, mimes: ["image/jpeg"] },
-  video: { maxBytes: 6 * 1024 * 1024, mimes: ["video/mp4", "video/webm"] },
+  photo: { maxBytes: 3 * 1024 * 1024, mimes: ["image/jpeg"] },
+  video: { maxBytes: 4 * 1024 * 1024, mimes: ["video/mp4", "video/webm"] },
   audio: { maxBytes: 1.5 * 1024 * 1024, mimes: ["audio/mp4", "audio/webm"] },
 };
 

@@ -212,7 +212,8 @@
     "voiceSend": "Send",
     "voiceCapReached": "Your voice wish is already on the roll.",
     "videoCapReached": "All video clips used — photos still work!",
-    "videoTooLarge": "That clip is too long — keep it under 10 seconds."
+    "videoTooLarge": "That clip is too long — keep it under 10 seconds.",
+    "fileUnreadable": "Could not read that file. Try the camera instead."
   },
   "gallery": {
     "lockedTitle": "The photos are still veiled",

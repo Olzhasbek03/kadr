@@ -272,10 +272,11 @@ export default function CameraView({
         afterShot();
         void enqueueCapture("photo", shot.original, "image/jpeg", shot.thumb, null);
       } catch {
-        /* unreadable file */
+        // e.g. a HEIC the browser can't decode (Android picking from gallery)
+        setLimitNote(t("fileUnreadable"));
       }
     },
-    [developing, allowance.shotsLeft, afterShot, enqueueCapture]
+    [developing, allowance.shotsLeft, afterShot, enqueueCapture, t]
   );
 
   // ── shared recording timer/level plumbing ─────────────────────────
@@ -376,7 +377,7 @@ export default function CameraView({
     async (file: File | null) => {
       if (!file || allowance.videosLeft <= 0) return;
       // Native camera clips have no 10s cap; the size cap stands in for it.
-      if (file.size > 6 * 1024 * 1024) {
+      if (file.size > 4 * 1024 * 1024) {
         setLimitNote(t("videoTooLarge"));
         return;
       }
