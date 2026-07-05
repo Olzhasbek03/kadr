@@ -9,6 +9,7 @@ import AnimatedCamera from "@/components/marketing/AnimatedCamera";
 import PhoneDemo from "@/components/marketing/PhoneDemo";
 import OccasionShowcase from "@/components/marketing/OccasionShowcase";
 import FloatingTryQr from "@/components/marketing/FloatingTryQr";
+import HeroPhone from "@/components/marketing/HeroPhone";
 import { ArrowRight, CameraIcon, MicIcon, VideoIcon } from "@/components/icons";
 
 export default async function LandingPage() {
@@ -60,26 +61,32 @@ export default async function LandingPage() {
           </div>
         </header>
 
-        <div className="relative z-20 flex flex-1 flex-col items-center justify-center px-5 pb-24 text-center sm:px-8">
-          <h1 className="rise-in font-display max-w-[18ch] whitespace-pre-line text-[clamp(2.6rem,7vw,5.4rem)]">
-            {t("heroTitle")}
-          </h1>
-          <p
-            className="rise-in mt-6 max-w-lg text-[1.05rem] leading-[1.5] text-ink-2"
-            style={{ animationDelay: "120ms" }}
-          >
-            {t("heroSub")}
-          </p>
-          <div
-            className="rise-in mt-9 flex flex-wrap items-center justify-center gap-3"
-            style={{ animationDelay: "220ms" }}
-          >
-            <Link href="/dashboard/new" className="btn btn-primary">
-              {t("cta")} <ArrowRight size={18} />
-            </Link>
-            <a href="#how" className="btn btn-dark">
-              {t("ctaHow")}
-            </a>
+        <div className="relative z-20 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-5 pb-16 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+          <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+            <h1 className="rise-in font-display max-w-[16ch] whitespace-pre-line text-[clamp(2.6rem,6.4vw,5.2rem)]">
+              {t("heroTitle")}
+            </h1>
+            <p
+              className="rise-in mt-6 max-w-lg text-[1.05rem] leading-[1.5] text-ink-2"
+              style={{ animationDelay: "120ms" }}
+            >
+              {t("heroSub")}
+            </p>
+            <div
+              className="rise-in mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+              style={{ animationDelay: "220ms" }}
+            >
+              <Link href="/dashboard/new" className="btn btn-primary">
+                {t("cta")} <ArrowRight size={18} />
+              </Link>
+              <a href="#how" className="btn btn-dark">
+                {t("ctaHow")}
+              </a>
+            </div>
+          </div>
+          {/* the app, playing itself */}
+          <div className="rise-in" style={{ animationDelay: "300ms" }}>
+            <HeroPhone />
           </div>
         </div>
       </section>

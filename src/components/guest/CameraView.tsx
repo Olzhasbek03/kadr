@@ -31,7 +31,6 @@ import {
   PlayIcon,
   PauseIcon,
   RedoIcon,
-  StopIcon,
   UploadIcon,
   VideoIcon,
 } from "@/components/icons";
@@ -87,8 +86,14 @@ export default function CameraView({
   const [playingPreview, setPlayingPreview] = useState(false);
   const [level, setLevel] = useState(0);
 
-  const videoSupported = canRecordVideo();
-  const voiceSupported = canRecordAudio();
+  // MediaRecorder only exists in the browser; probing it during render
+  // makes the server and client disagree and breaks hydration.
+  const [videoSupported, setVideoSupported] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  useEffect(() => {
+    setVideoSupported(canRecordVideo());
+    setVoiceSupported(canRecordAudio());
+  }, []);
   const maxSeconds = mode === "voice" ? AUDIO_MAX_SECONDS : VIDEO_MAX_SECONDS;
 
   // ── stream lifecycle (per mode + facing) ──────────────────────────

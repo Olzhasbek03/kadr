@@ -1,4 +1,5 @@
 import { FILM_STYLES, isFilmStyle, type FilmStyle } from "@/lib/filters";
+import { isCoverTemplate, type CoverTemplate } from "@/lib/covers";
 
 export type RevealMode = "instant" | "event_end" | "custom";
 /** Every event is live from creation; hosts may end one early. */
@@ -20,6 +21,8 @@ export interface EventRow {
   /** Styles guests may shoot with; null means all. */
   allowed_styles: string[] | null;
   cover_image_url: string | null;
+  /** Invitation card design; may be absent until the migration runs. */
+  cover_template?: string | null;
   status: EventStatus;
   created_at: string;
 }
@@ -67,6 +70,8 @@ export interface PublicEvent {
   filterPreset: FilmStyle;
   /** Effective list of styles the guest camera offers. */
   allowedStyles: FilmStyle[];
+  /** Invitation card design shown on the join page. */
+  coverTemplate: CoverTemplate;
   status: EventStatus;
 }
 
@@ -86,6 +91,7 @@ export function toPublicEvent(e: EventRow): PublicEvent {
     revealAt: e.reveal_at,
     filterPreset: e.filter_preset,
     allowedStyles: effectiveStyles(e),
+    coverTemplate: isCoverTemplate(e.cover_template) ? e.cover_template : "classic",
     status: e.status,
   };
 }

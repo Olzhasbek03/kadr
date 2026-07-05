@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { computeRevealAt, newSlug } from "@/lib/events";
 import { FILM_STYLES, isFilmStyle } from "@/lib/filters";
+import { isCoverTemplate } from "@/lib/covers";
 import type { RevealMode } from "@/lib/types";
 
 const REVEAL_MODES: RevealMode[] = ["instant", "event_end", "custom"];
@@ -17,6 +18,8 @@ interface CreateEventBody {
   filterPreset?: string;
   /** Styles guests may use; omitted or full list means all. */
   allowedStyles?: string[];
+  /** Invitation card design; defaults to "classic". */
+  coverTemplate?: string;
 }
 
 /** POST /api/events — create an event (signed-in host). */
@@ -62,6 +65,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_reveal_at" }, { status: 400 });
   if (!isFilmStyle(filterPreset))
     return NextResponse.json({ error: "invalid_filter" }, { status: 400 });
+  const coverTemplate = body.coverTemplate ?? "classic";
+  if (!isCoverTemplate(coverTemplate))
+    return NextResponse.json({ error: "invalid_cover_template" }, { status: 400 });
 
   // Style restriction: every entry must be a real style, the preset must be
   // usable, and restricting to the full list is stored as "no restriction".
@@ -77,24 +83,39 @@ export async function POST(req: NextRequest) {
 
   const revealAt = computeRevealAt(revealMode, endTime, customReveal);
 
-  const { data, error } = await supabase
+  const row = {
+    host_user_id: user.id,
+    name,
+    slug: newSlug(),
+    event_date: eventDate.toISOString(),
+    end_time: endTime.toISOString(),
+    shots_per_guest: shots,
+    max_guests: maxGuests,
+    reveal_mode: revealMode,
+    reveal_at: revealAt.toISOString(),
+    filter_preset: filterPreset,
+    allowed_styles: allowedStyles,
+    cover_template: coverTemplate,
+    status: "active",
+  };
+
+  let { data, error } = await supabase
     .from("events")
-    .insert({
-      host_user_id: user.id,
-      name,
-      slug: newSlug(),
-      event_date: eventDate.toISOString(),
-      end_time: endTime.toISOString(),
-      shots_per_guest: shots,
-      max_guests: maxGuests,
-      reveal_mode: revealMode,
-      reveal_at: revealAt.toISOString(),
-      filter_preset: filterPreset,
-      allowed_styles: allowedStyles,
-      status: "active",
-    })
+    .insert(row)
     .select("id, slug, status")
     .single();
+
+  // Deployments where the cover_template migration hasn't run yet must
+  // still be able to create events; the join page falls back to "classic".
+  if (error && /cover_template/.test(error.message)) {
+    const legacyRow: Partial<typeof row> = { ...row };
+    delete legacyRow.cover_template;
+    ({ data, error } = await supabase
+      .from("events")
+      .insert(legacyRow)
+      .select("id, slug, status")
+      .single());
+  }
 
   if (error) {
     console.error("create event:", error.message);

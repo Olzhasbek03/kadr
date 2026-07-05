@@ -98,7 +98,12 @@
     "continueGoogle": "Continue with Google",
     "noPassword": "No passwords: a link to your email, or Google sign-in.",
     "errorGeneric": "Sign-in failed. Please try again.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "configError": "Sign-in is not configured: the Supabase URL is missing or invalid on this deployment. Check NEXT_PUBLIC_SUPABASE_URL in your hosting environment variables.",
+    "linkSpamHint": "No email after a minute? Check the spam folder.",
+    "resendIn": "Resend in {seconds}s",
+    "resend": "Resend the link",
+    "photoCaption": "Every guest becomes a photographer. The gallery opens when you say so."
   },
   "dashboard": {
     "kicker": "Host dashboard",
@@ -143,7 +148,16 @@
     "submit": "Create event",
     "allowedLabel": "Styles guests can use",
     "allowedHint": "Turn styles off to keep the gallery consistent. The default style is always available.",
-    "allowedDefault": "default"
+    "allowedDefault": "default",
+    "coverLabel": "Invitation card",
+    "coverHint": "The first screen guests see after scanning the QR. Your event name, in one of three designs.",
+    "coverPreviewKicker": "You are invited",
+    "coverPreviewCta": "Open the camera",
+    "covers": {
+      "classic": "Parchment",
+      "botanical": "Garden",
+      "noir": "Midnight"
+    }
   },
   "event": {
     "backToEvents": "Back to events",
@@ -191,7 +205,14 @@
     "startShooting": "Open the camera",
     "continueShooting": "Keep shooting",
     "noAppNeeded": "No app, no sign-up. Your shots open in the shared gallery.",
-    "privacyLink": "What happens to my photos and voice?"
+    "privacyLink": "What happens to my photos and voice?",
+    "installTitle": "Keep the camera one tap away",
+    "installText": "Add this event to your home screen: it opens straight into the camera, full screen.",
+    "installButton": "Add to home screen",
+    "installIosHint": "In Safari: tap Share, then \"Add to Home Screen\". It opens straight into the camera.",
+    "installDismiss": "Dismiss",
+    "notifyTitle": "{event}: your camera is ready",
+    "notifyBody": "You have {shots} shots. The gallery stays hidden until the reveal."
   },
   "camera": {
     "outOfFilm": "You're out of film",
@@ -287,7 +308,7 @@
   "try": {
     "kicker": "Try Kormem",
     "title": "Your camera is already waiting.",
-    "subtitle": "This is exactly what guests get after scanning an event QR. Take a shot; it stays on your device.",
+    "subtitle": "The same camera guests get after scanning the QR: photo, a short clip or a voice wish. Every take stays on your device.",
     "styles": "Film styles",
     "style_original": "Without",
     "style_noir": "Black and white",
@@ -298,6 +319,17 @@
     "createCta": "Create your event",
     "denied": "Allow camera access in your browser to try the demo.",
     "retry": "Try again",
-    "privacyNote": "The demo shot is not uploaded anywhere; it never leaves your device."
+    "modePhoto": "Photo",
+    "modeVideo": "Video",
+    "modeVoice": "Voice",
+    "modes": "Capture modes",
+    "flip": "Switch camera",
+    "record": "Record",
+    "stop": "Stop",
+    "play": "Play",
+    "pause": "Pause",
+    "voiceHint": "Up to {seconds}s. Tap the button and say your wish.",
+    "voiceListen": "Listen back. At a real event this would join the gallery.",
+    "micDenied": "Allow microphone access in your browser to try voice wishes."
   }
 }
