@@ -1,5 +1,7 @@
 // End-to-end integration test against the running dev server + local Supabase.
-// Exercises the real HTTP API routes and data-integrity guarantees.
+// Exercises the real HTTP API routes and data-integrity guarantees:
+// RLS, the shooting window, per-type sub-caps, atomic shot budget,
+// server-side MIME sniffing, rate limiting, the reveal gate and moderation.
 const APP = "http://localhost:3000";
 const SB = "http://127.0.0.1:54321";
 const ANON =
@@ -11,25 +13,63 @@ const ok = (c, m) => {
   (c ? pass++ : fail++), console.log(`${c ? "✓" : "✗ FAIL"}  ${m}`);
 };
 
-// A 1x1 JPEG.
+// A 1x1 JPEG (magic bytes FF D8 FF).
 const JPEG = Buffer.from(
   "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAAAP/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AvwA//9k=",
   "base64"
 );
+// EBML header → sniffed as webm.
+const WEBM = Buffer.concat([Buffer.from([0x1a, 0x45, 0xdf, 0xa3]), Buffer.alloc(64, 1)]);
+// ftyp box → sniffed as mp4/m4a.
+const M4A = Buffer.concat([
+  Buffer.from([0, 0, 0, 0x20]),
+  Buffer.from("ftypM4A "),
+  Buffer.alloc(64, 1),
+]);
+const TEXT = Buffer.from("definitely not media");
+
+const svcHeaders = {
+  apikey: process.env.SERVICE_KEY,
+  Authorization: `Bearer ${process.env.SERVICE_KEY}`,
+  "Content-Type": "application/json",
+};
+
+function uploadForm(mediaType, bytes, mime, { thumb = null, duration = null } = {}) {
+  const f = new FormData();
+  f.append("mediaType", mediaType);
+  f.append("file", new Blob([bytes], { type: mime }), "capture.bin");
+  if (thumb) f.append("thumb", new Blob([thumb], { type: "image/jpeg" }), "t.jpg");
+  f.append("filter", "noir");
+  if (duration !== null) f.append("duration", String(duration));
+  return f;
+}
+
+const upload = (slug, cookie, mediaType, bytes, mime, opts) =>
+  fetch(`${APP}/api/e/${slug}/upload`, {
+    method: "POST",
+    headers: { Cookie: cookie },
+    body: uploadForm(mediaType, bytes, mime, opts),
+  });
+
+async function join(slug, name, cookie = "") {
+  const res = await fetch(`${APP}/api/e/${slug}/join`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(cookie ? { Cookie: cookie } : {}) },
+    body: JSON.stringify(name ? { name } : {}),
+  });
+  const body = await res.json().catch(() => ({}));
+  const setCookie = res.headers.get("set-cookie") || "";
+  const device = /kadr_device=([^;]+)/.exec(setCookie)?.[1];
+  return { res, body, cookie: device ? `kadr_device=${device}` : cookie };
+}
 
 async function main() {
-  // ── host JWT via password grant (user was confirmed in the UI login test)
-  await fetch(`${SB}/auth/v1/token?grant_type=password`, {
-    method: "POST",
-    headers: { apikey: ANON, "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "host@kadr.test", password: "x" }),
-  }); // may fail; we set password next via admin in the shell wrapper
   const token = process.env.HOST_JWT;
   const userId = process.env.HOST_UID;
+  const now = Date.now();
 
   // ── 1. RLS: authed host insert (what /api/events does under the hood)
   const slug = "e2e" + Math.random().toString(36).slice(2, 7);
-  const now = Date.now();
   const insertRes = await fetch(`${SB}/rest/v1/events`, {
     method: "POST",
     headers: {
@@ -40,160 +80,186 @@ async function main() {
     },
     body: JSON.stringify({
       host_user_id: userId,
-      name: "E2E Wedding",
+      name: "E2E Celebration",
       slug,
       event_date: new Date(now + 3600e3).toISOString(),
-      end_time: new Date(now - 40 * 60e3).toISOString(), // 40 min ago → beyond the 30-min grace
-      shots_per_guest: 2,
+      end_time: new Date(now - 40 * 60e3).toISOString(), // beyond the 30-min grace
+      shots_per_guest: 6,
       max_guests: 50,
       reveal_mode: "custom",
       reveal_at: new Date(now + 3600e3).toISOString(), // reveal in 1h → gated
       filter_preset: "warm",
-      status: "draft",
-      price: 9900,
     }),
   });
   const insertJson = await insertRes.json();
-  if (insertRes.status !== 201) console.log("  insert response:", insertRes.status, JSON.stringify(insertJson));
+  if (insertRes.status !== 201)
+    console.log("  insert response:", insertRes.status, JSON.stringify(insertJson));
   const event = Array.isArray(insertJson) ? insertJson[0] : insertJson;
-  ok(insertRes.status === 201 && event?.id, "RLS: host can insert own event");
+  ok(
+    insertRes.status === 201 && event?.id && event.status === "active",
+    "RLS: host inserts own event; it is active immediately (no payment gate)"
+  );
+  const eventId = event.id;
 
   // RLS negative: a different user must not read this event
-  const otherToken = process.env.OTHER_JWT;
   const otherRead = await fetch(`${SB}/rest/v1/events?slug=eq.${slug}`, {
-    headers: { apikey: ANON, Authorization: `Bearer ${otherToken}` },
+    headers: { apikey: ANON, Authorization: `Bearer ${process.env.OTHER_JWT}` },
   });
   const otherRows = await otherRead.json();
   ok(Array.isArray(otherRows) && otherRows.length === 0, "RLS: other host cannot read the event");
 
-  const eventId = event.id;
+  // ── 2. Guest joins; allowance covers all three media types
+  const g1 = await join(slug, "Asel");
+  ok(
+    g1.res.status === 200 &&
+      g1.body.shotsLeft === 6 &&
+      g1.body.videosLeft === 3 &&
+      g1.body.audiosLeft === 1 &&
+      g1.cookie,
+    "Guest: joins, gets shot budget + video/audio sub-caps + session cookie"
+  );
 
-  // ── 2. Guest cannot join a draft event
-  const joinDraft = await fetch(`${APP}/api/e/${slug}/join`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "Asay" }),
-  });
-  ok(joinDraft.status === 404, "Guest: cannot join a draft (unpaid) event");
+  const rejoin = await join(slug, null, g1.cookie);
+  ok(rejoin.body.shotsLeft === 6, "Guest: rejoin is idempotent (same session resumes)");
 
-  // ── 3. Payment webhook activates the event
-  // create a pending payment row (as /api/payments/invoice would)
-  const extId = "e2e-inv-" + Math.random().toString(36).slice(2, 8);
-  await fetch(`${SB}/rest/v1/payments`, {
-    method: "POST",
-    headers: {
-      apikey: process.env.SERVICE_KEY,
-      Authorization: `Bearer ${process.env.SERVICE_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      event_id: eventId,
-      provider: "mock",
-      external_id: extId,
-      amount: 9900,
-      status: "pending",
-    }),
-  });
-  // bad signature rejected
-  const badHook = await fetch(`${APP}/api/payments/webhook`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ externalId: extId, status: "paid", signature: "deadbeef" }),
-  });
-  ok(badHook.status === 401, "Payments: webhook rejects a bad signature");
-  // sandbox complete → signed webhook → activation
-  const complete = await fetch(`${APP}/api/payments/mock/complete`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ externalId: extId, outcome: "paid" }),
-  });
-  ok(complete.status === 200, "Payments: sandbox complete fires signed webhook");
-
-  // ── 4. Guest join (now active). Capture device cookie.
-  const join = await fetch(`${APP}/api/e/${slug}/join`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "Asay" }),
-  });
-  const joinBody = await join.json();
-  const setCookie = join.headers.get("set-cookie") || "";
-  const device = /kadr_device=([^;]+)/.exec(setCookie)?.[1];
-  ok(join.status === 200 && joinBody.shotsLeft === 2 && device, "Guest: joins active event, gets 2 shots + device cookie");
-  const cookie = `kadr_device=${device}`;
-
-  // idempotent rejoin
-  const rejoin = await fetch(`${APP}/api/e/${slug}/join`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Cookie: cookie },
-    body: JSON.stringify({}),
-  });
-  const rejoinBody = await rejoin.json();
-  ok(rejoinBody.shotsLeft === 2, "Guest: rejoin is idempotent (still 2 shots, no new guest)");
-
-  // ── 5. Shooting is closed (end_time in the past) → upload refused
-  const upClosed = await fetch(`${APP}/api/e/${slug}/upload`, {
-    method: "POST",
-    headers: { Cookie: cookie },
-    body: (() => {
-      const f = new FormData();
-      f.append("original", new Blob([JPEG], { type: "image/jpeg" }), "s.jpg");
-      f.append("filter", "warm");
-      return f;
-    })(),
-  });
+  // ── 3. Shooting window closed → upload refused
+  const upClosed = await upload(slug, g1.cookie, "photo", JPEG, "image/jpeg");
   ok(upClosed.status === 403, "Upload: refused after shooting window closes");
 
-  // reopen the window (extend end_time) to test shot-limit atomicity
+  // reopen the window
   await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
     method: "PATCH",
-    headers: {
-      apikey: process.env.SERVICE_KEY,
-      Authorization: `Bearer ${process.env.SERVICE_KEY}`,
-      "Content-Type": "application/json",
-    },
+    headers: svcHeaders,
     body: JSON.stringify({ end_time: new Date(now + 3600e3).toISOString() }),
   });
 
-  // ── 6. Fire 5 uploads in parallel against a 2-shot limit
-  const shot = () =>
-    fetch(`${APP}/api/e/${slug}/upload`, {
-      method: "POST",
-      headers: { Cookie: cookie },
-      body: (() => {
-        const f = new FormData();
-        f.append("original", new Blob([JPEG], { type: "image/jpeg" }), "s.jpg");
-        f.append("thumb", new Blob([JPEG], { type: "image/jpeg" }), "t.jpg");
-        f.append("filter", "noir");
-        return f;
-      })(),
-    }).then((r) => r.status);
-  const results = await Promise.all([shot(), shot(), shot(), shot(), shot()]);
-  const created = results.filter((s) => s === 201).length;
-  const refused = results.filter((s) => s === 403).length;
-  ok(created === 2 && refused === 3, `Upload: atomic shot limit holds under concurrency (2 created, 3 refused; got ${created}/${refused})`);
+  // ── 4. Server-side validation: text bytes are not a photo
+  const upBad = await upload(slug, g1.cookie, "photo", TEXT, "image/jpeg");
+  ok(upBad.status === 400, "Upload: magic-byte sniffing rejects a fake 'photo'");
+  const upBadVideo = await upload(slug, g1.cookie, "video", JPEG, "video/mp4");
+  ok(upBadVideo.status === 400, "Upload: JPEG bytes rejected as a 'video'");
 
-  // ── 7. Reveal gate: gallery is 403 before reveal_at
+  // ── 5. One photo, three videos, one voice wish — then the sub-caps bite
+  const upPhoto = await upload(slug, g1.cookie, "photo", JPEG, "image/jpeg", { thumb: JPEG });
+  const photoBody = await upPhoto.json();
+  ok(
+    upPhoto.status === 201 && photoBody.shotsLeft === 5,
+    "Upload: photo accepted, shared budget decrements"
+  );
+
+  let videoStatuses = [];
+  for (let i = 0; i < 3; i++) {
+    const r = await upload(slug, g1.cookie, "video", WEBM, "video/webm", {
+      thumb: JPEG,
+      duration: 8.5,
+    });
+    videoStatuses.push(r.status);
+  }
+  ok(videoStatuses.every((s) => s === 201), "Upload: three video clips accepted (webm sniffed)");
+
+  const upVideo4 = await upload(slug, g1.cookie, "video", WEBM, "video/webm");
+  const video4Body = await upVideo4.json();
+  ok(
+    upVideo4.status === 403 && video4Body.error === "video_cap",
+    "Sub-cap: 4th video refused with video_cap while shots remain"
+  );
+
+  const upAudio = await upload(slug, g1.cookie, "audio", M4A, "audio/mp4", { duration: 22 });
+  ok(upAudio.status === 201, "Upload: voice wish accepted (m4a sniffed)");
+  const upAudio2 = await upload(slug, g1.cookie, "audio", M4A, "audio/mp4");
+  const audio2Body = await upAudio2.json();
+  ok(
+    upAudio2.status === 403 && audio2Body.error === "audio_cap",
+    "Sub-cap: 2nd voice wish refused with audio_cap"
+  );
+
+  // ── 6. One shot left (6 - 1 photo - 3 videos - 1 audio): parallel race
+  const race = await Promise.all([
+    upload(slug, g1.cookie, "photo", JPEG, "image/jpeg").then((r) => r.status),
+    upload(slug, g1.cookie, "photo", JPEG, "image/jpeg").then((r) => r.status),
+    upload(slug, g1.cookie, "photo", JPEG, "image/jpeg").then((r) => r.status),
+  ]);
+  const created = race.filter((s) => s === 201).length;
+  const refused = race.filter((s) => s === 403).length;
+  ok(
+    created === 1 && refused === 2,
+    `Upload: atomic budget holds under concurrency (1 created, 2 refused; got ${created}/${refused})`
+  );
+
+  // ── 7. Reveal gate
   const galLocked = await fetch(`${APP}/api/e/${slug}/gallery`);
   ok(galLocked.status === 403, "Reveal gate: gallery returns 403 before reveal time");
 
-  // move reveal into the past
   await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
     method: "PATCH",
-    headers: {
-      apikey: process.env.SERVICE_KEY,
-      Authorization: `Bearer ${process.env.SERVICE_KEY}`,
-      "Content-Type": "application/json",
-    },
+    headers: svcHeaders,
     body: JSON.stringify({ reveal_at: new Date(now - 1000).toISOString() }),
   });
-  const galOpen = await fetch(`${APP}/api/e/${slug}/gallery`, { headers: { Cookie: cookie } });
+  const galOpen = await fetch(`${APP}/api/e/${slug}/gallery`, {
+    headers: { Cookie: g1.cookie },
+  });
   const galBody = await galOpen.json();
-  const photos = galBody.photos || [];
+  const media = galBody.media || [];
+  const byType = (t) => media.filter((m) => m.type === t);
   ok(
-    galOpen.status === 200 && photos.length === 2 && photos.every((p) => p.url && p.thumbUrl),
-    `Reveal: after reveal, gallery returns 2 photos with signed URLs`
+    galOpen.status === 200 &&
+      byType("photo").length === 2 &&
+      byType("video").length === 3 &&
+      byType("audio").length === 1,
+    `Gallery: typed media served (got ${byType("photo").length} photo / ${byType("video").length} video / ${byType("audio").length} audio)`
   );
-  ok(photos.length > 0 && photos.every((p) => p.mine === true), "Gallery: guest's own photos flagged 'mine'");
+  ok(
+    media.every((m) => m.url && m.downloadUrl) &&
+      byType("video").every((m) => m.durationS > 0),
+    "Gallery: signed display + download URLs on every item, durations on clips"
+  );
+  ok(media.every((m) => m.mine === true), "Gallery: guest's own media flagged 'mine'");
+
+  // ── 8. Moderation: host deletes one item via RLS; stranger cannot
+  const victim = byType("photo")[0];
+  const strangerDel = await fetch(`${SB}/rest/v1/media?id=eq.${victim.id}`, {
+    method: "DELETE",
+    headers: {
+      apikey: ANON,
+      Authorization: `Bearer ${process.env.OTHER_JWT}`,
+      Prefer: "return=representation",
+    },
+  });
+  const strangerRows = await strangerDel.json().catch(() => []);
+  ok(
+    Array.isArray(strangerRows) && strangerRows.length === 0,
+    "RLS: other user's delete touches nothing"
+  );
+  const hostDel = await fetch(`${SB}/rest/v1/media?id=eq.${victim.id}`, {
+    method: "DELETE",
+    headers: {
+      apikey: ANON,
+      Authorization: `Bearer ${token}`,
+      Prefer: "return=representation",
+    },
+  });
+  const hostRows = await hostDel.json().catch(() => []);
+  ok(
+    Array.isArray(hostRows) && hostRows.length === 1,
+    "RLS: host deletes a capture from their own event"
+  );
+
+  // ── 9. Rate limit: a fresh guest hammering the endpoint hits 429
+  await fetch(`${SB}/rest/v1/events?id=eq.${eventId}`, {
+    method: "PATCH",
+    headers: svcHeaders,
+    body: JSON.stringify({ shots_per_guest: 50 }),
+  });
+  const g2 = await join(slug, "Spammer");
+  let sawTooMany = false;
+  for (let i = 0; i < 10; i++) {
+    const r = await upload(slug, g2.cookie, "photo", JPEG, "image/jpeg");
+    if (r.status === 429) {
+      sawTooMany = true;
+      break;
+    }
+  }
+  ok(sawTooMany, "Rate limit: burst uploads from one session hit 429");
 
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
