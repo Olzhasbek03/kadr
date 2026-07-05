@@ -287,6 +287,36 @@ export const TrashIcon = (p: IconProps) => (
   </svg>
 );
 
+export const HeartIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M12 20s-7-4.6-9-9c-1.2-2.7.5-6 3.6-6 1.9 0 3.6 1 4.4 2.6h2C13.8 6 15.5 5 17.4 5c3.1 0 4.8 3.3 3.6 6-2 4.4-9 9-9 9Z" />
+  </svg>
+);
+
+export const CakeIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M4 20h16M5 20v-6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6M12 12V9m0-2.5c1-1 .7-2.5-.2-3.5-.8 1-1 2.5.2 3.5Z" />
+  </svg>
+);
+
+export const PlaneIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M10.5 13.5 4 11l1.5-1.5L11 10l4.5-4.5a1.4 1.4 0 0 1 2 2L13 12l.5 5.5L12 19l-2.5-6.5Z" />
+  </svg>
+);
+
+export const GlassIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M8 3h8l-1 7a3 3 0 0 1-6 0L8 3ZM12 13v7m-3.5 0h7" />
+  </svg>
+);
+
+export const SparkleIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M12 4l1.8 4.6L18 10l-4.2 1.4L12 16l-1.8-4.6L6 10l4.2-1.4L12 4ZM18.5 16l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z" />
+  </svg>
+);
+
 export const InfinityIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M8 15.5c-2 0-3.5-1.6-3.5-3.5S6 8.5 8 8.5c3.5 0 4.5 7 8 7 2 0 3.5-1.6 3.5-3.5S18 8.5 16 8.5c-3.5 0-4.5 7-8 7Z" />

@@ -1,20 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { config } from "@/lib/config";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FilmStyleDemo from "@/components/marketing/FilmStyleDemo";
 import RevealDemo from "@/components/marketing/RevealDemo";
 import Reveal from "@/components/marketing/Reveal";
 import AnimatedCamera from "@/components/marketing/AnimatedCamera";
 import PhoneDemo from "@/components/marketing/PhoneDemo";
+import OccasionShowcase from "@/components/marketing/OccasionShowcase";
+import QrCode from "@/components/QrCode";
 import { ArrowRight, CameraIcon, MicIcon, VideoIcon } from "@/components/icons";
-
-const GALLERY_STRIP = [
-  { src: "/photos/kyz-dance.jpg", pos: "50% 30%" },
-  { src: "/photos/ceremony-lights.jpg", pos: "50% 45%" },
-  { src: "/photos/rings-gold.jpg", pos: "50% 55%" },
-  { src: "/photos/chapel.jpg", pos: "50% 60%" },
-];
 
 export default async function LandingPage() {
   const t = await getTranslations("landing");
@@ -65,7 +61,7 @@ export default async function LandingPage() {
         </header>
 
         <div className="relative z-20 flex flex-1 flex-col items-center justify-center px-5 pb-24 text-center sm:px-8">
-          <h1 className="rise-in font-display max-w-[18ch] text-[clamp(2.6rem,7vw,5.4rem)]">
+          <h1 className="rise-in font-display max-w-[18ch] whitespace-pre-line text-[clamp(2.6rem,7vw,5.4rem)]">
             {t("heroTitle")}
           </h1>
           <p
@@ -111,27 +107,14 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ─── moments strip: the photography carries the mood ─── */}
+      {/* ─── use cases: pick an occasion, the gallery changes ─── */}
       <section className="mx-auto max-w-6xl px-5 pb-20 sm:px-8 sm:pb-28">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {GALLERY_STRIP.map((photo, i) => (
-            <Reveal key={photo.src} delay={i * 0.06}>
-              <div className="relative aspect-[3/4] overflow-hidden rounded-[12px]">
-                <Image
-                  src={photo.src}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 46vw, 280px"
-                  className="object-cover"
-                  style={{ objectPosition: photo.pos }}
-                />
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal>
+          <OccasionShowcase />
+        </Reveal>
       </section>
 
-      {/* ─── how it works: the app itself, on three screens ─── */}
+      {/* ─── how a day becomes a film: the app on three screens ─── */}
       <section id="how" className="border-t border-line/60">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
           <Reveal>
@@ -144,6 +127,20 @@ export default async function LandingPage() {
           </Reveal>
           <Reveal delay={0.1} className="mt-14">
             <PhoneDemo />
+          </Reveal>
+
+          {/* scan-me card: open Kormem on the phone in your hand */}
+          <Reveal delay={0.15} className="mt-16">
+            <div className="card mx-auto flex max-w-md flex-col items-center gap-4 p-8 text-center sm:max-w-xl sm:flex-row sm:gap-8 sm:text-left">
+              <div className="shrink-0 rounded-[12px] border border-line bg-surface p-2">
+                <QrCode value={config.appUrl} size={132} />
+              </div>
+              <div>
+                <p className="mono-badge uppercase tracking-[0.25em]">{t("tryKicker")}</p>
+                <p className="font-display mt-2 text-[1.4rem]">{t("tryTitle")}</p>
+                <p className="mt-2 text-sm leading-[1.5] text-ink-2">{t("tryText")}</p>
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
