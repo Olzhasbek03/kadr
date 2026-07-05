@@ -14,7 +14,7 @@
     "cta": "Create your event",
     "ctaHow": "How it works",
     "heroTitle": "The celebration you never saw",
-    "heroSub": "Every guest becomes a photographer: photos, 10-second clips and voice wishes, straight from the browser. Hidden until the reveal. Then — the whole night through everyone's eyes.",
+    "heroSub": "Every guest becomes a photographer: photos, 10-second clips and voice wishes, straight from the browser. Hidden until the reveal. Then the whole night opens through everyone's eyes.",
     "heroAlt": "Dancers under lanterns at a night celebration",
     "howTitle": "How the night goes",
     "step1Title": "Create the event",
@@ -32,7 +32,7 @@
     "revealDemoLocked": "The photos are asleep",
     "revealDemoOpen": "Revealed",
     "planFree": "Free for every event",
-    "planFreeText": "All film styles, the shared gallery, the reveal and printable QR cards — no subscriptions, no fees.",
+    "planFreeText": "All film styles, the shared gallery, the reveal and printable QR cards. No subscriptions, no fees.",
     "faqTitle": "Frequently asked questions",
     "faq1q": "Do guests need to install an app?",
     "faq1a": "No. The camera opens right in the browser from a link or QR code. Works on iPhone and Android, including budget models.",
@@ -41,13 +41,13 @@
     "faq3q": "A guest shot with a filter. Can I get the original?",
     "faq3a": "Yes. The original is always stored clean at full resolution; the style is only laid over it at display time.",
     "faq4q": "How much does it cost?",
-    "faq4a": "Kormem is free — no subscriptions and no per-event fees.",
+    "faq4a": "Kormem is free. No subscriptions and no per-event fees.",
     "faq5q": "Where are the photos stored?",
     "faq5a": "In private storage. Access opens only through your event link and only after the reveal. Download the archive and they are yours forever.",
     "ctaTitle": "Let the morning show your day",
     "footer": "Made in Kazakhstan",
     "occasionsTitle": "One camera. Any occasion.",
-    "occasionsBody": "A wedding, a birthday, a corporate night, a reunion — wherever people gather, Kormem hands them one shared film roll. No apps, no accounts: a QR code on the table is the whole setup.",
+    "occasionsBody": "A wedding, a birthday, a corporate night, a reunion: wherever people gather, Kormem hands them one shared film roll. No apps, no accounts. A QR code on the table is the whole setup.",
     "occasion1": "Weddings",
     "occasion2": "Birthdays",
     "occasion3": "Corporate events",
@@ -60,9 +60,9 @@
     "modePhotoTitle": "Photos",
     "modePhotoText": "Compressed on the phone, stored clean at full frame. Film styles preview live in the viewfinder before the shot.",
     "modeVideoTitle": "10-second clips",
-    "modeVideoText": "Short by design — long enough for the toast, light enough to upload over venue wifi.",
+    "modeVideoText": "Short by design: long enough for the toast, light enough to upload over venue wifi.",
     "modeVoiceTitle": "Voice wishes",
-    "modeVoiceText": "A spoken message for the hosts. Guests hear themselves before sending — one wish per guest.",
+    "modeVoiceText": "A spoken message for the hosts. Guests hear themselves before sending, one wish per guest.",
     "footerPrivacy": "Privacy"
   },
   "auth": {
@@ -207,15 +207,15 @@
     "micPermissionText": "Allow microphone access in your browser settings to leave a voice wish.",
     "voicePrompt": "Leave a voice wish for the hosts of “{event}”",
     "voiceUpTo": "Up to {seconds} seconds",
-    "voiceHint": "One voice wish per guest — make it count.",
+    "voiceHint": "One voice wish per guest, so make it count.",
     "voiceListenBack": "Listen back before sending",
     "voicePlay": "Play",
     "voicePause": "Pause",
     "voiceRedo": "Re-record",
     "voiceSend": "Send",
     "voiceCapReached": "Your voice wish is already on the roll.",
-    "videoCapReached": "All video clips used — photos still work!",
-    "videoTooLarge": "That clip is too long — keep it under 10 seconds.",
+    "videoCapReached": "All video clips used. Photos still work!",
+    "videoTooLarge": "That clip is too long. Keep it under 10 seconds.",
     "fileUnreadable": "Could not read that file. Try the camera instead."
   },
   "gallery": {
@@ -246,22 +246,22 @@
     "voice": "Voice wishes"
   },
   "meta": {
-    "title": "Kormem — the shared camera for any celebration",
-    "description": "Guests capture photos, short clips and voice wishes right in the browser. Everything stays hidden until the reveal — then the whole night opens in one shared gallery."
+    "title": "Kormem: the shared camera for any celebration",
+    "description": "Guests capture photos, short clips and voice wishes right in the browser. Everything stays hidden until the reveal, then the whole night opens in one shared gallery."
   },
   "privacy": {
     "title": "Privacy",
-    "intro": "Kormem is a shared event camera. This page explains, in plain words, what we store and who can see it. Kormem is free — there are no payments, so we never touch payment data.",
+    "intro": "Kormem is a shared event camera. This page explains, in plain words, what we store and who can see it. Kormem is free: there are no payments, so we never touch payment data.",
     "s1Title": "What is collected",
-    "s1Body": "Photos, short video clips and voice recordings that guests capture on purpose — these show and record real people. Alongside them: the name a guest enters (any name works), an anonymous session token, upload timestamps, and the event details the host provides. Hosts sign in with an email address or Google account.",
+    "s1Body": "Photos, short video clips and voice recordings that guests capture on purpose. These show and record real people. Alongside them: the name a guest enters (any name works), an anonymous session token, upload timestamps, and the event details the host provides. Hosts sign in with an email address or Google account.",
     "s2Title": "Who can see it",
-    "s2Body": "Before the reveal, only the event's host sees the captures — they can also delete any of them. After the reveal, everyone with the event link sees the shared gallery. Media files live in private storage; every view goes through short-lived signed links, and nothing is ever public or indexed.",
+    "s2Body": "Before the reveal, only the event's host sees the captures, and they can delete any of them. After the reveal, everyone with the event link sees the shared gallery. Media files live in private storage; every view goes through short-lived signed links, and nothing is ever public or indexed.",
     "s3Title": "How long it is kept",
     "s3Body": "Until the host deletes it. Deleting a single capture removes it immediately; deleting an event removes its guest list and all of its media. We recommend hosts download the gallery archive and then delete events they no longer need.",
     "s4Title": "Cookies",
     "s4Body": "Two are ours: a session cookie on the event page that remembers a guest's name and shot count (clearing it makes you a new guest), and a cookie that remembers your language. Hosts also get a sign-in session cookie from our auth provider, Supabase. No advertising or cross-site tracking cookies.",
     "s5Title": "Consent",
-    "s5Body": "Guests capture and submit media themselves — nothing records in the background, and the microphone and camera are used only while the guest is actively capturing. By submitting a photo, clip or voice wish, a guest agrees that the host and, after the reveal, the event's guests will see or hear it. If something shouldn't be there, the host can remove it at any time.",
+    "s5Body": "Guests capture and submit media themselves. Nothing records in the background, and the microphone and camera are used only while the guest is actively capturing. By submitting a photo, clip or voice wish, a guest agrees that the host and, after the reveal, the event's guests will see or hear it. If something shouldn't be there, the host can remove it at any time.",
     "contact": "Questions or removal requests: write to the event's host, or contact us at hello@korme.org."
   }
 }

@@ -197,7 +197,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
             {t("gallerySection")}
             {!revealed && items.length > 0 && (
               <span className="ml-2 normal-case tracking-normal text-ink-2">
-                — {t("hostOnlyNote")}
+                · {t("hostOnlyNote")}
               </span>
             )}
           </p>

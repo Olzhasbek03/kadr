@@ -68,7 +68,7 @@ export default function AudioWishCard({
       <div className="min-w-0 flex-1">
         <p className="flex items-center gap-2 truncate text-sm font-medium">
           <MicIcon size={14} className="shrink-0 text-accent" />
-          <span className="truncate">{item.guestName ?? "—"}</span>
+          <span className="truncate">{item.guestName ?? "·"}</span>
           {accentLabel && (
             <span className="shrink-0 rounded-full bg-accent/10 px-2 py-0.5 text-[0.65rem] font-semibold text-accent">
               {accentLabel}

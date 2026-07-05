@@ -29,7 +29,7 @@ export default async function PrintCardPage(ctx: {
   const joinUrl = `${config.appUrl}/e/${event.slug}`;
   const steps: Array<{ kk: string; ru: string }> = [
     { kk: "Камераңызды QR-кодқа бағыттаңыз", ru: "Наведите камеру на QR-код" },
-    { kk: "Сілтемені ашыңыз — камера дайын", ru: "Откройте ссылку — камера готова" },
+    { kk: "Сілтемені ашыңыз, камера дайын", ru: "Откройте ссылку, камера готова" },
     { kk: `Әр қонаққа ${event.shots_per_guest} кадр`, ru: `У каждого гостя ${event.shots_per_guest} кадров` },
   ];
 
@@ -80,7 +80,7 @@ export default async function PrintCardPage(ctx: {
         <p className="mx-auto mt-10 max-w-md border-t border-neutral-200 pt-5 text-sm leading-relaxed text-neutral-500">
           Фотолар жасырын сақталады және кейін бір галереяда ашылады.
           <br />
-          Фотографии скрыты до момента проявки — потом откроются в общей галерее.
+          Фотографии скрыты до момента проявки. Потом они откроются в общей галерее.
         </p>
       </div>
     </main>
