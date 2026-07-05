@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { config, formatKzt } from "@/lib/config";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import FilmStyleDemo from "@/components/marketing/FilmStyleDemo";
 import RevealDemo from "@/components/marketing/RevealDemo";
@@ -170,31 +169,14 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ─── pricing: one hairline, two truths ─── */}
-      <section className="mx-auto max-w-4xl px-5 py-24 sm:px-8 sm:py-28">
+      {/* ─── free: one line, no asterisks ─── */}
+      <section className="mx-auto max-w-4xl px-5 py-24 text-center sm:px-8 sm:py-28">
         <Reveal>
-          <h2 className="font-display text-center text-[clamp(1.9rem,4vw,2.8rem)] leading-tight">
-            {t("pricingTitle")}
-          </h2>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
-            <div className="text-center sm:pr-12">
-              <p className="numeral text-5xl">0 ₸</p>
-              <p className="mt-2 font-semibold">{t("planFree")}</p>
-              <p className="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-ink-2">
-                {t("planFreeText", { count: config.freeGuestLimit })}
-              </p>
-            </div>
-            <div className="text-center sm:pl-12">
-              <p className="numeral text-5xl">{formatKzt(config.eventPriceKzt)}</p>
-              <p className="mt-2 font-semibold">{t("planPaid")}</p>
-              <p className="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-ink-2">
-                {t("planPaidText")}
-              </p>
-            </div>
-          </div>
-          <p className="mt-10 text-center text-sm text-ink-2">{t("pricingNote")}</p>
+          <p className="numeral text-5xl">0 ₸</p>
+          <p className="mt-3 font-semibold">{t("planFree")}</p>
+          <p className="mx-auto mt-2 max-w-[38ch] text-sm leading-relaxed text-ink-2">
+            {t("planFreeText")}
+          </p>
         </Reveal>
       </section>
 

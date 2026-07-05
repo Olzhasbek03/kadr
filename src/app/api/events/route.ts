@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { computeRevealAt, newSlug } from "@/lib/events";
-import { priceForEvent } from "@/lib/config";
 import { isFilmStyle } from "@/lib/filters";
 import type { RevealMode } from "@/lib/types";
 
@@ -62,7 +61,6 @@ export async function POST(req: NextRequest) {
   if (!isFilmStyle(filterPreset))
     return NextResponse.json({ error: "invalid_filter" }, { status: 400 });
 
-  const price = priceForEvent(maxGuests);
   const revealAt = computeRevealAt(revealMode, endTime, customReveal);
 
   const { data, error } = await supabase
@@ -78,11 +76,9 @@ export async function POST(req: NextRequest) {
       reveal_mode: revealMode,
       reveal_at: revealAt.toISOString(),
       filter_preset: filterPreset,
-      // Free tier activates instantly; paid events wait for the webhook.
-      status: price === 0 ? "active" : "draft",
-      price,
+      status: "active",
     })
-    .select("id, slug, status, price")
+    .select("id, slug, status")
     .single();
 
   if (error) {

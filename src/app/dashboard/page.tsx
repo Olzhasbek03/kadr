@@ -14,7 +14,7 @@ import {
 
 type EventWithCounts = EventRow & {
   guests: { count: number }[];
-  photos: { count: number }[];
+  media: { count: number }[];
 };
 
 export default async function DashboardPage() {
@@ -24,7 +24,7 @@ export default async function DashboardPage() {
 
   const { data } = await supabase
     .from("events")
-    .select("*, guests(count), photos(count)")
+    .select("*, guests(count), media(count)")
     .order("created_at", { ascending: false });
   const events = (data ?? []) as EventWithCounts[];
 
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
         <div className="mt-10 flex flex-col gap-3">
           {events.map((event) => {
             const guests = event.guests[0]?.count ?? 0;
-            const photos = event.photos[0]?.count ?? 0;
+            const photos = event.media[0]?.count ?? 0;
             const revealed = isRevealed(event.reveal_at);
             return (
               <Link
@@ -75,18 +75,10 @@ export default async function DashboardPage() {
                     </h2>
                     <span
                       className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                        event.status === "draft"
-                          ? "bg-bg text-ink-2"
-                          : revealed
-                            ? "bg-crimson/15 text-crimson"
-                            : "bg-success/15 text-success"
+                        revealed ? "bg-crimson/15 text-crimson" : "bg-success/15 text-success"
                       }`}
                     >
-                      {event.status === "draft"
-                        ? t("statusDraft")
-                        : revealed
-                          ? t("statusRevealed")
-                          : t("statusActive")}
+                      {revealed ? t("statusRevealed") : t("statusActive")}
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-ink-2">

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FILM_STYLES, FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
-import { formatKzt } from "@/lib/config";
 import type { RevealMode } from "@/lib/types";
 import { ArrowLeft, ArrowRight, Mark } from "@/components/icons";
 
@@ -24,13 +23,7 @@ function defaultStart() {
   return d;
 }
 
-export default function NewEventForm({
-  priceKzt,
-  freeGuestLimit,
-}: {
-  priceKzt: number;
-  freeGuestLimit: number;
-}) {
+export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: number }) {
   const t = useTranslations("create");
   const tc = useTranslations("common");
   const router = useRouter();
@@ -42,7 +35,7 @@ export default function NewEventForm({
   const [eventDate, setEventDate] = useState(toLocalInput(start));
   const [endTime, setEndTime] = useState(toLocalInput(end));
   const [shots, setShots] = useState(10);
-  const [maxGuests, setMaxGuests] = useState<string>("");
+  const [maxGuests, setMaxGuests] = useState<string>(String(defaultMaxGuests));
   const [revealMode, setRevealMode] = useState<RevealMode>("event_end");
   const [revealAt, setRevealAt] = useState("");
   const [filterPreset, setFilterPreset] = useState<FilmStyle>("warm");
@@ -50,10 +43,6 @@ export default function NewEventForm({
   const [error, setError] = useState<string | null>(null);
 
   const guestsNum = maxGuests.trim() === "" ? null : Math.round(Number(maxGuests));
-  const price =
-    guestsNum !== null && Number.isFinite(guestsNum) && guestsNum <= freeGuestLimit
-      ? 0
-      : priceKzt;
 
   const valid =
     name.trim().length > 0 &&
@@ -182,7 +171,7 @@ export default function NewEventForm({
         <label htmlFor="maxGuests" className="label-soft">
           {t("guestsLabel")}
         </label>
-        <p className="mt-1.5 text-sm text-ink-2">{t("guestsHint", { count: freeGuestLimit })}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("guestsHint")}</p>
         <input
           id="maxGuests"
           type="number"
@@ -256,17 +245,8 @@ export default function NewEventForm({
         </div>
       </section>
 
-      {/* price + submit */}
-      <section className="card mt-12 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="label-soft">{t("priceLabel")}</p>
-          <p className="numeral mt-1 text-3xl">
-            {price === 0 ? t("priceFree") : formatKzt(price)}
-          </p>
-          <p className="mt-1 text-sm text-ink-2">
-            {price === 0 ? t("priceFreeHint") : t("pricePaidHint")}
-          </p>
-        </div>
+      {/* submit */}
+      <section className="mt-12 flex justify-end">
         <button type="submit" disabled={!valid || pending} className="btn-primary shrink-0">
           {pending ? (
             <Mark size={18} className="animate-spin" />

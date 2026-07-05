@@ -2,21 +2,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { supabaseServer } from "@/lib/supabase/server";
-import { PHOTOS_BUCKET, SIGNED_URL_TTL, supabaseAdmin } from "@/lib/supabase/admin";
+import { MEDIA_BUCKET, SIGNED_URL_TTL, supabaseAdmin } from "@/lib/supabase/admin";
 import { config } from "@/lib/config";
 import { formatDateTime } from "@/lib/format";
 import { STYLE_COVER } from "@/lib/filters";
 import { isRevealed, type EventRow } from "@/lib/types";
 import SharePanel from "@/components/dashboard/SharePanel";
 import Countdown from "@/components/dashboard/Countdown";
-import PayCard from "@/components/dashboard/PayCard";
 import RevealNowButton from "@/components/dashboard/RevealNowButton";
 import HostGallery, { type GalleryPhoto } from "@/components/dashboard/HostGallery";
 import { ArrowLeft, CameraIcon, ClockIcon, UsersIcon } from "@/components/icons";
 
-interface PhotoRecord {
+interface MediaRecord {
   id: string;
-  original_path: string;
+  media_type: "photo" | "video" | "audio";
+  storage_path: string;
   thumb_path: string | null;
   filter: string;
   guests: { display_name: string | null } | null;
@@ -36,28 +36,28 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
     .maybeSingle<EventRow>();
   if (!event) notFound();
 
-  const [{ count: guestCount }, { data: photoRows }] = await Promise.all([
+  const [{ count: guestCount }, { data: mediaRows }] = await Promise.all([
     supabase.from("guests").select("id", { count: "exact", head: true }).eq("event_id", event.id),
     supabase
-      .from("photos")
-      .select("id, original_path, thumb_path, filter, guests(display_name)")
+      .from("media")
+      .select("id, media_type, storage_path, thumb_path, filter, guests(display_name)")
       .eq("event_id", event.id)
       .order("created_at", { ascending: true })
-      .returns<PhotoRecord[]>(),
+      .returns<MediaRecord[]>(),
   ]);
 
   // Mint signed URLs with the service key (bucket is private).
-  const rows = photoRows ?? [];
+  const rows = mediaRows ?? [];
   let photos: GalleryPhoto[] = [];
   if (rows.length > 0) {
-    const storage = supabaseAdmin().storage.from(PHOTOS_BUCKET);
-    const paths = rows.flatMap((p) => [p.original_path, p.thumb_path ?? p.original_path]);
+    const storage = supabaseAdmin().storage.from(MEDIA_BUCKET);
+    const paths = rows.flatMap((p) => [p.storage_path, p.thumb_path ?? p.storage_path]);
     const { data: signed } = await storage.createSignedUrls(paths, SIGNED_URL_TTL);
     const urlFor = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
     photos = rows.map((p) => ({
       id: p.id,
-      url: urlFor.get(p.original_path) ?? null,
-      thumbUrl: urlFor.get(p.thumb_path ?? p.original_path) ?? null,
+      url: urlFor.get(p.storage_path) ?? null,
+      thumbUrl: urlFor.get(p.thumb_path ?? p.storage_path) ?? null,
       filter: p.filter,
       guestName: p.guests?.display_name ?? null,
     }));
@@ -89,18 +89,10 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
             </h1>
             <span
               className={`rounded-full px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                event.status === "draft"
-                  ? "bg-bg text-ink-2"
-                  : revealed
-                    ? "bg-crimson/15 text-crimson"
-                    : "bg-success/15 text-success"
+                revealed ? "bg-crimson/15 text-crimson" : "bg-success/15 text-success"
               }`}
             >
-              {event.status === "draft"
-                ? t("statusDraft")
-                : revealed
-                  ? t("statusRevealed")
-                  : t("statusActive")}
+              {revealed ? t("statusRevealed") : t("statusActive")}
             </span>
           </div>
           <p className="mt-2 text-ink-2">{formatDateTime(event.event_date, locale)}</p>
@@ -122,11 +114,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
       </div>
 
       <div className="mt-10 flex flex-col gap-6">
-        {event.status === "draft" ? (
-          <PayCard eventId={event.id} price={event.price} />
-        ) : (
-          <SharePanel joinUrl={joinUrl} eventId={event.id} eventName={event.name} />
-        )}
+        <SharePanel joinUrl={joinUrl} eventId={event.id} eventName={event.name} />
 
         {/* reveal */}
         <section className="card p-6 sm:p-8">

@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { getEventBySlug } from "@/lib/events";
 import { DEVICE_COOKIE, DEVICE_COOKIE_MAX_AGE } from "@/lib/device";
-import type { GuestRow } from "@/lib/types";
+import { allowanceFor, type GuestRow } from "@/lib/types";
 
 /**
  * POST /api/e/[slug]/join — register this device as a guest (no auth).
@@ -89,7 +89,7 @@ export async function POST(
       displayName: guest.display_name,
       shotsUsed: guest.shots_used,
     },
-    shotsLeft: Math.max(0, event.shots_per_guest - guest.shots_used),
+    ...allowanceFor(event, guest),
   });
   res.cookies.set(DEVICE_COOKIE, deviceToken, {
     httpOnly: true,
