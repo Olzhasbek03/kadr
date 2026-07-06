@@ -72,10 +72,16 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
           coverTemplate,
         }),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      const { event } = await res.json();
-      router.push(`/dashboard/${event.id}`);
-    } catch {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        console.error("create event failed:", res.status, data);
+        setError(data.detail ? `${tc("error")} (${data.detail})` : tc("error"));
+        setPending(false);
+        return;
+      }
+      router.push(`/dashboard/${data.event.id}`);
+    } catch (err) {
+      console.error("create event threw:", err);
       setError(tc("error"));
       setPending(false);
     }
