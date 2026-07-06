@@ -14,7 +14,6 @@
     "@supabase/supabase-js": "^2.110.0",
     "@vladmandic/face-api": "^1.7.15",
     "jszip": "^3.10.1",
-    "motion": "^12.42.2",
     "next": "15.5.20",
     "next-intl": "^4.13.1",
     "qrcode": "^1.5.4",
