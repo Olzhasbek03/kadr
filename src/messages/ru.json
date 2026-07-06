@@ -101,7 +101,7 @@
     "noPassword": "Никаких паролей: ссылка на почту или вход через Google.",
     "errorGeneric": "Не получилось войти. Попробуйте ещё раз.",
     "backHome": "На главную",
-    "configError": "Вход не настроен: на этом развёртывании отсутствует или неверен адрес Supabase. Проверьте NEXT_PUBLIC_SUPABASE_URL в переменных окружения хостинга.",
+    "configError": "Вход не настроен. В переменных окружения хостинга NEXT_PUBLIC_SUPABASE_URL должен быть адресом проекта (https://xxxx.supabase.co), а NEXT_PUBLIC_SUPABASE_ANON_KEY ключом anon или publishable (sb_publishable_...). Одна из них отсутствует, неверна или они перепутаны местами.",
     "linkSpamHint": "Письма нет через минуту? Загляните в папку «Спам».",
     "resendIn": "Отправить снова через {seconds} с",
     "resend": "Отправить письмо ещё раз",
