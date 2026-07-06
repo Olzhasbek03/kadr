@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { getEventBySlug } from "@/lib/events";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { DEVICE_COOKIE } from "@/lib/device";
-import { isRevealed, toPublicEvent, type GuestRow } from "@/lib/types";
+import { isShootingOpen, toPublicEvent, type GuestRow } from "@/lib/types";
 import GuestLanding from "@/components/guest/GuestLanding";
 
 export const dynamic = "force-dynamic";
@@ -24,8 +24,10 @@ export default async function GuestPage(ctx: { params: Promise<{ slug: string }>
     );
   }
 
-  // Ended or already revealed → the gallery is the destination.
-  if (event.status !== "active" || isRevealed(event.reveal_at)) {
+  // The gallery is live from the first shot, but the QR still lands guests
+  // on the camera while shooting is open; only once it closes does the
+  // event become a gallery to look back on.
+  if (!isShootingOpen(event)) {
     redirect(`/e/${slug}/gallery`);
   }
 

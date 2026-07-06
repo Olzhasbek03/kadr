@@ -59,6 +59,40 @@ export default function GuestGallery({
     if (phase === "unlocking") void load();
   }, [phase, load]);
 
+  // Live gallery: while the event is still going, new captures appear on
+  // their own. Poll and append only items we don't already have, so tiles
+  // and their signed URLs never churn (and a playing video is not cut off).
+  useEffect(() => {
+    if (phase !== "revealed") return;
+    if (Date.now() > new Date(event.endTime).getTime() + 60 * 60 * 1000) return;
+    let stopped = false;
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/e/${event.slug}/gallery`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (stopped) return;
+        setMedia((prev) => {
+          const known = new Set(prev.map((m) => m.id));
+          const fresh = (data.media as GalleryItem[]).filter((m) => !known.has(m.id));
+          return fresh.length ? [...prev, ...fresh] : prev;
+        });
+      } catch {
+        /* transient; the next tick tries again */
+      }
+    };
+    const id = setInterval(poll, 20_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void poll();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      stopped = true;
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [phase, event.slug, event.endTime]);
+
   // Flip to unlocking the moment the countdown crosses zero.
   useEffect(() => {
     if (phase !== "locked") return;
@@ -71,6 +105,7 @@ export default function GuestGallery({
     return () => clearTimeout(id);
   }, [phase, event.revealAt]);
 
+  const isLive = Date.now() <= new Date(event.endTime).getTime() + 60 * 60 * 1000;
   const wishes = useMemo(() => media.filter((m) => m.type === "audio"), [media]);
   const visual = useMemo(() => media.filter((m) => m.type !== "audio"), [media]);
   // The face filter narrows the same array the grid and lightbox share, so
@@ -159,7 +194,17 @@ export default function GuestGallery({
       <div className="mx-auto max-w-5xl px-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm text-ink-2">{t("revealedKicker")}</p>
+            {isLive ? (
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+                {t("liveKicker")}
+              </span>
+            ) : (
+              <p className="text-sm text-ink-2">{t("revealedKicker")}</p>
+            )}
             <h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{event.name}</h1>
             <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
           </div>

@@ -55,7 +55,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_name" }, { status: 400 });
   if (isNaN(eventDate.getTime()) || isNaN(endTime.getTime()) || endTime <= eventDate)
     return NextResponse.json({ error: "invalid_dates" }, { status: 400 });
-  if (!Number.isFinite(shots) || shots < 1 || shots > 100)
+  // Photos are unlimited (UNLIMITED_SHOTS sentinel); still bound the value.
+  if (!Number.isFinite(shots) || shots < 1 || shots > 100_000)
     return NextResponse.json({ error: "invalid_shots" }, { status: 400 });
   if (maxGuests !== null && (!Number.isFinite(maxGuests) || maxGuests < 1 || maxGuests > 2000))
     return NextResponse.json({ error: "invalid_max_guests" }, { status: 400 });

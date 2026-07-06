@@ -4,12 +4,10 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FILM_STYLES, FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
+import { FILM_STYLES } from "@/lib/filters";
 import { COVER_TEMPLATES, type CoverTemplate } from "@/lib/covers";
-import type { RevealMode } from "@/lib/types";
-import { ArrowLeft, ArrowRight, CameraIcon, ClockIcon, Mark } from "@/components/icons";
-
-const SHOT_OPTIONS = [5, 10, 15, 20, 25, 30];
+import { UNLIMITED_SHOTS } from "@/lib/types";
+import { ArrowLeft, ArrowRight, CameraIcon, Mark } from "@/components/icons";
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -35,34 +33,10 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
   const [name, setName] = useState("");
   const [eventDate, setEventDate] = useState(toLocalInput(start));
   const [endTime, setEndTime] = useState(toLocalInput(end));
-  const [shots, setShots] = useState(10);
   const [maxGuests, setMaxGuests] = useState<string>(String(defaultMaxGuests));
-  const [revealMode, setRevealMode] = useState<RevealMode>("event_end");
-  const [revealAt, setRevealAt] = useState("");
-  const [filterPreset, setFilterPreset] = useState<FilmStyle>("original");
-  const [allowed, setAllowed] = useState<Set<FilmStyle>>(new Set(FILM_STYLES));
   const [coverTemplate, setCoverTemplate] = useState<CoverTemplate>("classic");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const toggleAllowed = (style: FilmStyle) => {
-    setAllowed((prev) => {
-      const next = new Set(prev);
-      if (next.has(style)) {
-        // The default style always stays available to guests.
-        if (style === filterPreset || next.size === 1) return prev;
-        next.delete(style);
-      } else {
-        next.add(style);
-      }
-      return next;
-    });
-  };
-
-  const pickPreset = (style: FilmStyle) => {
-    setFilterPreset(style);
-    setAllowed((prev) => (prev.has(style) ? prev : new Set(prev).add(style)));
-  };
 
   const guestsNum = maxGuests.trim() === "" ? null : Math.round(Number(maxGuests));
 
@@ -71,7 +45,6 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
     eventDate &&
     endTime &&
     new Date(endTime) > new Date(eventDate) &&
-    (revealMode !== "custom" || revealAt) &&
     (guestsNum === null || (Number.isFinite(guestsNum) && guestsNum >= 1));
 
   const submit = async (e: React.FormEvent) => {
@@ -87,12 +60,15 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
           name: name.trim(),
           eventDate: new Date(eventDate).toISOString(),
           endTime: new Date(endTime).toISOString(),
-          shotsPerGuest: shots,
+          // Unlimited photos; the gallery is live from the first shot.
+          shotsPerGuest: UNLIMITED_SHOTS,
           maxGuests: guestsNum,
-          revealMode,
-          revealAt: revealMode === "custom" ? new Date(revealAt).toISOString() : null,
-          filterPreset,
-          allowedStyles: [...allowed],
+          revealMode: "instant",
+          revealAt: null,
+          // Guests still get all three styles in their camera; the host no
+          // longer configures a starting stock. Default: no filter.
+          filterPreset: "original",
+          allowedStyles: [...FILM_STYLES],
           coverTemplate,
         }),
       });
@@ -104,12 +80,6 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
       setPending(false);
     }
   };
-
-  const revealOptions: { id: RevealMode; title: string; hint: string }[] = [
-    { id: "instant", title: t("revealInstant"), hint: t("revealInstantHint") },
-    { id: "event_end", title: t("revealEventEnd"), hint: t("revealEventEndHint") },
-    { id: "custom", title: t("revealCustom"), hint: t("revealCustomHint") },
-  ];
 
   return (
     <form onSubmit={submit} className="mx-auto max-w-2xl pt-10">
@@ -171,6 +141,17 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
         </div>
       </section>
 
+      {/* live-gallery note: every shot appears immediately, no reveal timer */}
+      <section className="mt-8 flex items-start gap-3 rounded-[12px] border border-line bg-surface p-4">
+        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line text-accent">
+          <CameraIcon size={17} />
+        </span>
+        <div>
+          <p className="text-sm font-medium text-ink">{t("liveTitle")}</p>
+          <p className="mt-1 text-sm leading-relaxed text-ink-2">{t("liveText")}</p>
+        </div>
+      </section>
+
       {/* invitation card: the first thing guests see after the scan */}
       <section className="mt-10">
         <p className="label-soft">{t("coverLabel")}</p>
@@ -210,11 +191,11 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
                       {previewName}
                     </span>
                     <span
-                      className={`mt-0.5 flex items-center gap-1.5 text-[6px] ${
+                      className={`mt-0.5 flex items-center gap-1 text-[6px] ${
                         dark ? "opacity-60" : "text-ink-2"
                       }`}
                     >
-                      <ClockIcon size={7} /> 19:00 <CameraIcon size={7} /> ×{shots}
+                      <CameraIcon size={7} /> {t("coverPreviewShots")}
                     </span>
                     <span
                       className={`mt-1.5 w-3/4 rounded-full px-1 py-1 text-[6px] font-medium ${
@@ -236,26 +217,6 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
         </div>
       </section>
 
-      {/* shots */}
-      <section className="mt-10">
-        <p className="label-soft">{t("shotsLabel")}</p>
-        <p className="mt-1.5 text-sm text-ink-2">{t("shotsHint")}</p>
-        <div className="mt-4 grid grid-cols-3 gap-2.5 sm:grid-cols-6">
-          {SHOT_OPTIONS.map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setShots(n)}
-              aria-pressed={shots === n}
-              data-selected={shots === n}
-              className="option-card py-4 text-lg"
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* max guests */}
       <section className="mt-10">
         <label htmlFor="maxGuests" className="label-soft">
@@ -273,103 +234,6 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
           placeholder={t("guestsPlaceholder")}
           className="input-base mt-4"
         />
-      </section>
-
-      {/* reveal */}
-      <section className="mt-10">
-        <p className="label-soft">{t("revealLabel")}</p>
-        <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
-          {revealOptions.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setRevealMode(opt.id)}
-              aria-pressed={revealMode === opt.id}
-              data-selected={revealMode === opt.id}
-              className="option-card !items-start flex-col gap-1.5 px-4 py-4 text-left"
-            >
-              <span className="font-medium">{opt.title}</span>
-              <span className="text-[0.82rem] font-normal leading-snug text-ink-2">
-                {opt.hint}
-              </span>
-            </button>
-          ))}
-        </div>
-        {revealMode === "custom" && (
-          <input
-            type="datetime-local"
-            value={revealAt}
-            onChange={(e) => setRevealAt(e.target.value)}
-            required
-            aria-label={t("revealCustom")}
-            className="input-base mt-3"
-          />
-        )}
-      </section>
-
-      {/* film style */}
-      <section className="mt-10">
-        <p className="label-soft">{t("styleLabel")}</p>
-        <p className="mt-1.5 text-sm text-ink-2">{t("styleHint")}</p>
-        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-          {FILM_STYLES.map((style) => (
-            <button
-              key={style}
-              type="button"
-              onClick={() => pickPreset(style)}
-              aria-pressed={filterPreset === style}
-              data-selected={filterPreset === style}
-              className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
-            >
-              <span
-                aria-hidden
-                className="block h-16 w-full"
-                style={{
-                  background: STYLE_COVER.original,
-                  filter: FILTER_CSS[style],
-                }}
-              />
-              <span className="block w-full px-3.5 py-2.5 text-[0.92rem]">
-                {t(`styles.${style}`)}
-              </span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* allowed styles */}
-      <section className="mt-10">
-        <p className="label-soft">{t("allowedLabel")}</p>
-        <p className="mt-1.5 text-sm text-ink-2">{t("allowedHint")}</p>
-        <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={t("allowedLabel")}>
-          {FILM_STYLES.map((style) => {
-            const on = allowed.has(style);
-            const locked = style === filterPreset;
-            return (
-              <button
-                key={style}
-                type="button"
-                aria-pressed={on}
-                disabled={locked}
-                onClick={() => toggleAllowed(style)}
-                className={`flex items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors disabled:cursor-default ${
-                  on
-                    ? "border-accent bg-accent/10 text-ink"
-                    : "border-line bg-transparent text-ink-2"
-                }`}
-                style={{ minHeight: 44 }}
-              >
-                <span
-                  aria-hidden
-                  className="h-4 w-4 rounded-full"
-                  style={{ background: STYLE_COVER.original, filter: FILTER_CSS[style] }}
-                />
-                {t(`styles.${style}`)}
-                {locked && <span className="text-xs text-ink-2">{t("allowedDefault")}</span>}
-              </button>
-            );
-          })}
-        </div>
       </section>
 
       {/* submit */}

@@ -6,10 +6,8 @@ import { MEDIA_BUCKET, SIGNED_URL_TTL, supabaseAdmin } from "@/lib/supabase/admi
 import { config } from "@/lib/config";
 import { formatDateTime } from "@/lib/format";
 import { STYLE_COVER } from "@/lib/filters";
-import { isRevealed, type EventRow, type GalleryItem, type MediaType } from "@/lib/types";
+import { isShootingOpen, type EventRow, type GalleryItem, type MediaType } from "@/lib/types";
 import SharePanel from "@/components/dashboard/SharePanel";
-import Countdown from "@/components/dashboard/Countdown";
-import RevealNowButton from "@/components/dashboard/RevealNowButton";
 import HostGallery from "@/components/dashboard/HostGallery";
 import {
   ArrowLeft,
@@ -95,7 +93,7 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
   const videoCount = rows.filter((m) => m.media_type === "video").length;
   const voiceCount = rows.filter((m) => m.media_type === "audio").length;
 
-  const revealed = isRevealed(event.reveal_at);
+  const live = isShootingOpen(event);
   const joinUrl = `${config.appUrl}/e/${event.slug}`;
 
   return (
@@ -121,10 +119,10 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
             </h1>
             <span
               className={`rounded-full px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                revealed ? "bg-accent/15 text-accent" : "bg-success/15 text-success"
+                live ? "bg-success/15 text-success" : "bg-ink/10 text-ink-2"
               }`}
             >
-              {revealed ? t("statusRevealed") : t("statusActive")}
+              {live ? t("statusLive") : t("statusEnded")}
             </span>
           </div>
           <p className="mt-2 text-ink-2">{formatDateTime(event.event_date, locale)}</p>
@@ -168,39 +166,36 @@ export default async function EventPage(ctx: { params: Promise<{ eventId: string
           />
         </Link>
 
-        {/* reveal */}
-        <section className="card p-6 sm:p-8">
-          <p className="label-soft">{t("revealSection")}</p>
-          {revealed ? (
-            <p className="mt-4 flex items-center gap-2.5 text-lg">
-              <span className="h-2 w-2 rounded-full bg-accent" />
-              {t("revealedSince", { time: formatDateTime(event.reveal_at, locale) })}
+        {/* live gallery: everything guests shoot appears here and in the
+            shared gallery immediately */}
+        <section className="card flex items-start gap-3 p-6 sm:p-8">
+          <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line text-accent">
+            {live ? (
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+              </span>
+            ) : (
+              <CameraIcon size={16} />
+            )}
+          </span>
+          <div>
+            <p className="font-medium">{live ? t("liveNow") : t("eventEnded")}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-2">
+              {live ? t("liveNowText") : t("eventEndedText")}
             </p>
-          ) : (
-            <>
-              <div className="mt-7">
-                <Countdown target={event.reveal_at} refreshOnZero />
-              </div>
-              <p className="mt-6 text-center text-sm text-ink-2">
-                {t("revealScheduled", { time: formatDateTime(event.reveal_at, locale) })}
-              </p>
-              <div className="mt-6 flex justify-center">
-                <RevealNowButton eventId={event.id} />
-              </div>
-            </>
-          )}
+            <Link
+              href={`/e/${event.slug}/gallery`}
+              className="btn-secondary mt-4 !min-h-[46px] text-sm"
+            >
+              {t("openSharedGallery")} <ChevronRight size={16} />
+            </Link>
+          </div>
         </section>
 
         {/* gallery */}
         <section>
-          <p className="label-soft">
-            {t("gallerySection")}
-            {!revealed && items.length > 0 && (
-              <span className="ml-2 normal-case tracking-normal text-ink-2">
-                · {t("hostOnlyNote")}
-              </span>
-            )}
-          </p>
+          <p className="label-soft">{t("gallerySection")}</p>
           <HostGallery items={items} eventId={event.id} eventSlug={event.slug} />
         </section>
       </div>
