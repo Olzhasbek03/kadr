@@ -10,6 +10,8 @@ import Countdown from "@/components/dashboard/Countdown";
 import MediaTile from "@/components/media/MediaTile";
 import MediaLightbox from "@/components/media/MediaLightbox";
 import AudioWishCard from "@/components/media/AudioWishCard";
+import FindMe from "@/components/guest/FindMe";
+import { UsersIcon, XIcon } from "@/components/icons";
 
 type Phase = "locked" | "unlocking" | "revealed" | "error";
 
@@ -33,6 +35,8 @@ export default function GuestGallery({
   const [phase, setPhase] = useState<Phase>(initiallyRevealed ? "unlocking" : "locked");
   const [media, setMedia] = useState<GalleryItem[]>([]);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [findMeOpen, setFindMeOpen] = useState(false);
+  const [matchedIds, setMatchedIds] = useState<Set<string> | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -69,6 +73,12 @@ export default function GuestGallery({
 
   const wishes = useMemo(() => media.filter((m) => m.type === "audio"), [media]);
   const visual = useMemo(() => media.filter((m) => m.type !== "audio"), [media]);
+  // The face filter narrows the same array the grid and lightbox share, so
+  // indices always agree.
+  const shown = useMemo(
+    () => (matchedIds ? visual.filter((m) => matchedIds.has(m.id)) : visual),
+    [visual, matchedIds]
+  );
 
   // ── locked: the media sleeps under the veil ───────────────────────
   if (phase === "locked") {
@@ -153,15 +163,42 @@ export default function GuestGallery({
             <h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{event.name}</h1>
             <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
           </div>
-          {media.length > 0 && (
-            <a
-              href={`/api/e/${event.slug}/download`}
-              className="btn btn-secondary !min-h-[50px]"
-            >
-              {t("downloadAll")}
-            </a>
-          )}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {visual.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setFindMeOpen(true)}
+                className="btn-secondary !min-h-[50px]"
+              >
+                <UsersIcon size={17} /> {t("findMe")}
+              </button>
+            )}
+            {media.length > 0 && (
+              <a
+                href={`/api/e/${event.slug}/download`}
+                className="btn btn-secondary !min-h-[50px]"
+              >
+                {t("downloadAll")}
+              </a>
+            )}
+          </div>
         </div>
+
+        {matchedIds && (
+          <div className="fade-in mt-6 flex flex-wrap items-center gap-3">
+            <span className="chip !border-accent !text-ink">
+              <UsersIcon size={14} /> {t("findMeMatches", { count: shown.length })}
+            </span>
+            <button
+              type="button"
+              onClick={() => setMatchedIds(null)}
+              className="flex items-center gap-1.5 text-sm text-ink-2 underline underline-offset-4 hover:text-ink"
+              style={{ minHeight: 44 }}
+            >
+              <XIcon size={13} /> {t("findMeShowAll")}
+            </button>
+          </div>
+        )}
 
         {media.length === 0 ? (
           <p className="mt-14 text-center text-ink-2">{t("empty")}</p>
@@ -182,9 +219,9 @@ export default function GuestGallery({
               </section>
             )}
 
-            {visual.length > 0 && (
+            {shown.length > 0 && (
               <div className="mt-8 grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
-                {visual.map((item, i) => (
+                {shown.map((item, i) => (
                   <MediaTile
                     key={item.id}
                     item={item}
@@ -200,12 +237,24 @@ export default function GuestGallery({
         )}
       </div>
 
-      {lightbox !== null && visual[lightbox] && (
+      {lightbox !== null && shown[lightbox] && (
         <MediaLightbox
-          items={visual}
+          items={shown}
           index={lightbox}
           onNavigate={setLightbox}
           onClose={() => setLightbox(null)}
+        />
+      )}
+
+      {findMeOpen && (
+        <FindMe
+          items={visual}
+          onResult={(matched) => {
+            setMatchedIds(matched);
+            setFindMeOpen(false);
+            setLightbox(null);
+          }}
+          onClose={() => setFindMeOpen(false)}
         />
       )}
     </main>

@@ -30,14 +30,16 @@ export default async function LandingPage() {
       {/* ─── hero: celebration photography vignetting into parchment ─── */}
       <section className="relative flex min-h-[100dvh] flex-col">
         <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/photos/confetti.jpg"
-            alt={t("heroAlt")}
-            fill
-            priority
-            sizes="100vw"
-            className="scale-105 object-cover blur-[5px]"
-          />
+          <div className="hero-parallax absolute inset-0 scale-105">
+            <Image
+              src="/photos/confetti.jpg"
+              alt={t("heroAlt")}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover blur-[5px]"
+            />
+          </div>
         </div>
         <div aria-hidden className="photo-vignette absolute inset-0" />
         {/* the veil lifts as the page loads */}
@@ -63,8 +65,19 @@ export default async function LandingPage() {
 
         <div className="relative z-20 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-5 pb-16 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-            <h1 className="rise-in font-display max-w-[16ch] whitespace-pre-line text-[clamp(2.6rem,6.4vw,5.2rem)]">
-              {t("heroTitle")}
+            <h1 className="font-display max-w-[16ch] text-[clamp(2.6rem,6.4vw,5.2rem)]">
+              {/* each line rises on its own beat: 90ms stagger */}
+              {t("heroTitle")
+                .split("\n")
+                .map((line, i) => (
+                  <span
+                    key={line}
+                    className="rise-in block"
+                    style={{ animationDelay: `${i * 90}ms` }}
+                  >
+                    {line}
+                  </span>
+                ))}
             </h1>
             <p
               className="rise-in mt-6 max-w-lg text-[1.05rem] leading-[1.5] text-ink-2"

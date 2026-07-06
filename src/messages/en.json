@@ -274,7 +274,20 @@
     "mediaCount": "{count, plural, one {# memory} other {# memories}}",
     "voiceWishes": "Voice wishes",
     "deleteItem": "Delete",
-    "downloadAll": "Download all (ZIP)"
+    "downloadAll": "Download all (ZIP)",
+    "findMe": "Find my photos",
+    "findMeTitle": "Find yourself",
+    "findMeText": "Take a quick selfie and we will pick out the frames you are in.",
+    "findMeShoot": "Take a selfie",
+    "findMeRetry": "Try again",
+    "findMeScanning": "Looking through the gallery…",
+    "findMeNoFace": "No face found in the shot. Try better light, closer to the camera.",
+    "findMeNone": "No matches yet. Try another angle or better light.",
+    "findMeMatches": "{count, plural, one {# photo with you} other {# photos with you}}",
+    "findMeShowAll": "Show all",
+    "findMeDenied": "Allow camera access to find your photos.",
+    "findMeClose": "Close",
+    "findMePrivacy": "Matching runs on your device. The selfie is not uploaded or stored anywhere."
   },
   "print": {
     "print": "Print"
