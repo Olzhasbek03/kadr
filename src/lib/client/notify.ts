@@ -3,30 +3,65 @@
 /**
  * "Your camera is ready" notification, shown once per event right after a
  * guest joins (the same move Once makes with its lock-screen activity).
- * Permission is requested inside the join tap (a user gesture, so Safari
- * allows the prompt); delivery goes through the guest service worker when
- * it's registered, falling back to a page-scoped Notification. On iOS
- * Safari outside an installed PWA the API simply doesn't exist and this
- * is a silent no-op.
+ *
+ * Split in two on purpose:
+ * - `primeNotificationPermission` runs inside the join tap, so the
+ *   permission prompt is gesture-backed (Safari requires it).
+ * - `announceCameraReady` runs only after the join request succeeded, so
+ *   a failed join never burns the once-per-event flag; the flag itself is
+ *   written only after a delivery path actually worked, because Android
+ *   Chrome forbids page-scoped `new Notification()` and the service worker
+ *   may still be activating on a first visit.
+ *
+ * On iOS Safari outside an installed PWA the API doesn't exist and both
+ * calls are silent no-ops.
  */
-export function announceCameraReady(slug: string, title: string, body: string): void {
+
+function flagKey(slug: string) {
+  return `kormem-notified-${slug}`;
+}
+
+export function primeNotificationPermission(slug: string): void {
   try {
     if (typeof window === "undefined" || !("Notification" in window)) return;
-    const flag = `kormem-notified-${slug}`;
+    try {
+      if (localStorage.getItem(flagKey(slug))) return;
+    } catch {
+      /* storage unavailable; asking twice is the worst case */
+    }
+    if (Notification.permission === "default") {
+      void Notification.requestPermission().catch(() => {});
+    }
+  } catch {
+    /* notifications are a garnish; never break the join flow */
+  }
+}
+
+export async function announceCameraReady(
+  slug: string,
+  title: string,
+  body: string
+): Promise<void> {
+  try {
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+    const flag = flagKey(slug);
     try {
       if (localStorage.getItem(flag)) return;
     } catch {
-      /* storage may be unavailable; worst case we ask again */
+      /* fine */
     }
 
-    const show = async () => {
-      try {
-        localStorage.setItem(flag, "1");
-      } catch {
-        /* best effort */
-      }
-      try {
-        const reg = await navigator.serviceWorker?.getRegistration(`/e/${slug}`);
+    let delivered = false;
+    // Preferred path: the guest service worker (works on Android Chrome).
+    // `ready` waits for activation; cap the wait so a stuck registration
+    // can't hold the promise forever.
+    try {
+      if (navigator.serviceWorker) {
+        const reg = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise<null>((r) => setTimeout(() => r(null), 4000)),
+        ]);
         if (reg) {
           await reg.showNotification(title, {
             body,
@@ -34,27 +69,29 @@ export function announceCameraReady(slug: string, title: string, body: string): 
             badge: "/icons/icon-192.png",
             tag: `kormem-ready-${slug}`,
           });
-          return;
+          delivered = true;
         }
-      } catch {
-        /* fall through to the page-scoped notification */
       }
+    } catch {
+      /* fall through to the page-scoped notification */
+    }
+    if (!delivered) {
       try {
         new Notification(title, { body, icon: "/icons/icon-192.png" });
+        delivered = true;
       } catch {
-        /* some platforms only allow SW notifications; nothing to do */
+        /* Android only allows SW notifications; leave the flag unset so a
+           later visit (with the worker active) can still deliver */
       }
-    };
-
-    if (Notification.permission === "granted") {
-      void show();
-    } else if (Notification.permission === "default") {
-      // Called from the join tap, so the prompt is gesture-backed.
-      void Notification.requestPermission().then((p) => {
-        if (p === "granted") void show();
-      });
+    }
+    if (delivered) {
+      try {
+        localStorage.setItem(flag, "1");
+      } catch {
+        /* best effort */
+      }
     }
   } catch {
-    /* notifications are a garnish; never break the join flow */
+    /* never break the join flow */
   }
 }

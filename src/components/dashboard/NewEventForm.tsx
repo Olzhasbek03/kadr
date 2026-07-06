@@ -186,6 +186,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
                 key={tplId}
                 type="button"
                 onClick={() => setCoverTemplate(tplId)}
+                aria-pressed={coverTemplate === tplId}
                 data-selected={coverTemplate === tplId}
                 className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
               >
@@ -245,6 +246,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={n}
               type="button"
               onClick={() => setShots(n)}
+              aria-pressed={shots === n}
               data-selected={shots === n}
               className="option-card py-4 text-lg"
             >
@@ -282,6 +284,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={opt.id}
               type="button"
               onClick={() => setRevealMode(opt.id)}
+              aria-pressed={revealMode === opt.id}
               data-selected={revealMode === opt.id}
               className="option-card !items-start flex-col gap-1.5 px-4 py-4 text-left"
             >
@@ -314,6 +317,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={style}
               type="button"
               onClick={() => pickPreset(style)}
+              aria-pressed={filterPreset === style}
               data-selected={filterPreset === style}
               className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
             >

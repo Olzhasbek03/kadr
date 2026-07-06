@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import {
+  onInstallPrompt,
+  type BeforeInstallPromptEvent,
+} from "@/lib/client/installPrompt";
 import { PlusIcon, XIcon } from "@/components/icons";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
 
 /**
  * "Add to Home Screen" nudge on the guest join page. Android Chrome gets
- * the real install prompt (captured beforeinstallprompt); iOS Safari has
- * no API, so it gets one-line share-sheet instructions. Installed guests
- * reopen straight into the event camera all night. Dismissal sticks per
- * event.
+ * the real install prompt (captured at module scope, so it survives firing
+ * before mount and client-side navigation); iOS Safari has no API, so it
+ * gets one-line share-sheet instructions. Installed guests reopen straight
+ * into the event camera all night. Dismissal sticks per event.
  */
 export default function AddToHomeScreen({ slug }: { slug: string }) {
   const t = useTranslations("guest");
@@ -35,16 +34,17 @@ export default function AddToHomeScreen({ slug }: { slug: string }) {
     }
     setDismissed(false);
 
-    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    // iPadOS 13+ Safari masquerades as macOS; the touch-point count is the tell.
+    const ua = navigator.userAgent;
+    const isIos =
+      /iphone|ipad|ipod/i.test(ua) ||
+      (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
     if (isIos) setPlatform("ios");
 
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setInstallEvent(e as BeforeInstallPromptEvent);
+    return onInstallPrompt((e) => {
+      setInstallEvent(e);
       setPlatform("android");
-    };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
+    });
   }, [slug]);
 
   if (dismissed || !platform) return null;
@@ -75,11 +75,11 @@ export default function AddToHomeScreen({ slug }: { slug: string }) {
         type="button"
         onClick={dismiss}
         aria-label={t("installDismiss")}
-        className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full text-ink-2 hover:bg-ink/5 hover:text-ink"
+        className="absolute right-2 top-2 flex !min-h-0 h-8 w-8 items-center justify-center rounded-full text-ink-2 hover:bg-ink/5 hover:text-ink"
       >
         <XIcon size={14} />
       </button>
-      <p className="pr-8 text-sm font-medium">{t("installTitle")}</p>
+      <p className="pr-8 text-sm font-medium text-ink">{t("installTitle")}</p>
       {platform === "android" && installEvent ? (
         <>
           <p className="mt-1 text-sm leading-relaxed text-ink-2">{t("installText")}</p>

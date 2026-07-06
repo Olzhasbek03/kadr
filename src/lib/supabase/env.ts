@@ -22,8 +22,10 @@ function cleanUrl(value: string): string {
   if (!v) return "";
   if (!/^https?:\/\//i.test(v)) v = `https://${v}`;
   // Reject anything that still isn't a URL rather than crash downstream.
+  // Keep the path: self-hosted Supabase can live behind a path prefix.
   try {
-    return new URL(v).origin;
+    const u = new URL(v);
+    return (u.origin + u.pathname).replace(/\/+$/, "");
   } catch {
     return "";
   }
@@ -46,7 +48,11 @@ export function supabaseServiceRoleKey(): string {
   );
 }
 
-/** True when a real project URL is configured (not the crash-guard placeholder). */
+/** True when a real URL AND anon key are configured (not the crash-guard
+ *  placeholders); either one missing means no auth call can succeed. */
 export function supabaseConfigured(): boolean {
-  return supabaseUrl() !== "https://placeholder.supabase.co";
+  return (
+    supabaseUrl() !== "https://placeholder.supabase.co" &&
+    supabaseAnonKey() !== "placeholder-anon-key"
+  );
 }

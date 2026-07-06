@@ -32,6 +32,8 @@ const DEMO_VOICE_MAX_S = 15;
 interface DemoResult {
   mode: Mode;
   url: string;
+  /** Front-camera clips play back mirrored, matching the preview. */
+  mirrored: boolean;
 }
 
 /**
@@ -43,6 +45,10 @@ export default function TryCamera() {
   const t = useTranslations("try");
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  // Bumped on every start()/unmount; a getUserMedia that resolves after its
+  // generation passed is stale and must be stopped, not adopted, or the
+  // orphaned stream keeps the camera light on with no way to turn it off.
+  const startGenRef = useRef(0);
   const recorderRef = useRef<RecorderHandle | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const resultUrlRef = useRef<string | null>(null);
@@ -81,6 +87,7 @@ export default function TryCamera() {
 
   const start = useCallback(
     async (m: Mode, f: Facing) => {
+      const gen = ++startGenRef.current;
       stopStream();
       if (!navigator.mediaDevices?.getUserMedia) {
         setStage("denied");
@@ -106,11 +113,18 @@ export default function TryCamera() {
             video: { facingMode: f, width: { ideal: 1280 } },
           });
         }
+        // A newer start() (mode/facing switch, retry tap, unmount) has taken
+        // over while the permission prompt was open: discard, don't adopt.
+        if (gen !== startGenRef.current) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
         streamRef.current = stream;
         if (m !== "voice") {
           const video = videoRef.current;
           if (!video) {
             stream.getTracks().forEach((track) => track.stop());
+            streamRef.current = null;
             return;
           }
           video.srcObject = stream;
@@ -118,7 +132,7 @@ export default function TryCamera() {
         }
         setStage("live");
       } catch {
-        setStage("denied");
+        if (gen === startGenRef.current) setStage("denied");
       }
     },
     [stopStream]
@@ -126,7 +140,9 @@ export default function TryCamera() {
 
   useEffect(() => {
     void start(mode, facing);
+    const gen = startGenRef;
     return () => {
+      gen.current++;
       stopStream();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,11 +171,11 @@ export default function TryCamera() {
   }, []);
 
   const finish = useCallback(
-    (m: Mode, blob: Blob) => {
+    (m: Mode, blob: Blob, mirrored: boolean) => {
       clearResult();
       const url = URL.createObjectURL(blob);
       resultUrlRef.current = url;
-      setResult({ mode: m, url });
+      setResult({ mode: m, url, mirrored });
       setStage("result");
       stopStream();
     },
@@ -181,7 +197,8 @@ export default function TryCamera() {
     ctx.drawImage(video, 0, 0);
     canvas.toBlob(
       (blob) => {
-        if (blob) finish("photo", blob);
+        // The mirror is baked into the pixels above; play back as-is.
+        if (blob) finish("photo", blob, false);
       },
       "image/jpeg",
       0.85
@@ -198,15 +215,18 @@ export default function TryCamera() {
     recorderRef.current = handle;
     setRecording(true);
     startElapsed();
+    // Recorded frames are raw (unmirrored); mirror front-camera playback so
+    // it matches the preview the visitor just saw.
+    const mirrored = mode === "video" && facing === "user";
     handle.done
-      .then((rec) => finish(mode, rec.blob))
+      .then((rec) => finish(mode, rec.blob, mirrored))
       .catch(() => {})
       .finally(() => {
         recorderRef.current = null;
         setRecording(false);
         stopElapsed();
       });
-  }, [mode, recording, startElapsed, stopElapsed, finish]);
+  }, [mode, facing, recording, startElapsed, stopElapsed, finish]);
 
   const stopRecording = useCallback(() => {
     recorderRef.current?.stop();
@@ -285,7 +305,7 @@ export default function TryCamera() {
                 </span>
                 <p className="numeral mt-6 text-2xl" aria-live="polite">
                   {recording
-                    ? `${Math.floor(elapsed)}s / ${DEMO_VOICE_MAX_S}s`
+                    ? t("timer", { elapsed: Math.floor(elapsed), max: DEMO_VOICE_MAX_S })
                     : t("voiceHint", { seconds: DEMO_VOICE_MAX_S })}
                 </p>
               </div>
@@ -312,7 +332,9 @@ export default function TryCamera() {
                       src={result.url}
                       playsInline
                       onEnded={() => setPlaying(false)}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className={`absolute inset-0 h-full w-full object-cover ${
+                        result.mirrored ? "-scale-x-100" : ""
+                      }`}
                       style={{ filter: FILTER_CSS[style] }}
                     />
                     <button
@@ -385,7 +407,7 @@ export default function TryCamera() {
                 <span className="flex items-center gap-2 rounded-full bg-dark/75 px-3.5 py-1.5 text-sm text-ivory backdrop-blur-sm">
                   <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-danger" />
                   <span className="numeral">
-                    {Math.floor(elapsed)}s / {DEMO_VIDEO_MAX_S}s
+                    {t("timer", { elapsed: Math.floor(elapsed), max: DEMO_VIDEO_MAX_S })}
                   </span>
                 </span>
               </div>
@@ -408,15 +430,14 @@ export default function TryCamera() {
           {/* in-stage controls: mode switcher + shutter, like the real camera */}
           {stage !== "result" && (
             <div className="pb-5 pt-1">
-              <div className="flex justify-center gap-1.5 px-4 py-2" role="tablist" aria-label={t("modes")}>
+              <div className="flex justify-center gap-1.5 px-4 py-2" role="group" aria-label={t("modes")}>
                 {modes.map(
                   (m) =>
                     m.enabled && (
                       <button
                         key={m.id}
                         type="button"
-                        role="tab"
-                        aria-selected={mode === m.id}
+                        aria-pressed={mode === m.id}
                         disabled={recording}
                         onClick={() => switchMode(m.id)}
                         className={`flex items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition-colors disabled:opacity-40 ${

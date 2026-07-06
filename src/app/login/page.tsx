@@ -20,6 +20,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [phase, setPhase] = useState<"idle" | "sending" | "sent">("idle");
+  const [resending, setResending] = useState(false);
   const [error, setError] = useState<string | null>(urlError ? t("errorGeneric") : null);
   const [cooldown, setCooldown] = useState(0);
   const [misconfigured, setMisconfigured] = useState(false);
@@ -50,9 +51,13 @@ function LoginForm() {
 
   const sendMagicLink = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!email.includes("@") || phase === "sending" || cooldown > 0) return;
+    if (!email.includes("@") || phase === "sending" || resending || cooldown > 0) return;
     setError(null);
-    setPhase("sending");
+    // Resending from the confirmation card keeps the card mounted (only the
+    // button changes state); the first send drives the whole form's phase.
+    const fromSentCard = phase === "sent";
+    if (fromSentCard) setResending(true);
+    else setPhase("sending");
     try {
       const { error: err } = await supabaseBrowser().auth.signInWithOtp({
         email: email.trim(),
@@ -61,7 +66,7 @@ function LoginForm() {
       if (err) {
         console.error("signInWithOtp failed:", err);
         setError(err.message || t("errorGeneric"));
-        setPhase("idle");
+        if (!fromSentCard) setPhase("idle");
       } else {
         setPhase("sent");
         startCooldown();
@@ -69,7 +74,9 @@ function LoginForm() {
     } catch (err) {
       console.error("signInWithOtp threw:", err);
       setError(err instanceof Error ? err.message : t("errorGeneric"));
-      setPhase("idle");
+      if (!fromSentCard) setPhase("idle");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -138,10 +145,14 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => void sendMagicLink()}
-                  disabled={cooldown > 0}
+                  disabled={cooldown > 0 || resending}
                   className="btn-secondary !min-h-[46px] text-sm"
                 >
-                  {cooldown > 0 ? t("resendIn", { seconds: cooldown }) : t("resend")}
+                  {resending
+                    ? t("sending")
+                    : cooldown > 0
+                      ? t("resendIn", { seconds: cooldown })
+                      : t("resend")}
                 </button>
                 <button
                   type="button"

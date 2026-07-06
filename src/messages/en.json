@@ -83,7 +83,9 @@
     "tryKicker": "Try Kormem",
     "tryTitle": "Your camera is already waiting.",
     "tryText": "Scan with your phone: the camera opens in the browser and you can take a shot right away. No download needed.",
-    "tryDismiss": "Dismiss"
+    "tryDismiss": "Dismiss",
+    "heroDemoPause": "Pause the demo",
+    "heroDemoPlay": "Play the demo"
   },
   "auth": {
     "title": "Sign in to Kormem",
@@ -212,7 +214,7 @@
     "installIosHint": "In Safari: tap Share, then \"Add to Home Screen\". It opens straight into the camera.",
     "installDismiss": "Dismiss",
     "notifyTitle": "{event}: your camera is ready",
-    "notifyBody": "You have {shots} shots. The gallery stays hidden until the reveal."
+    "notifyBody": "You have {shots, plural, one {# shot} other {# shots}}. The gallery stays hidden until the reveal."
   },
   "camera": {
     "outOfFilm": "You're out of film",
@@ -257,7 +259,8 @@
     "voiceCapReached": "Your voice wish is already on the roll.",
     "videoCapReached": "All video clips used. Photos still work!",
     "videoTooLarge": "That clip is too long. Keep it under 10 seconds.",
-    "fileUnreadable": "Could not read that file. Try the camera instead."
+    "fileUnreadable": "Could not read that file. Try the camera instead.",
+    "timer": "{elapsed}s / {max}s"
   },
   "gallery": {
     "lockedTitle": "The photos are still veiled",
@@ -330,6 +333,7 @@
     "pause": "Pause",
     "voiceHint": "Up to {seconds}s. Tap the button and say your wish.",
     "voiceListen": "Listen back. At a real event this would join the gallery.",
-    "micDenied": "Allow microphone access in your browser to try voice wishes."
+    "micDenied": "Allow microphone access in your browser to try voice wishes.",
+    "timer": "{elapsed}s / {max}s"
   }
 }

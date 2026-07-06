@@ -8,7 +8,7 @@ import type { PublicEvent } from "@/lib/types";
 import type { CoverTemplate } from "@/lib/covers";
 import { STYLE_COVER } from "@/lib/filters";
 import { formatDateTime } from "@/lib/format";
-import { announceCameraReady } from "@/lib/client/notify";
+import { announceCameraReady, primeNotificationPermission } from "@/lib/client/notify";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import AddToHomeScreen from "@/components/guest/AddToHomeScreen";
 import { ArrowRight, CameraIcon, ClockIcon } from "@/components/icons";
@@ -51,13 +51,9 @@ export default function GuestLanding({
     if (pending) return;
     setPending(true);
     setError(false);
-    // Inside the tap: gesture-backed permission prompt (Once-style
-    // "camera is ready" notification). Never blocks navigation.
-    announceCameraReady(
-      event.slug,
-      t("notifyTitle", { event: event.name }),
-      t("notifyBody", { shots: shotsLeft })
-    );
+    // Inside the tap, so the permission prompt is gesture-backed; the
+    // notification itself only fires after the join succeeds below.
+    primeNotificationPermission(event.slug);
     try {
       // localStorage mirror lets the session survive a cleared cookie.
       let storedToken: string | null = null;
@@ -83,6 +79,12 @@ export default function GuestLanding({
           /* best effort */
         }
       }
+      // Joined for real: the Once-style "camera is ready" note may fire.
+      void announceCameraReady(
+        event.slug,
+        t("notifyTitle", { event: event.name }),
+        t("notifyBody", { shots: shotsLeft })
+      );
       router.push(`/e/${event.slug}/camera`);
     } catch {
       setError(true);
@@ -91,7 +93,7 @@ export default function GuestLanding({
   };
 
   const inputClass = tpl.dark
-    ? "w-full rounded-[4px] border border-ivory/25 bg-ivory/10 px-4 py-3.5 text-center text-ivory outline-none transition-colors placeholder:text-ivory/50 focus:border-ivory/60"
+    ? "w-full rounded-[4px] border border-ivory/25 bg-ivory/10 px-4 py-3.5 text-center text-ivory outline-none transition-colors placeholder:text-ivory/80 focus:border-ivory/60"
     : "input-base text-center";
 
   const metaClass = tpl.dark ? "text-ivory/65" : "text-ink-2";

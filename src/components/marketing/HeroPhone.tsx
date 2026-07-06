@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { CameraIcon, MicIcon, PlayIcon, VideoIcon } from "@/components/icons";
+import { CameraIcon, MicIcon, PauseIcon, PlayIcon, VideoIcon } from "@/components/icons";
 
 const SLIDE_MS = 3600;
 const SWIPE_LEAD_MS = 640;
@@ -19,17 +19,24 @@ export default function HeroPhone() {
   const [index, setIndex] = useState(0);
   const [swiping, setSwiping] = useState(false);
   const [running, setRunning] = useState(true);
+  const [paused, setPaused] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  // visibilitychange must AND with the last intersection state, or a tab
+  // switch would resume the loop while the phone is scrolled off-screen.
+  const intersectingRef = useRef(true);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root || typeof IntersectionObserver === "undefined") return;
     const io = new IntersectionObserver(
-      ([entry]) => setRunning(entry.isIntersecting && !document.hidden),
+      ([entry]) => {
+        intersectingRef.current = entry.isIntersecting;
+        setRunning(entry.isIntersecting && !document.hidden);
+      },
       { threshold: 0.25 }
     );
     io.observe(root);
-    const onVisibility = () => setRunning(!document.hidden);
+    const onVisibility = () => setRunning(intersectingRef.current && !document.hidden);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       io.disconnect();
@@ -38,7 +45,7 @@ export default function HeroPhone() {
   }, []);
 
   useEffect(() => {
-    if (!running) return;
+    if (!running || paused) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const swipeTimer = reduced
       ? null
@@ -51,7 +58,7 @@ export default function HeroPhone() {
       if (swipeTimer) clearTimeout(swipeTimer);
       clearTimeout(slideTimer);
     };
-  }, [index, running]);
+  }, [index, running, paused]);
 
   const stateFor = (i: number) =>
     i === index ? "active" : i === (index + 2) % 3 ? "exited" : "waiting";
@@ -169,11 +176,21 @@ export default function HeroPhone() {
         </div>
 
         {/* the ghost thumb */}
-        {swiping && (
+        {swiping && !paused && (
           <div aria-hidden className="absolute inset-0 z-10 flex items-center justify-center">
             <span className="swipe-dot" />
           </div>
         )}
+
+        {/* WCAG 2.2.2: anything auto-advancing needs a real stop control */}
+        <button
+          type="button"
+          onClick={() => setPaused((p) => !p)}
+          aria-label={paused ? t("heroDemoPlay") : t("heroDemoPause")}
+          className="absolute bottom-3 right-3 z-20 flex !min-h-0 h-9 w-9 items-center justify-center rounded-full bg-dark/45 text-ivory/90 backdrop-blur-sm transition-colors hover:bg-dark/65"
+        >
+          {paused ? <PlayIcon size={13} /> : <PauseIcon size={13} />}
+        </button>
       </div>
     </div>
   );
