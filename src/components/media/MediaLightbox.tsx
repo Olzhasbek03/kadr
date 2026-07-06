@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { GalleryItem } from "@/lib/types";
 import { filterCss } from "@/lib/filters";
+import { canShareFiles, shareOrDownload } from "@/lib/client/shareMedia";
 import {
   ArrowLeft,
   ArrowRight,
@@ -37,30 +38,10 @@ export default function MediaLightbox({
   const item = items[index];
   const [canShare, setCanShare] = useState(false);
 
-  useEffect(() => {
-    setCanShare(typeof navigator !== "undefined" && typeof navigator.share === "function");
-  }, []);
+  useEffect(() => setCanShare(canShareFiles()), []);
 
-  const share = useCallback(async () => {
-    if (!item?.url) return;
-    try {
-      // Share the actual file where the platform supports it; fall back to
-      // sharing the link. Nothing here uploads anything new.
-      const res = await fetch(item.url);
-      const blob = await res.blob();
-      const ext = item.type === "video" ? "mp4" : "jpg";
-      const file = new File([blob], `kormem.${ext}`, { type: blob.type });
-      const nav = navigator as Navigator & {
-        canShare?: (d: { files: File[] }) => boolean;
-      };
-      if (nav.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file] });
-        return;
-      }
-      await navigator.share({ url: item.url });
-    } catch {
-      /* user dismissed the sheet, or share is unavailable */
-    }
+  const save = useCallback(() => {
+    if (item?.url) void shareOrDownload(item.url, item.type);
   }, [item]);
 
   const prev = useCallback(
@@ -157,20 +138,11 @@ export default function MediaLightbox({
           <ArrowLeft size={18} />
         </button>
         <div className="flex items-center gap-3">
-          {canShare && item.url && (
-            <button
-              type="button"
-              onClick={share}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-ivory/10"
-              aria-label={t("share")}
-            >
-              <ShareIcon size={18} />
+          {item.url && (
+            <button type="button" onClick={save} className="btn btn-dark !min-h-[50px]">
+              {canShare ? <ShareIcon size={17} /> : <DownloadIcon size={17} />}
+              {canShare ? t("saveShare") : t("download")}
             </button>
-          )}
-          {item.downloadUrl && (
-            <a href={item.downloadUrl} className="btn btn-dark !min-h-[50px]">
-              <DownloadIcon size={17} /> {t("download")}
-            </a>
           )}
           {onDelete && (
             <button
