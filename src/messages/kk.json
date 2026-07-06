@@ -101,7 +101,7 @@
     "noPassword": "Құпиясөз жоқ: поштаға сілтеме немесе Google арқылы кіру.",
     "errorGeneric": "Кіру сәтсіз аяқталды. Қайталап көріңіз.",
     "backHome": "Басты бетке",
-    "configError": "Кіру бапталмаған: бұл орналастыруда Supabase мекенжайы жоқ немесе қате. Хостинг ортасындағы NEXT_PUBLIC_SUPABASE_URL айнымалысын тексеріңіз.",
+    "configError": "Кіру бапталмаған. Хостингтің орта айнымалыларында NEXT_PUBLIC_SUPABASE_URL жоба мекенжайы (https://xxxx.supabase.co), ал NEXT_PUBLIC_SUPABASE_ANON_KEY anon немесе publishable кілті (sb_publishable_...) болуы керек. Біреуі жоқ, қате немесе екеуі орын ауыстырған.",
     "linkSpamHint": "Бір минуттан кейін хат келмеді ме? «Спам» қалтасын қараңыз.",
     "resendIn": "{seconds} секундтан кейін қайта жіберу",
     "resend": "Хатты қайта жіберу",

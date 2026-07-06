@@ -101,7 +101,7 @@
     "noPassword": "No passwords: a link to your email, or Google sign-in.",
     "errorGeneric": "Sign-in failed. Please try again.",
     "backHome": "Back to home",
-    "configError": "Sign-in is not configured: the Supabase URL is missing or invalid on this deployment. Check NEXT_PUBLIC_SUPABASE_URL in your hosting environment variables.",
+    "configError": "Sign-in is not configured. In your hosting env vars, NEXT_PUBLIC_SUPABASE_URL must be the project URL (https://xxxx.supabase.co) and NEXT_PUBLIC_SUPABASE_ANON_KEY the anon or publishable key (sb_publishable_...). One of them is missing, invalid, or the two are swapped.",
     "linkSpamHint": "No email after a minute? Check the spam folder.",
     "resendIn": "Resend in {seconds}s",
     "resend": "Resend the link",
