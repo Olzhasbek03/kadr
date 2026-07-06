@@ -100,27 +100,45 @@ export async function POST(req: NextRequest) {
     status: "active",
   };
 
-  let { data, error } = await supabase
-    .from("events")
-    .insert(row)
-    .select("id, slug, status")
-    .single();
+  // Insert with graceful degradation: if the Supabase project is a migration
+  // or two behind, drop/clamp only the field the DB rejects and retry, so an
+  // event still gets created instead of failing outright.
+  const attempt: Partial<typeof row> = { ...row };
+  let data: { id: string; slug: string; status: string } | null = null;
+  let error: { message: string } | null = null;
 
-  // Deployments where the cover_template migration hasn't run yet must
-  // still be able to create events; the join page falls back to "classic".
-  if (error && /cover_template/.test(error.message)) {
-    const legacyRow: Partial<typeof row> = { ...row };
-    delete legacyRow.cover_template;
+  for (let i = 0; i < 4; i++) {
     ({ data, error } = await supabase
       .from("events")
-      .insert(legacyRow)
+      .insert(attempt)
       .select("id, slug, status")
       .single());
+    if (!error) break;
+
+    // cover_template migration not run yet → join page falls back to classic.
+    if (/cover_template/.test(error.message) && "cover_template" in attempt) {
+      delete attempt.cover_template;
+      continue;
+    }
+    // unlimited-shots migration not run yet → cap at the old 100 ceiling.
+    if (
+      /shots_per_guest/.test(error.message) &&
+      (attempt.shots_per_guest ?? 0) > 100
+    ) {
+      attempt.shots_per_guest = 100;
+      continue;
+    }
+    break;
   }
 
   if (error) {
     console.error("create event:", error.message);
-    return NextResponse.json({ error: "db_error" }, { status: 500 });
+    // Surface the real DB reason (RLS, missing column, missing table…) so a
+    // misconfigured Supabase project is diagnosable instead of a mute 500.
+    return NextResponse.json(
+      { error: "db_error", detail: error.message },
+      { status: 500 }
+    );
   }
   return NextResponse.json({ event: data }, { status: 201 });
 }
