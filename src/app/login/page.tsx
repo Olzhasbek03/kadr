@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { BrandMark } from "@/components/BrandLogo";
 import { ArrowLeft, CheckIcon, GoogleIcon, MailIcon } from "@/components/icons";
 
 const RESEND_COOLDOWN_S = 30;
@@ -108,7 +109,9 @@ function LoginForm() {
         </header>
 
         <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center pb-24">
-          <p className="rise-in font-display text-center text-xl text-ink-2">Kormem</p>
+          <span className="rise-in flex justify-center">
+            <BrandMark size={44} priority />
+          </span>
           <h1
             className="rise-in font-display mt-4 text-center text-[2.7rem] leading-[1.05]"
             style={{ animationDelay: "70ms" }}

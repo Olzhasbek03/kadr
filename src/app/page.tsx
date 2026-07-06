@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { BrandLockup } from "@/components/BrandLogo";
 import FilmStyleDemo from "@/components/marketing/FilmStyleDemo";
 import RevealDemo from "@/components/marketing/RevealDemo";
 import Reveal from "@/components/marketing/Reveal";
@@ -62,7 +63,7 @@ export default async function LandingPage() {
         <div aria-hidden className="veil veil-lift absolute inset-0 z-10" />
 
         <header className="relative z-20 flex items-center justify-between px-5 py-5 sm:px-8">
-          <span className="font-display text-[1.5rem] leading-none">Kormem</span>
+          <BrandLockup size={30} priority />
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher />
             <Link
@@ -280,7 +281,7 @@ export default async function LandingPage() {
       {/* ─── footer: absolute black anchor ─── */}
       <footer className="bg-black text-ivory/70">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-10 sm:px-8">
-          <span className="font-display text-xl text-ivory">Kormem</span>
+          <BrandLockup size={26} tone="ivory" />
           <div className="flex items-center gap-6 text-sm">
             <LanguageSwitcher />
             <Link href="/privacy" className="transition-colors hover:text-ivory">
