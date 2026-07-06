@@ -384,11 +384,10 @@ export default function GuestGallery({
           </>
         )}
 
-        {/* keep the event reachable: add it to the home screen */}
-        <div className="mx-auto max-w-md">
-          <AddToHomeScreen slug={event.slug} />
-        </div>
       </div>
+
+      {/* keep the event reachable: add it to the home screen */}
+      <AddToHomeScreen slug={event.slug} />
 
       {/* live "new shots" pill: the poll found others' captures */}
       {isLive && newCount > 0 && (

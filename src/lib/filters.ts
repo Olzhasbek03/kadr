@@ -13,7 +13,10 @@ export type FilmStyle = (typeof FILM_STYLES)[number];
 export const FILTER_CSS: Record<FilmStyle, string> = {
   original: "none",
   noir: "grayscale(1) contrast(1.08) brightness(1.02)",
-  polaroid: "sepia(0.32) contrast(0.88) brightness(1.1) saturate(1.18) hue-rotate(-4deg)",
+  // Authentic instant-film grade: faded (lower contrast + desaturated),
+  // gently warm with lifted shadows — matches the polaroid-photo skill's
+  // reference grade rather than the old oversaturated orange cast.
+  polaroid: "contrast(0.92) saturate(0.9) brightness(1.06) sepia(0.18) hue-rotate(-6deg)",
 };
 
 export function isFilmStyle(value: unknown): value is FilmStyle {

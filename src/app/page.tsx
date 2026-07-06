@@ -138,7 +138,6 @@ export default async function LandingPage() {
                 </span>
               ))}
             </div>
-            <p className="mono-badge mt-8 !text-accent">{t("punLine")}</p>
           </Reveal>
         </div>
       </section>
@@ -220,11 +219,13 @@ export default async function LandingPage() {
       {/* ─── free: one line, no asterisks ─── */}
       <section className="mx-auto max-w-6xl px-5 py-20 text-center sm:px-8 sm:py-28">
         <Reveal>
-          <p className="numeral text-5xl">0 ₸</p>
-          <p className="mt-3 font-medium">{t("planFree")}</p>
-          <p className="mx-auto mt-2 max-w-[38ch] text-sm leading-[1.5] text-ink-2">
+          <h2 className="font-display text-[clamp(2rem,4.5vw,3.2rem)]">{t("planFree")}</h2>
+          <p className="mx-auto mt-4 max-w-[46ch] leading-[1.5] text-ink-2">
             {t("planFreeText")}
           </p>
+          <span className="mono-badge mt-6 inline-block rounded-full border border-accent/40 bg-accent/5 px-4 py-2 !text-accent">
+            {t("planFreeNote")}
+          </span>
         </Reveal>
       </section>
 
@@ -284,6 +285,9 @@ export default async function LandingPage() {
             <LanguageSwitcher />
             <Link href="/privacy" className="transition-colors hover:text-ivory">
               {t("footerPrivacy")}
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-ivory">
+              {t("footerTerms")}
             </Link>
             <Link href="/login" className="transition-colors hover:text-ivory">
               {t("signIn")}
