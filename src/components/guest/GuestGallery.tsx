@@ -6,6 +6,7 @@ import type { GalleryItem, PublicEvent } from "@/lib/types";
 import { STYLE_COVER } from "@/lib/filters";
 import { formatDateTime } from "@/lib/format";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { BrandLockup } from "@/components/BrandLogo";
 import Countdown from "@/components/dashboard/Countdown";
 import MediaTile from "@/components/media/MediaTile";
 import MediaLightbox from "@/components/media/MediaLightbox";
@@ -160,7 +161,7 @@ export default function GuestGallery({
             className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-bg to-transparent"
           />
           <header className="relative flex items-center justify-between px-5 pt-5">
-            <span className="font-display text-xl">Kormem</span>
+            <BrandLockup size={24} />
             <LanguageSwitcher />
           </header>
         </div>
@@ -216,7 +217,7 @@ export default function GuestGallery({
   return (
     <main className="min-h-dvh pb-20">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-6">
-        <span className="font-display text-xl">Kormem</span>
+        <BrandLockup size={24} />
         <LanguageSwitcher />
       </header>
 

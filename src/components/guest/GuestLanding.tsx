@@ -10,6 +10,7 @@ import { STYLE_COVER } from "@/lib/filters";
 import { formatDateTime } from "@/lib/format";
 import { announceCameraReady, primeNotificationPermission } from "@/lib/client/notify";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { BrandLockup } from "@/components/BrandLogo";
 import AddToHomeScreen from "@/components/guest/AddToHomeScreen";
 import { ArrowRight, CameraIcon, ClockIcon } from "@/components/icons";
 
@@ -189,7 +190,7 @@ export default function GuestLanding({
         style={{ background: tpl.surface }}
       >
         <header className="flex items-center justify-between px-5 pt-5">
-          <span className="font-display text-xl text-ivory">Kormem</span>
+          <BrandLockup size={24} tone="ivory" />
           <span className="rounded-full bg-ivory/10 px-2 py-1">
             <LanguageSwitcher />
           </span>
@@ -224,7 +225,7 @@ export default function GuestLanding({
           className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bg to-transparent"
         />
         <header className="relative flex items-center justify-between px-5 pt-5 text-ink">
-          <span className="font-display text-xl">Kormem</span>
+          <BrandLockup size={24} />
           <LanguageSwitcher />
         </header>
       </div>
