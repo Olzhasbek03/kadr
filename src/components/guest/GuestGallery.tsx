@@ -140,6 +140,9 @@ export default function GuestGallery({
     return newest ? [...list].reverse() : list;
   }, [visual, matchedIds, filter, newest]);
 
+  // The slideshow is photos-only (videos break the ambient rhythm).
+  const photoItems = useMemo(() => shown.filter((m) => m.type === "photo"), [shown]);
+
   // ── locked: the media sleeps under the veil ───────────────────────
   if (phase === "locked") {
     return (
@@ -234,7 +237,7 @@ export default function GuestGallery({
             <p className="mt-2 text-sm text-ink-2">{t("mediaCount", { count: media.length })}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
-            {visual.length > 0 && (
+            {photoItems.length > 0 && (
               <button
                 type="button"
                 onClick={() => setSlideshowFrom(0)}
@@ -419,9 +422,9 @@ export default function GuestGallery({
         />
       )}
 
-      {slideshowFrom !== null && shown.length > 0 && (
+      {slideshowFrom !== null && photoItems.length > 0 && (
         <Slideshow
-          items={shown}
+          items={photoItems}
           startIndex={slideshowFrom}
           onClose={() => setSlideshowFrom(null)}
         />

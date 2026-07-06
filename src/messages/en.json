@@ -317,7 +317,8 @@
     "noneInFilter": "Nothing here yet.",
     "emptyTitle": "The gallery is warming up",
     "emptyLive": "Photos appear here the moment guests take them. Be the first to add one.",
-    "newShots": "{count, plural, one {# new photo} other {# new photos}}"
+    "newShots": "{count, plural, one {# new photo} other {# new photos}}",
+    "saveShare": "Save · Share"
   },
   "print": {
     "print": "Print"
