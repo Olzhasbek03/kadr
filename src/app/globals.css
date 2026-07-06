@@ -500,6 +500,19 @@ body {
     display: none;
   }
 
+  /* Scroll reveal: visible is the default AND terminal state; JS only
+     temporarily hides below-fold sections, so no renderer ships blank. */
+  .reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out);
+  }
+  .reveal[data-reveal="waiting"] {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: none;
+  }
+
   /* ───────────────────────────── hero phone (the app, playing itself) */
 
   .phone-frame-lg {
