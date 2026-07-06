@@ -4,13 +4,14 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ArrowLeft } from "@/components/icons";
 
 /**
- * Privacy policy. Plain language, adapted for what Kormem actually is: a
- * free, web-only test service. No payments, no advertising, no cross-app
- * tracking; face matching runs on-device and never uploads biometric data.
+ * Terms of service. Adapted for a free, web-only test product: no
+ * purchases, no App Store / Apple / Google clauses, no arbitration
+ * boilerplate — just what the service is, how you may use it, who owns
+ * the content, and the honest disclaimers of a test version.
  */
-export default async function PrivacyPage() {
-  const t = await getTranslations("privacy");
-  const sections = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => ({
+export default async function TermsPage() {
+  const t = await getTranslations("terms");
+  const sections = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => ({
     title: t(`s${i}Title`),
     body: t(`s${i}Body`),
   }));
