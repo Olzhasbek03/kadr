@@ -6,7 +6,7 @@ import {
   onInstallPrompt,
   type BeforeInstallPromptEvent,
 } from "@/lib/client/installPrompt";
-import { PlusIcon, XIcon } from "@/components/icons";
+import { PlusIcon, ShareIcon, XIcon } from "@/components/icons";
 
 /**
  * "Add to Home Screen" nudge on the guest join page. Android Chrome gets
@@ -79,22 +79,40 @@ export default function AddToHomeScreen({ slug }: { slug: string }) {
       >
         <XIcon size={14} />
       </button>
-      <p className="pr-8 text-sm font-medium text-ink">{t("installTitle")}</p>
-      {platform === "android" && installEvent ? (
-        <>
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-line text-accent">
+          <PlusIcon size={17} />
+        </span>
+        <div className="min-w-0 pr-6">
+          <p className="text-sm font-medium text-ink">{t("installTitle")}</p>
           <p className="mt-1 text-sm leading-relaxed text-ink-2">{t("installText")}</p>
-          <button
-            type="button"
-            onClick={install}
-            className="btn-secondary mt-3 !min-h-[46px] w-full text-sm"
-          >
-            <PlusIcon size={16} /> {t("installButton")}
-          </button>
-        </>
+        </div>
+      </div>
+
+      {platform === "android" && installEvent ? (
+        <button
+          type="button"
+          onClick={install}
+          className="btn-primary mt-4 !min-h-[46px] w-full text-sm"
+        >
+          <PlusIcon size={16} /> {t("installButton")}
+        </button>
       ) : (
-        <p className="mt-1 text-sm leading-relaxed text-ink-2">
-          {platform === "ios" ? t("installIosHint") : t("installText")}
-        </p>
+        // iOS has no install API; show the exact two taps with real glyphs.
+        <ol className="mt-3 space-y-2 border-t border-line pt-3 text-sm text-ink-2">
+          <li className="flex items-center gap-2.5">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-ink/5 text-accent">
+              <ShareIcon size={14} />
+            </span>
+            {t("installIosStep1")}
+          </li>
+          <li className="flex items-center gap-2.5">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-ink/5 text-accent">
+              <PlusIcon size={14} />
+            </span>
+            {t("installIosStep2")}
+          </li>
+        </ol>
       )}
     </div>
   );
