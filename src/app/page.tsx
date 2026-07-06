@@ -31,13 +31,29 @@ export default async function LandingPage() {
       <section className="relative flex min-h-[100dvh] flex-col">
         <div className="absolute inset-0 overflow-hidden">
           <div className="hero-parallax absolute inset-0 scale-105">
+            {/* Motion for viewers who want it; a static frame for anyone who
+                doesn't (prefers-reduced-motion) or whose browser can't play
+                it. Color-pushed toward the site's beige/white parchment
+                palette rather than the video's native colors. */}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster="/photos/confetti.jpg"
+              aria-hidden
+              className="hero-video motion-reduce:hidden absolute inset-0 h-full w-full object-cover blur-[5px]"
+            >
+              <source src="/videos/hero.mp4" type="video/mp4" />
+            </video>
             <Image
               src="/photos/confetti.jpg"
               alt={t("heroAlt")}
               fill
               priority
               sizes="100vw"
-              className="object-cover blur-[5px]"
+              className="hidden object-cover blur-[5px] motion-reduce:block"
             />
           </div>
         </div>
