@@ -302,7 +302,22 @@
     "findMeDenied": "Разрешите доступ к камере, чтобы найти ваши фото.",
     "findMeClose": "Закрыть",
     "findMePrivacy": "Поиск работает на вашем устройстве. Селфи никуда не загружается и не сохраняется.",
-    "liveKicker": "В эфире"
+    "liveKicker": "В эфире",
+    "slideshow": "Слайд-шоу",
+    "slidePlay": "Пуск",
+    "slidePause": "Пауза",
+    "share": "Поделиться",
+    "filterLabel": "Фильтр",
+    "filterAll": "Все",
+    "filterPhotos": "Фото",
+    "filterVideos": "Видео",
+    "filterMine": "Мои",
+    "sortNewest": "Сначала новые",
+    "sortOldest": "Сначала старые",
+    "noneInFilter": "Здесь пока пусто.",
+    "emptyTitle": "Галерея разогревается",
+    "emptyLive": "Фотографии появляются здесь в момент съёмки. Добавьте первую.",
+    "newShots": "{count, plural, one {# новое фото} few {# новых фото} many {# новых фото} other {# новых фото}}"
   },
   "print": {
     "print": "Печать"

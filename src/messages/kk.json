@@ -302,7 +302,22 @@
     "findMeDenied": "Фотоларыңызды табу үшін камераға рұқсат беріңіз.",
     "findMeClose": "Жабу",
     "findMePrivacy": "Іздеу құрылғыңызда жүреді. Селфи еш жерге жүктелмейді және сақталмайды.",
-    "liveKicker": "Эфирде"
+    "liveKicker": "Эфирде",
+    "slideshow": "Слайд-шоу",
+    "slidePlay": "Ойнату",
+    "slidePause": "Кідірту",
+    "share": "Бөлісу",
+    "filterLabel": "Сүзгі",
+    "filterAll": "Барлығы",
+    "filterPhotos": "Фото",
+    "filterVideos": "Бейне",
+    "filterMine": "Меніңкі",
+    "sortNewest": "Алдымен жаңа",
+    "sortOldest": "Алдымен ескі",
+    "noneInFilter": "Әзірге бос.",
+    "emptyTitle": "Галерея қызып жатыр",
+    "emptyLive": "Фотолар түсірілген сәтте осында пайда болады. Бірінші болып қосыңыз.",
+    "newShots": "{count} жаңа фото"
   },
   "print": {
     "print": "Басып шығару"
