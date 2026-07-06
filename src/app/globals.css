@@ -174,6 +174,26 @@ body {
   .shutter:active {
     transform: scale(0.97);
   }
+  /* Hover motion gated to real pointers; touch fires false hovers on tap. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-dark:hover {
+      transform: translateY(-1px);
+    }
+    .btn-primary:active,
+    .btn-secondary:active,
+    .btn-dark:active {
+      transform: translateY(0) scale(0.97);
+    }
+    .chip {
+      transition: transform 160ms var(--ease-out), border-color 180ms ease;
+    }
+    .chip:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+    }
+  }
   .btn-primary:disabled,
   .btn-secondary:disabled,
   .btn-dark:disabled {
@@ -358,15 +378,18 @@ body {
     animation: fade-only 0.35s ease-out both;
   }
 
+  /* GPU-only: scaleX, never width (layout prop) */
   @keyframes progress {
     from {
-      width: 0%;
+      transform: scaleX(0);
     }
     to {
-      width: 100%;
+      transform: scaleX(1);
     }
   }
   .develop-progress {
+    width: 100%;
+    transform-origin: left;
     animation: progress 1.2s linear forwards;
   }
 
@@ -512,6 +535,22 @@ body {
     transform: translateX(-26px);
   }
 
+  /* Scroll-driven hero parallax: the photo drifts as the fold scrolls
+     away. Progressive (Chrome/Edge); browsers without scroll timelines
+     simply keep the static photo. GPU-only (transform). */
+  @supports (animation-timeline: view()) {
+    .hero-parallax {
+      animation: hero-drift linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+  @keyframes hero-drift {
+    to {
+      transform: translateY(9%) scale(1.08);
+    }
+  }
+
   /* The ghost thumb that swipes just before each screen change. */
   @keyframes swipe-dot {
     0% {
@@ -557,6 +596,9 @@ body {
   .hero-slide {
     transform: none;
     transition: opacity 0.2s ease;
+  }
+  .hero-parallax {
+    animation: none;
   }
   * {
     transition-duration: 0.01ms !important;

@@ -533,8 +533,11 @@ export default function CameraView({
                     return (
                       <span
                         key={i}
-                        className="w-1 rounded-full bg-accent transition-[height] duration-100"
-                        style={{ height: `${Math.max(6, wave * 64)}px`, opacity: recording ? 0.9 : 0.35 }}
+                        className="h-16 w-1 origin-center rounded-full bg-accent transition-transform duration-100"
+                        style={{
+                          transform: `scaleY(${Math.max(0.09, wave)})`,
+                          opacity: recording ? 0.9 : 0.35,
+                        }}
                       />
                     );
                   })}
