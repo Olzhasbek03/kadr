@@ -26,6 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("title"),
     description: t("description"),
+    // Installable as an app; the icon opens korme.org full-screen.
+    appleWebApp: { capable: true, statusBarStyle: "default", title: "Kormem" },
+    icons: { apple: "/apple-touch-icon.png" },
   };
 }
 

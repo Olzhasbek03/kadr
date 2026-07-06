@@ -12,6 +12,7 @@ import MediaLightbox from "@/components/media/MediaLightbox";
 import AudioWishCard from "@/components/media/AudioWishCard";
 import Slideshow from "@/components/media/Slideshow";
 import FindMe from "@/components/guest/FindMe";
+import AddToHomeScreen from "@/components/guest/AddToHomeScreen";
 import {
   CameraIcon,
   FilmIcon,
@@ -382,6 +383,11 @@ export default function GuestGallery({
             )}
           </>
         )}
+
+        {/* keep the event reachable: add it to the home screen */}
+        <div className="mx-auto max-w-md">
+          <AddToHomeScreen slug={event.slug} />
+        </div>
       </div>
 
       {/* live "new shots" pill: the poll found others' captures */}

@@ -220,13 +220,15 @@
     "continueShooting": "Keep shooting",
     "noAppNeeded": "No app, no sign-up. Your shots open in the shared gallery.",
     "privacyLink": "What happens to my photos and voice?",
-    "installTitle": "Keep the camera one tap away",
-    "installText": "Add this event to your home screen: it opens straight into the camera, full screen.",
+    "installTitle": "Keep this event one tap away",
+    "installText": "Add it to your home screen so you can reopen the camera and gallery anytime.",
     "installButton": "Add to home screen",
     "installIosHint": "In Safari: tap Share, then \"Add to Home Screen\". It opens straight into the camera.",
     "installDismiss": "Dismiss",
     "notifyTitle": "{event}: your camera is ready",
-    "notifyBody": "Every shot appears in the shared gallery right away. Have fun!"
+    "notifyBody": "Every shot appears in the shared gallery right away. Have fun!",
+    "installIosStep1": "Tap the Share button",
+    "installIosStep2": "Choose \"Add to Home Screen\""
   },
   "camera": {
     "outOfFilm": "You're out of film",
