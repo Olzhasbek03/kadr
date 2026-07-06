@@ -287,6 +287,15 @@ body {
 
   /* ───────────────────────────── photography treatments */
 
+  /* Hero background video: washed toward the parchment palette (beige/
+     white) rather than left at its native colors, so it reads as part of
+     this site rather than stock footage. Combines with .photo-vignette
+     (ivory scrim) laid over it in the markup. */
+  .hero-video {
+    filter: grayscale(0.35) sepia(0.22) saturate(0.85) brightness(1.08) contrast(0.94)
+      blur(5px);
+  }
+
   /* Dark bottom scrim for ivory text over photos (camera contexts). */
   .photo-scrim {
     background: linear-gradient(
