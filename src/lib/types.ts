@@ -59,6 +59,12 @@ export const AUDIO_CAP_PER_GUEST = 1;
 export const VIDEO_MAX_SECONDS = 10;
 export const AUDIO_MAX_SECONDS = 60;
 
+/** Photos are unlimited per guest. The shot budget stays in the schema
+ *  (its atomic RPC still guards the video/audio sub-caps), so "unlimited"
+ *  is a sentinel large enough it can never be reached at a real event. */
+export const UNLIMITED_SHOTS = 100_000;
+export const isUnlimitedShots = (n: number) => n >= UNLIMITED_SHOTS;
+
 /** Event fields safe to expose to guests. */
 export interface PublicEvent {
   slug: string;

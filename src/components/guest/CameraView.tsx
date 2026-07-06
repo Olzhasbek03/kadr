@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { GuestAllowance, MediaType, PublicEvent } from "@/lib/types";
-import { AUDIO_MAX_SECONDS, VIDEO_MAX_SECONDS } from "@/lib/types";
+import { AUDIO_MAX_SECONDS, VIDEO_MAX_SECONDS, isUnlimitedShots } from "@/lib/types";
 import { FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
 import { captureFrame, capturePoster, processFile } from "@/lib/client/capture";
 import {
@@ -94,6 +94,7 @@ export default function CameraView({
     setVideoSupported(canRecordVideo());
     setVoiceSupported(canRecordAudio());
   }, []);
+  const unlimited = isUnlimitedShots(event.shotsPerGuest);
   const maxSeconds = mode === "voice" ? AUDIO_MAX_SECONDS : VIDEO_MAX_SECONDS;
 
   // ── stream lifecycle (per mode + facing) ──────────────────────────
@@ -461,7 +462,7 @@ export default function CameraView({
 
   // ── out of film ───────────────────────────────────────────────────
 
-  if (allowance.shotsLeft <= 0 && pending === 0 && voicePhase !== "preview") {
+  if (!unlimited && allowance.shotsLeft <= 0 && pending === 0 && voicePhase !== "preview") {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center px-6 text-center">
         <span className="flex h-20 w-20 items-center justify-center rounded-full border border-accent/30 bg-accent/5 text-accent">
@@ -679,15 +680,24 @@ export default function CameraView({
             <span className="rounded-full bg-dark/60 px-2 py-1.5 text-ivory backdrop-blur-sm">
               <LanguageSwitcher />
             </span>
+            <Link
+              href={`/e/${event.slug}/gallery`}
+              aria-label={t("toLiveGallery")}
+              className="flex h-11 items-center gap-1.5 rounded-full bg-dark/60 px-3.5 text-sm text-ivory backdrop-blur-sm"
+            >
+              <ImageIcon size={16} /> {t("liveGallery")}
+            </Link>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <span className="flex items-center gap-2 rounded-full bg-dark/60 px-4 py-2 backdrop-blur-sm">
-              <FilmIcon size={15} className="text-accent-soft" />
-              <span className="numeral text-lg leading-none">
-                {allowance.shotsLeft}
-                <span className="text-ivory/55"> / {event.shotsPerGuest}</span>
+            {!unlimited && (
+              <span className="flex items-center gap-2 rounded-full bg-dark/60 px-4 py-2 backdrop-blur-sm">
+                <FilmIcon size={15} className="text-accent-soft" />
+                <span className="numeral text-lg leading-none">
+                  {allowance.shotsLeft}
+                  <span className="text-ivory/55"> / {event.shotsPerGuest}</span>
+                </span>
               </span>
-            </span>
+            )}
             {pending > 0 && (
               <span
                 className={`flex items-center gap-1.5 rounded-full bg-dark/60 px-3 py-1.5 text-xs backdrop-blur-sm ${

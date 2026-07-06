@@ -14,15 +14,15 @@
     "cta": "Create your event",
     "ctaHow": "How it works",
     "heroTitle": "Every Guest.\nEvery Angle.\nOne Gallery",
-    "heroSub": "Kormem is a premium, private photo sharing app for events. Guests join via QR (no download), snap memorable photos, and the album reveals after the event.",
+    "heroSub": "Kormem is a private shared camera for events. Guests join via QR (no download), shoot photos, clips and voice wishes, and everything appears in one live gallery.",
     "heroAlt": "Confetti falling over a celebrating crowd at night",
     "howTitle": "How a Day Becomes a Film.",
     "step1Title": "Create the event",
-    "step1Text": "A date, a name and a shot count. The QR code is ready immediately.",
+    "step1Text": "A date and a name. The QR code is ready immediately.",
     "step2Title": "Guests shoot",
     "step2Text": "The camera opens from a link, right in the browser. No apps, no accounts.",
-    "step3Title": "The host opens the gallery whenever they want",
-    "step3Text": "At the moment the host chooses, every photo appears for everyone at once: the whole night through every guest's eyes.",
+    "step3Title": "Everyone watches it live",
+    "step3Text": "Every photo, clip and voice wish appears in the shared gallery the instant a guest captures it: the whole night through everyone’s eyes.",
     "stylesTitle": "Three film styles to choose from",
     "stylesSub": "The style shows in the viewfinder before the shot. The original is always stored clean.",
     "stylesAria": "Film styles",
@@ -31,18 +31,18 @@
     "revealDemoLocked": "The photos are asleep",
     "revealDemoOpen": "Revealed",
     "planFree": "Free for every event",
-    "planFreeText": "All film styles, the shared gallery, the reveal and printable QR cards. No subscriptions, no fees.",
+    "planFreeText": "Unlimited photos, clips and voice wishes, the live shared gallery, find-my-photos and printable QR cards. No subscriptions, no fees.",
     "faqTitle": "Frequently asked questions",
     "faq1q": "Do guests need to install an app?",
     "faq1a": "No. The camera opens right in the browser from a link or QR code. Works on iPhone and Android, including budget models.",
-    "faq2q": "When do the photos open?",
-    "faq2a": "Whenever you decide: instantly, at the end of the night, or at your own time, say 10:00 the next morning. Until then only you can see them.",
+    "faq2q": "When can guests see the photos?",
+    "faq2a": "Right away. Every shot appears in the shared gallery the moment it is taken, live through the whole event, for every guest.",
     "faq3q": "A guest shot with a filter. Can I get the original?",
     "faq3a": "Yes. The original is always stored clean at full resolution; the style is only laid over it at display time.",
     "faq4q": "How much does it cost?",
     "faq4a": "Kormem is free. No subscriptions and no per-event fees.",
     "faq5q": "Where are the photos stored?",
-    "faq5a": "In private storage. Access opens only through your event link and only after the reveal. Download the archive and they are yours forever.",
+    "faq5a": "In private storage, reachable only through your event link. Download the archive any time and they are yours forever.",
     "ctaTitle": "Let the reveal show your day",
     "footer": "Made in Kazakhstan",
     "occasionsTitle": "Memories worth keeping,\nfrom every angle.",
@@ -115,7 +115,9 @@
     "emptyText": "Create your first event. The QR code and the guest camera will be ready in a minute.",
     "statusActive": "Active",
     "statusRevealed": "Revealed",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "statusLive": "Live",
+    "statusEnded": "Ended"
   },
   "create": {
     "title": "New event",
@@ -159,7 +161,10 @@
       "classic": "Parchment",
       "botanical": "Garden",
       "noir": "Midnight"
-    }
+    },
+    "liveTitle": "Unlimited shots, live gallery",
+    "liveText": "Every guest gets unlimited photos, clips and voice wishes, and everything appears in the shared gallery the moment it is captured.",
+    "coverPreviewShots": "Unlimited"
   },
   "event": {
     "backToEvents": "Back to events",
@@ -191,7 +196,14 @@
     "voiceWishes": "voice wishes",
     "guestListLink": "Guest list",
     "deleteConfirm": "Delete this memory? The guest won't get the shot back.",
-    "zipError": "Couldn't build the archive. Check your connection and try again."
+    "zipError": "Couldn't build the archive. Check your connection and try again.",
+    "statusLive": "Live",
+    "statusEnded": "Ended",
+    "liveNow": "The gallery is live",
+    "eventEnded": "The event has ended",
+    "liveNowText": "Every photo, clip and voice wish appears in the shared gallery the moment a guest captures it.",
+    "eventEndedText": "The shared gallery stays open for everyone to browse and download.",
+    "openSharedGallery": "Open the shared gallery"
   },
   "countdown": {
     "days": "days",
@@ -214,7 +226,7 @@
     "installIosHint": "In Safari: tap Share, then \"Add to Home Screen\". It opens straight into the camera.",
     "installDismiss": "Dismiss",
     "notifyTitle": "{event}: your camera is ready",
-    "notifyBody": "You have {shots, plural, one {# shot} other {# shots}}. The gallery stays hidden until the reveal."
+    "notifyBody": "Every shot appears in the shared gallery right away. Have fun!"
   },
   "camera": {
     "outOfFilm": "You're out of film",
@@ -260,7 +272,9 @@
     "videoCapReached": "All video clips used. Photos still work!",
     "videoTooLarge": "That clip is too long. Keep it under 10 seconds.",
     "fileUnreadable": "Could not read that file. Try the camera instead.",
-    "timer": "{elapsed}s / {max}s"
+    "timer": "{elapsed}s / {max}s",
+    "liveGallery": "Gallery",
+    "toLiveGallery": "Open the live gallery"
   },
   "gallery": {
     "lockedTitle": "The photos are still veiled",
@@ -287,7 +301,8 @@
     "findMeShowAll": "Show all",
     "findMeDenied": "Allow camera access to find your photos.",
     "findMeClose": "Close",
-    "findMePrivacy": "Matching runs on your device. The selfie is not uploaded or stored anywhere."
+    "findMePrivacy": "Matching runs on your device. The selfie is not uploaded or stored anywhere.",
+    "liveKicker": "Live now"
   },
   "print": {
     "print": "Print"
@@ -330,7 +345,7 @@
     "style_noir": "Black and white",
     "style_polaroid": "Polaroid",
     "shoot": "Take a shot",
-    "afterShot": "Developed. At a real event this lands in the shared gallery, hidden until the reveal.",
+    "afterShot": "Developed. At a real event this lands in the shared gallery instantly, for everyone to see.",
     "again": "Once more",
     "createCta": "Create your event",
     "denied": "Allow camera access in your browser to try the demo.",

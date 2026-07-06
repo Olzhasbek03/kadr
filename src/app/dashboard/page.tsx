@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/format";
 import { STYLE_COVER } from "@/lib/filters";
-import { isRevealed, type EventRow } from "@/lib/types";
+import { isShootingOpen, type EventRow } from "@/lib/types";
 import {
   CameraIcon,
   ChevronRight,
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
           {events.map((event) => {
             const guests = event.guests[0]?.count ?? 0;
             const photos = event.media[0]?.count ?? 0;
-            const revealed = isRevealed(event.reveal_at);
+            const live = isShootingOpen(event);
             return (
               <Link
                 key={event.id}
@@ -75,10 +75,10 @@ export default async function DashboardPage() {
                     </h2>
                     <span
                       className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wider ${
-                        revealed ? "bg-accent/15 text-accent" : "bg-success/15 text-success"
+                        live ? "bg-success/15 text-success" : "bg-ink/10 text-ink-2"
                       }`}
                     >
-                      {revealed ? t("statusRevealed") : t("statusActive")}
+                      {live ? t("statusLive") : t("statusEnded")}
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-ink-2">
