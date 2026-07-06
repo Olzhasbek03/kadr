@@ -116,6 +116,13 @@ export const UploadIcon = (p: IconProps) => (
   </svg>
 );
 
+export const ShareIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M12 15V4m0 0 3.5 3.5M12 4 8.5 7.5" />
+    <path d="M6 11H5.5a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 18.5 11H18" />
+  </svg>
+);
+
 export const VideoIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <rect x="3" y="6.5" width="13" height="11" rx="2" />

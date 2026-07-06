@@ -564,6 +564,39 @@ body {
     }
   }
 
+  /* Slideshow "big screen" mode: a slow Ken Burns drift on each photo,
+     GPU-only (transform), alternating direction so consecutive frames
+     don't all push the same way. */
+  @keyframes ken-burns-a {
+    from {
+      transform: scale(1.02) translate(0, 0);
+    }
+    to {
+      transform: scale(1.12) translate(-2%, -1.5%);
+    }
+  }
+  @keyframes ken-burns-b {
+    from {
+      transform: scale(1.12) translate(2%, 1.5%);
+    }
+    to {
+      transform: scale(1.02) translate(0, 0);
+    }
+  }
+  .ken-burns {
+    animation: ken-burns-a 7s ease-out both;
+    will-change: transform;
+  }
+  .ken-burns-alt {
+    animation: ken-burns-b 7s ease-out both;
+    will-change: transform;
+  }
+
+  /* Slideshow crossfade layer. */
+  .slide-fade {
+    animation: fade-only 0.9s ease both;
+  }
+
   /* The ghost thumb that swipes just before each screen change. */
   @keyframes swipe-dot {
     0% {
@@ -612,6 +645,14 @@ body {
   }
   .hero-parallax {
     animation: none;
+  }
+  .ken-burns,
+  .ken-burns-alt {
+    animation: none;
+    transform: scale(1.02);
+  }
+  .slide-fade {
+    animation: fade-only 0.2s ease both;
   }
   * {
     transition-duration: 0.01ms !important;

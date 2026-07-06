@@ -302,7 +302,22 @@
     "findMeDenied": "Allow camera access to find your photos.",
     "findMeClose": "Close",
     "findMePrivacy": "Matching runs on your device. The selfie is not uploaded or stored anywhere.",
-    "liveKicker": "Live now"
+    "liveKicker": "Live now",
+    "slideshow": "Slideshow",
+    "slidePlay": "Play",
+    "slidePause": "Pause",
+    "share": "Share",
+    "filterLabel": "Filter",
+    "filterAll": "All",
+    "filterPhotos": "Photos",
+    "filterVideos": "Videos",
+    "filterMine": "Mine",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "noneInFilter": "Nothing here yet.",
+    "emptyTitle": "The gallery is warming up",
+    "emptyLive": "Photos appear here the moment guests take them. Be the first to add one.",
+    "newShots": "{count, plural, one {# new photo} other {# new photos}}"
   },
   "print": {
     "print": "Print"
