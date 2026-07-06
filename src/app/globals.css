@@ -70,9 +70,10 @@ body {
 @layer components {
   .font-display {
     font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
-    font-weight: 340;
-    letter-spacing: 0;
-    line-height: 1.08;
+    /* Cormorant is a light garalde; it needs medium weight for display presence. */
+    font-weight: 560;
+    letter-spacing: 0.005em;
+    line-height: 1.04;
   }
 
   h1,
@@ -84,7 +85,7 @@ body {
   /* Calibrated numerals: counters, countdowns */
   .numeral {
     font-family: var(--font-display), ui-serif, Georgia, serif;
-    font-weight: 420;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 
@@ -475,6 +476,65 @@ body {
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /* ───────────────────────────── hero phone (the app, playing itself) */
+
+  .phone-frame-lg {
+    width: clamp(250px, 27vw, 330px);
+    border-radius: 48px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 12px;
+  }
+  .phone-screen-lg {
+    position: relative;
+    overflow: hidden;
+    border-radius: 38px;
+    aspect-ratio: 9 / 19;
+    background: var(--bg);
+  }
+
+  /* Hero slide choreography: incoming from the right, outgoing left,
+     as if a thumb pushed it. */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(26px);
+    transition: opacity 600ms var(--ease-in-out), transform 600ms var(--ease-in-out);
+    pointer-events: none;
+  }
+  .hero-slide[data-state="active"] {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .hero-slide[data-state="exited"] {
+    transform: translateX(-26px);
+  }
+
+  /* The ghost thumb that swipes just before each screen change. */
+  @keyframes swipe-dot {
+    0% {
+      opacity: 0;
+      transform: translateX(34px) scale(0.85);
+    }
+    18% {
+      opacity: 0.85;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-64px) scale(1);
+    }
+  }
+  .swipe-dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(250, 248, 245, 0.55);
+    border: 1px solid rgba(24, 27, 20, 0.15);
+    backdrop-filter: blur(2px);
+    animation: swipe-dot 640ms var(--ease-in-out) both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -489,6 +549,14 @@ body {
   .lens-breathe,
   .aperture-blink {
     animation: none;
+  }
+  .swipe-dot {
+    animation: none;
+    opacity: 0;
+  }
+  .hero-slide {
+    transform: none;
+    transition: opacity 0.2s ease;
   }
   * {
     transition-duration: 0.01ms !important;

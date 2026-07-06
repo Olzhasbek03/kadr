@@ -21,10 +21,11 @@ Tender, ceremonial, in motion. The visual world comes from real wedding photogra
 
 Voice: warm and plain. No startup verbs, no exclamation marks doing the work of feeling. Kazakh and Russian first, English third.
 
-## Anti-references
+## References
 
-- Not once.film's cream-editorial minimalism, not POV's playful gadget energy, not Scene's dark-app slickness.
-- No darkroom/film-noir aesthetic (the previous iteration). The photos are light; the site is light.
+- **once.film is the explicit role model** (owner decision, 2026-07): its editorial serif titles, the persistent try-me QR, the invitation-card designer, the "camera is ready" notification, and the app-playing-itself hero are the bar to meet and beat. Kormem stays web-first where Once is app-first: that is the differentiator, not a compromise.
+- Still not POV's playful gadget energy, not Scene's dark-app slickness.
+- No darkroom/film-noir aesthetic as the site default. The photos are light; the site is light. (Dark surfaces live in the camera tool and the noir invite template.)
 - No AI-landing grammar: no uppercase tracked eyebrows over every section, no three equal feature cards, no glassmorphism-by-default.
 
 ## Strategic design principles

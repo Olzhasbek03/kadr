@@ -31,7 +31,6 @@ import {
   PlayIcon,
   PauseIcon,
   RedoIcon,
-  StopIcon,
   UploadIcon,
   VideoIcon,
 } from "@/components/icons";
@@ -87,8 +86,14 @@ export default function CameraView({
   const [playingPreview, setPlayingPreview] = useState(false);
   const [level, setLevel] = useState(0);
 
-  const videoSupported = canRecordVideo();
-  const voiceSupported = canRecordAudio();
+  // MediaRecorder only exists in the browser; probing it during render
+  // makes the server and client disagree and breaks hydration.
+  const [videoSupported, setVideoSupported] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  useEffect(() => {
+    setVideoSupported(canRecordVideo());
+    setVoiceSupported(canRecordAudio());
+  }, []);
   const maxSeconds = mode === "voice" ? AUDIO_MAX_SECONDS : VIDEO_MAX_SECONDS;
 
   // ── stream lifecycle (per mode + facing) ──────────────────────────
@@ -536,7 +541,7 @@ export default function CameraView({
                 </div>
                 <p className="numeral mt-6 text-2xl" aria-live="polite">
                   {recording
-                    ? `${Math.floor(elapsed)}s / ${AUDIO_MAX_SECONDS}s`
+                    ? t("timer", { elapsed: Math.floor(elapsed), max: AUDIO_MAX_SECONDS })
                     : t("voiceUpTo", { seconds: AUDIO_MAX_SECONDS })}
                 </p>
               </>
@@ -642,7 +647,9 @@ export default function CameraView({
           <div className="absolute inset-x-0 top-16 z-10 flex justify-center">
             <span className="flex items-center gap-2.5 rounded-full bg-dark/75 px-4 py-2 text-sm backdrop-blur-sm">
               <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-danger" />
-              <span className="numeral">{Math.floor(elapsed)}s / {VIDEO_MAX_SECONDS}s</span>
+              <span className="numeral">
+                {t("timer", { elapsed: Math.floor(elapsed), max: VIDEO_MAX_SECONDS })}
+              </span>
             </span>
           </div>
         )}
@@ -733,13 +740,12 @@ export default function CameraView({
       )}
 
       {/* mode switcher */}
-      <div className="flex justify-center gap-1.5 px-4 pb-1" role="tablist" aria-label={t("modes")}>
+      <div className="flex justify-center gap-1.5 px-4 pb-1" role="group" aria-label={t("modes")}>
         {modes.map((m) => (
           <button
             key={m.id}
             type="button"
-            role="tab"
-            aria-selected={mode === m.id}
+            aria-pressed={mode === m.id}
             disabled={modeDisabled(m.id) || recording}
             onClick={() => switchMode(m.id)}
             className={`flex items-center gap-1.5 rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-35 ${

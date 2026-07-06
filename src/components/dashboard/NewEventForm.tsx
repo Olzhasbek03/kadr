@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FILM_STYLES, FILTER_CSS, STYLE_COVER, type FilmStyle } from "@/lib/filters";
+import { COVER_TEMPLATES, type CoverTemplate } from "@/lib/covers";
 import type { RevealMode } from "@/lib/types";
-import { ArrowLeft, ArrowRight, Mark } from "@/components/icons";
+import { ArrowLeft, ArrowRight, CameraIcon, ClockIcon, Mark } from "@/components/icons";
 
 const SHOT_OPTIONS = [5, 10, 15, 20, 25, 30];
 
@@ -40,6 +41,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
   const [revealAt, setRevealAt] = useState("");
   const [filterPreset, setFilterPreset] = useState<FilmStyle>("original");
   const [allowed, setAllowed] = useState<Set<FilmStyle>>(new Set(FILM_STYLES));
+  const [coverTemplate, setCoverTemplate] = useState<CoverTemplate>("classic");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,6 +93,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
           revealAt: revealMode === "custom" ? new Date(revealAt).toISOString() : null,
           filterPreset,
           allowedStyles: [...allowed],
+          coverTemplate,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -168,6 +171,71 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
         </div>
       </section>
 
+      {/* invitation card: the first thing guests see after the scan */}
+      <section className="mt-10">
+        <p className="label-soft">{t("coverLabel")}</p>
+        <p className="mt-1.5 text-sm text-ink-2">{t("coverHint")}</p>
+        <div className="mt-4 grid grid-cols-3 gap-2.5">
+          {COVER_TEMPLATES.map((tplId) => {
+            const dark = tplId !== "classic";
+            const surface =
+              tplId === "botanical" ? "#28331f" : tplId === "noir" ? "#151512" : undefined;
+            const previewName = name.trim() || t("namePlaceholder");
+            return (
+              <button
+                key={tplId}
+                type="button"
+                onClick={() => setCoverTemplate(tplId)}
+                aria-pressed={coverTemplate === tplId}
+                data-selected={coverTemplate === tplId}
+                className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
+              >
+                {/* live miniature of the guest join screen */}
+                <span
+                  aria-hidden
+                  className={`flex aspect-[3/4] w-full flex-col items-center justify-center gap-1 px-2 text-center ${
+                    dark ? "text-[#faf8f5]" : "text-ink"
+                  }`}
+                  style={{ background: surface ?? "var(--bg)" }}
+                >
+                  <span
+                    className={`flex w-full flex-1 flex-col items-center justify-center gap-1 rounded-[6px] px-1 ${
+                      tplId === "botanical" ? "m-1.5 border border-[#faf8f5]/25" : ""
+                    }`}
+                  >
+                    <span className={`text-[7px] ${dark ? "opacity-60" : "text-ink-2"}`}>
+                      {t("coverPreviewKicker")}
+                    </span>
+                    <span className="font-display line-clamp-2 max-w-full break-words px-1 text-[11px] leading-tight">
+                      {previewName}
+                    </span>
+                    <span
+                      className={`mt-0.5 flex items-center gap-1.5 text-[6px] ${
+                        dark ? "opacity-60" : "text-ink-2"
+                      }`}
+                    >
+                      <ClockIcon size={7} /> 19:00 <CameraIcon size={7} /> ×{shots}
+                    </span>
+                    <span
+                      className={`mt-1.5 w-3/4 rounded-full px-1 py-1 text-[6px] font-medium ${
+                        dark
+                          ? "bg-[#faf8f5]/85 text-[#171615]"
+                          : "border border-[#171615] bg-[#d6d5d4] text-[#171615]"
+                      }`}
+                    >
+                      {t("coverPreviewCta")}
+                    </span>
+                  </span>
+                </span>
+                <span className="block w-full border-t border-line px-3 py-2.5 text-[0.9rem]">
+                  {t(`covers.${tplId}`)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* shots */}
       <section className="mt-10">
         <p className="label-soft">{t("shotsLabel")}</p>
@@ -178,6 +246,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={n}
               type="button"
               onClick={() => setShots(n)}
+              aria-pressed={shots === n}
               data-selected={shots === n}
               className="option-card py-4 text-lg"
             >
@@ -215,6 +284,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={opt.id}
               type="button"
               onClick={() => setRevealMode(opt.id)}
+              aria-pressed={revealMode === opt.id}
               data-selected={revealMode === opt.id}
               className="option-card !items-start flex-col gap-1.5 px-4 py-4 text-left"
             >
@@ -247,6 +317,7 @@ export default function NewEventForm({ defaultMaxGuests }: { defaultMaxGuests: n
               key={style}
               type="button"
               onClick={() => pickPreset(style)}
+              aria-pressed={filterPreset === style}
               data-selected={filterPreset === style}
               className="option-card flex-col gap-0 overflow-hidden !p-0 text-left"
             >

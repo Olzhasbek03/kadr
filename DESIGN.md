@@ -20,9 +20,9 @@ Golden warmth lives in the photographs, never in the UI chrome. Dark blocks (`--
 
 ## Typography
 
-- **Display: Prata** (400 only, cyrillic-ext). High-contrast Didone; ceremonial. Sizes via clamp, max 6rem, letter-spacing 0/+0.01em. Never faux-bold.
-- **Body/UI: Golos Text** (400/500/600, cyrillic-ext). Line-height 1.55 body, max 65ch.
-- Emphasis inside display lines: color (`--crimson`) or size shift, same family. No italics (Prata has none).
+- **Display: Cormorant** (variable, weight ~560, cyrillic-ext). Editorial garalde in the once.film register; needs medium weight for presence, never below 500 at display sizes. Sizes via clamp, max 6rem.
+- **Body/UI: Inter** (variable, cyrillic-ext). Line-height 1.5 body, max 65ch. **Mono: JetBrains Mono** for technical markers.
+- Emphasis inside display lines: color or size shift, same family.
 
 ## Shape & depth
 

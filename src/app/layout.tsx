@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
+import { Cormorant, Inter, JetBrains_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
-// Sans for the interface, serif at whisper weight for declarations, mono
-// for technical markers. All three cover Kazakh Cyrillic (cyrillic-ext):
-// Қ Ә Ү Ұ Ө Ң Ғ Һ І.
+// Sans for the interface, an editorial display serif for declarations
+// (the once.film register: refined, high-contrast at display sizes),
+// mono for technical markers. All three cover Kazakh Cyrillic
+// (cyrillic-ext): Қ Ә Ү Ұ Ө Ң Ғ Һ І.
 const inter = Inter({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
   variable: "--font-body",
 });
-const serif = Source_Serif_4({
+const serif = Cormorant({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
   variable: "--font-display",
 });
