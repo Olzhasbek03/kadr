@@ -11,7 +11,7 @@ function int(value: string | undefined, fallback: number): number {
  */
 function resolveAppUrl(): string {
   if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
-  if (process.env.NODE_ENV === "production") return "https://korme.vercel.app";
+  if (process.env.NODE_ENV === "production") return "https://kormem.vercel.app";
   return "http://localhost:3000";
 }
 
