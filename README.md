@@ -128,7 +128,7 @@ Add to Home Screen and launch straight into the camera.
 
 1. Push the repo to GitHub and import it in Vercel.
 2. Add the variables from `.env.example`; set `NEXT_PUBLIC_APP_URL` to the
-   production URL (falls back to `https://korme.vercel.app` if unset).
+   production URL (falls back to `https://kormem.vercel.app` if unset).
 3. Add `https://YOUR-DOMAIN/auth/callback` to Supabase's redirect list.
 4. Deploy. All routes are dynamic/server-rendered; nothing else to configure.
 
